@@ -1,0 +1,38 @@
+export const projectTableHeader = [
+  {
+    id: 1,
+    name: '프로젝트명',
+  },
+  {
+    id: 2,
+    name: 'slug',
+  },
+  {
+    id: 3,
+    name: '기술 stack',
+  },
+  {
+    id: 4,
+    name: '깃허브 링크',
+  },
+  {
+    id: 5,
+    name: '데모 링크',
+  },
+  {
+    id: 6,
+    name: '프로젝트 내용',
+  },
+  {
+    id: 7,
+    name: '수정 날짜',
+  },
+  {
+    id: 8,
+    name: 'description',
+  },
+  {
+    id: 9,
+    name: '노출 여부',
+  },
+];
