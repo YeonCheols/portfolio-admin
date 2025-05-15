@@ -2,10 +2,10 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { Table } from '@/types/project';
+import type { Table, TableOptions } from '@/types/table';
 import { Loading } from './loading';
 
-type TableData = Record<string, string | number | boolean | string[]>;
+type TableData = Record<string, string | number | boolean | TableOptions>;
 
 function Table({ table, isLoading = false }: { table: Table<TableData>; isLoading: boolean }) {
   const header = useMemo(() => {
@@ -24,32 +24,46 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
     );
   }, [table]);
 
+  const renderType = (options: TableOptions) => {
+    if (options?.link) {
+      const { title, ...linkProps } = options.link;
+      return (
+        <a {...linkProps} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+          {title}
+        </a>
+      );
+    }
+    if (options?.content) {
+      const { title, isShortTitle, ...contentProps } = options.content;
+      return <span {...contentProps}>{isShortTitle ? title.slice(0, 10) + '...' : title}</span>;
+    }
+    if (options?.status) {
+      const { status, title } = options.status;
+      return (
+        <div className="flex items-center">
+          {status ? (
+            <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
+          ) : (
+            <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
+          )}
+          {title}
+        </div>
+      );
+    }
+  };
+
   const renderItem = (data: TableData) => {
     return Object.entries(data).map(([key, value]) => {
-      let content;
-      switch (key) {
-        case 'content':
-          content = typeof value === 'string' ? (!value ? null : value.slice(0, 10) + '...') : value;
-          break;
-        case 'link':
-          content = (
-            <a href={value as string} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-              {value}
-            </a>
-          );
-          break;
-        case 'stack':
-          content = Array.isArray(value) ? value.join(', ') : value;
-          break;
-        case 'is_show':
-          content = value ? '노출' : '비노출';
-          break;
-        default:
-          content = value;
+      if (typeof value === 'object') {
+        return (
+          <td key={key} className="px-6 py-4">
+            {renderType(value)}
+          </td>
+        );
       }
       return (
         <td key={key} className="px-6 py-4">
-          {content}
+          {value}
         </td>
       );
     });
@@ -82,33 +96,7 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           {header}
         </thead>
-        <tbody>
-          {body}
-          {/* <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              Apple MacBook Pro 17
-            </th>
-            <td className="px-6 py-4">Silver</td>
-            <td className="px-6 py-4">Laptop</td>
-            <td className="px-6 py-4">$2999</td>
-          </tr>
-          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              Microsoft Surface Pro
-            </th>
-            <td className="px-6 py-4">White</td>
-            <td className="px-6 py-4">Laptop PC</td>
-            <td className="px-6 py-4">$1999</td>
-          </tr>
-          <tr className="bg-white dark:bg-gray-800">
-            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              Magic Mouse 2
-            </th>
-            <td className="px-6 py-4">Black</td>
-            <td className="px-6 py-4">Accessories</td>
-            <td className="px-6 py-4">$99</td>
-          </tr> */}
-        </tbody>
+        <tbody>{body}</tbody>
       </table>
     </div>
   );

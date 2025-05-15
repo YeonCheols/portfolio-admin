@@ -10,7 +10,7 @@ interface ProjectData {
   id: number;
   title: string;
   slug: string;
-  stacks: string[];
+  stacks: string;
   link_github: string;
   link_demo: string;
   content: string;
@@ -26,23 +26,51 @@ export default function Project() {
     return <Loading />;
   }
 
-  const projectTableData = data?.data.map(item => {
+  const projectTableData = data.data.map(item => {
     return {
       id: item.id,
       title: item.title,
       slug: item.slug,
-      stack: item.stacks,
-      link: item.link_github,
-      link_demo: item.link_demo,
-      content: item.content,
+      stack: JSON.parse(item.stacks).join(', '),
+      link_github: {
+        link: {
+          title: item.link_github,
+          href: item.link_github,
+          target: '_blank',
+        },
+      },
+      link_demo: {
+        link: {
+          title: item.link_demo,
+          href: item.link_demo,
+          target: '_blank',
+        },
+      },
+      contents: {
+        content: {
+          title: item.content,
+          isShortTitle: (item.content && item.content.length > 10) || false,
+        },
+      },
       description: item.description,
-      is_show: item.is_show,
+      is_show: {
+        status: {
+          status: item.is_show,
+          title: item.is_show ? '사용' : '미사용',
+        },
+      },
       updated_at: item.updated_at,
     };
   });
   return (
     <div>
-      <Table table={{ header: projectTableHeader, body: projectTableData }} isLoading={isLoading} />
+      <Table
+        table={{
+          header: projectTableHeader,
+          body: projectTableData,
+        }}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
