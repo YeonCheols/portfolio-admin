@@ -12,7 +12,6 @@ export default async function MovieDetails({
 }) {
   const { slug } = await params;
   const { plot } = await searchParams;
-  console.log('slug : ', slug);
   //   const movie: Movie = await res.json();
   //   return (
   //     <>
