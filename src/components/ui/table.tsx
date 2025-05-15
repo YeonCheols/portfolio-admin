@@ -4,6 +4,7 @@
 import { useMemo } from 'react';
 import type { Table, TableOptions } from '@/types/table';
 import { Loading } from './loading';
+import Link from 'next/link';
 
 type TableData = Record<string, string | number | boolean | TableOptions>;
 
@@ -25,17 +26,22 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
   }, [table]);
 
   const renderType = (options: TableOptions) => {
-    if (options?.link) {
-      const { title, ...linkProps } = options.link;
+    if (options?.link && options.link.href) {
+      const { href, title, ...linkProps } = options.link;
+
+      if (!href.startsWith('http')) {
+        return (
+          <Link {...linkProps} href={href} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+            {title}
+          </Link>
+        );
+      }
+      // 외부 url
       return (
         <a {...linkProps} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
           {title}
         </a>
       );
-    }
-    if (options?.content) {
-      const { title, isShortTitle, ...contentProps } = options.content;
-      return <span {...contentProps}>{isShortTitle ? title.slice(0, 10) + '...' : title}</span>;
     }
     if (options?.status) {
       const { status, title } = options.status;
@@ -61,6 +67,7 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
           </td>
         );
       }
+
       return (
         <td key={key} className="px-6 py-4">
           {value}

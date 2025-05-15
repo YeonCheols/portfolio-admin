@@ -4,7 +4,7 @@ import { TopNav } from '@/components/nav';
 export default function ProjectLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <TopNav title="프로젝트 목록" />
+      <TopNav title="프로젝트 미리보기" />
       <main>
         <Container>{children}</Container>
       </main>

@@ -4,6 +4,7 @@ import { Loading } from '@/components/ui/loading';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
 import { fetcher } from '@/lib/fetcher';
+import { Suspense } from 'react';
 import useSWR from 'swr';
 
 interface ProjectData {
@@ -20,13 +21,9 @@ interface ProjectData {
 }
 
 export default function Project() {
-  const { data, isLoading } = useSWR<{ data: ProjectData[] }>(`/api/projects?page=1&size=5`, fetcher);
+  const { data, isLoading } = useSWR<{ data: ProjectData[] }>(`/api/project?page=1&size=5`, fetcher);
 
-  if (!data) {
-    return <Loading />;
-  }
-
-  const projectTableData = data.data.map(item => {
+  const projectTableData = data?.data.map(item => {
     return {
       id: item.id,
       title: item.title,
@@ -47,9 +44,9 @@ export default function Project() {
         },
       },
       contents: {
-        content: {
-          title: item.content,
-          isShortTitle: (item.content && item.content.length > 10) || false,
+        link: {
+          title: item.title.length > 10 ? item.title.slice(0, 10) + '...' : item.title,
+          href: `/project/${item.slug}`,
         },
       },
       description: item.description,
@@ -63,14 +60,14 @@ export default function Project() {
     };
   });
   return (
-    <div>
+    <Suspense fallback={<Loading />}>
       <Table
         table={{
           header: projectTableHeader,
-          body: projectTableData,
+          body: projectTableData || [],
         }}
         isLoading={isLoading}
       />
-    </div>
+    </Suspense>
   );
 }
