@@ -1,16 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useMemo } from 'react';
 import type { Table } from '@/types/project';
+import { Loading } from './loading';
 
-function Table({ data }: { data: Table }) {
+type TableData = Record<string, string | number | boolean | string[]>;
+
+function Table({ table, isLoading = false }: { table: Table<TableData>; isLoading: boolean }) {
   const header = useMemo(() => {
     return (
-      data.header && (
+      table.header && (
         <tr>
-          {data.header.map(item => {
+          {table.header.map(item => {
             return (
-              <th key={item.id} scope="col" className="px-6 py-3">
+              <th key={item.id} scope="col" className="px-6 py-4">
                 {item.name}
               </th>
             );
@@ -18,16 +22,69 @@ function Table({ data }: { data: Table }) {
         </tr>
       )
     );
-  }, [data]);
+  }, [table]);
+
+  const renderItem = (data: TableData) => {
+    return Object.entries(data).map(([key, value]) => {
+      let content;
+      switch (key) {
+        case 'content':
+          content = typeof value === 'string' ? (!value ? null : value.slice(0, 10) + '...') : value;
+          break;
+        case 'link':
+          content = (
+            <a href={value as string} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+              {value}
+            </a>
+          );
+          break;
+        case 'stack':
+          content = Array.isArray(value) ? value.join(', ') : value;
+          break;
+        case 'is_show':
+          content = value ? '노출' : '비노출';
+          break;
+        default:
+          content = value;
+      }
+      return (
+        <td key={key} className="px-6 py-4">
+          {content}
+        </td>
+      );
+    });
+  };
+
+  const body = useMemo(() => {
+    return (
+      table.body && (
+        <>
+          {table.body.map((item, index) => (
+            <tr
+              key={index}
+              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
+              {renderItem(item)}
+            </tr>
+          ))}
+        </>
+      )
+    );
+  }, [table]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
-    <div className="relative overflow-x-auto">
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           {header}
         </thead>
         <tbody>
-          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+          {body}
+          {/* <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
               Apple MacBook Pro 17
             </th>
@@ -50,7 +107,7 @@ function Table({ data }: { data: Table }) {
             <td className="px-6 py-4">Black</td>
             <td className="px-6 py-4">Accessories</td>
             <td className="px-6 py-4">$99</td>
-          </tr>
+          </tr> */}
         </tbody>
       </table>
     </div>
