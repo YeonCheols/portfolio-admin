@@ -1,9 +1,9 @@
 {
-  "name": "visactor-next-template",
+  "name": "ycseng-portfolio-admin",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 5001",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -14,6 +14,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@visactor/react-vchart": "^1.12.10",
     "@visactor/vchart": "^1.12.10",
+    "axios": "^1.9.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -24,6 +25,7 @@
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-day-picker": "8.10.1",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
+    "swr": "^2.3.3",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7"
   },
