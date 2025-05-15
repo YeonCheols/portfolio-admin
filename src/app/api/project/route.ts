@@ -3,8 +3,8 @@ import axios from 'axios';
 
 type Data = {
   status: boolean;
-  data?: any;
-  error?: any;
+  data?: unknown;
+  error?: unknown;
 };
 
 export async function GET(request: Request) {
@@ -25,13 +25,8 @@ export async function GET(request: Request) {
       params: requestParams,
     });
 
-    return NextResponse.json({ status: true, data } as Data);
-  } catch (error: any) {
-    // 에러 객체 직렬화 (axios error 객체는 순환 참조가 있을 수 있음)
-    const errorData = {
-      message: error?.message,
-      ...(error?.response && { response: error.response.data }),
-    };
-    return NextResponse.json({ status: false, error: errorData } as Data);
+    return NextResponse.json({ status: true, data });
+  } catch (error) {
+    return NextResponse.json({ status: false, data: [] });
   }
 }
