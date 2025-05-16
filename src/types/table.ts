@@ -1,4 +1,4 @@
-import { AnchorHTMLAttributes } from 'react';
+import { type AnchorHTMLAttributes } from 'react';
 
 export interface Link extends AnchorHTMLAttributes<HTMLAnchorElement> {
   title: string;

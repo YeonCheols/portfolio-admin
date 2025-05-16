@@ -1,12 +1,6 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
-type Data = {
-  status: boolean;
-  data?: unknown;
-  error?: unknown;
-};
-
 export async function GET(request: Request) {
   try {
     // URL에서 쿼리 파라미터 추출
@@ -26,7 +20,7 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json({ status: true, data });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ status: false, data: [] });
   }
 }

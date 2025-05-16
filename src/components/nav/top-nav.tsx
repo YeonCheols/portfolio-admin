@@ -2,7 +2,7 @@
 
 import Container from '../container';
 import { ThemeToggle } from '../theme-toggle';
-import { Navigation } from '@/types/navigation';
+import { type Navigation } from '@/types/navigation';
 
 export default function TopNav({ isTheme = true, title }: Navigation) {
   return (
