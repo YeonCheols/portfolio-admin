@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import axios from 'axios';
+import { getData } from '@/lib/api';
 
 export async function GET(request: Request) {
   try {
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     }
 
     // 외부 API 호출
-    const { data } = await axios.get(`${process.env.API_URL}/project/${slug}`);
+    const data = await getData(`/project/${slug}`);
 
     return NextResponse.json({ status: true, data });
   } catch (error) {
