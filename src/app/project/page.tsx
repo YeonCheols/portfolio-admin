@@ -1,10 +1,8 @@
 'use client';
 
-import { Loading } from '@/components/ui/loading';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
 import { fetcher } from '@/lib/fetcher';
-import { Suspense } from 'react';
 import useSWR from 'swr';
 
 interface ProjectData {
@@ -27,7 +25,12 @@ export default function Project() {
     return {
       id: item.id,
       title: item.title,
-      slug: item.slug,
+      slug: {
+        link: {
+          title: item.slug,
+          href: `/project/${item.slug}`,
+        },
+      },
       stack: JSON.parse(item.stacks).join(', '),
       link_github: {
         link: {
@@ -45,7 +48,7 @@ export default function Project() {
       },
       contents: {
         link: {
-          title: item.title.length > 10 ? item.title.slice(0, 10) + '...' : item.title,
+          title: item.content?.length > 10 ? item.content.slice(0, 10) + '...' : item.content,
           href: `/project/${item.slug}`,
         },
       },
@@ -60,14 +63,12 @@ export default function Project() {
     };
   });
   return (
-    <Suspense fallback={<Loading />}>
-      <Table
-        table={{
-          header: projectTableHeader,
-          body: projectTableData || [],
-        }}
-        isLoading={isLoading}
-      />
-    </Suspense>
+    <Table
+      table={{
+        header: projectTableHeader,
+        body: projectTableData || [],
+      }}
+      isLoading={isLoading}
+    />
   );
 }

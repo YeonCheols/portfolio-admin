@@ -1,17 +1,13 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "prettier",
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "extends": ["next/core-web-vitals", "prettier", "eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
   "root": true,
   "rules": {
-    "no-console": ["error"],
+    "no-console": ["warn"],
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
