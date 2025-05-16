@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
-
-type Data = {
-  status: boolean;
-  data?: unknown;
-  error?: unknown;
-};
+import https from 'https';
+import { getData } from '@/lib/api';
 
 export async function GET(request: Request) {
   try {
@@ -21,12 +17,10 @@ export async function GET(request: Request) {
     };
 
     // 외부 API 호출
-    const { data } = await axios.get(`${process.env.API_URL}/project`, {
-      params: requestParams,
-    });
+    const data = await getData(`/project`, requestParams);
 
     return NextResponse.json({ status: true, data });
   } catch (error) {
-    return NextResponse.json({ status: false, data: [] });
+    return NextResponse.json({ status: false, error, data: [] });
   }
 }
