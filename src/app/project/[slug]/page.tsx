@@ -12,7 +12,7 @@ import Image from 'next/image';
 // TODO: 프로젝트 미리보기 모듈화
 export default function ProjectPreview() {
   const params = useParams();
-  const { data } = useSWR<{ data: { title: String, content: string, image: string } }>(`/api/project/slug?slug=${params.slug}`, fetcher);
+  const { data } = useSWR<{ data: { title: string, content: string, image: string } }>(`/api/project/slug?slug=${params.slug}`, fetcher);
 
   if (!data) {
     return <Loading />;
@@ -73,7 +73,7 @@ export default function ProjectPreview() {
           src={data.data.image}
           width={800}
           height={400}
-          alt={data.data.title as string}
+          alt={(data.data.title)}
           className="hover:scale-105 mb-8"
         />
       )}
