@@ -1,13 +1,13 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import useSWR from 'swr';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import { fetcher } from '@/lib/fetcher';
 import { useRouter } from 'next/navigation';
-
+import { uploadFile } from '@/lib/file/upload';
+import { Button } from '@/components/ui/button';
 interface ProjectFormData {
   title: string;
   slug: string;
@@ -21,7 +21,6 @@ export default function ProjectCreate() {
   const router = useRouter();
 
   const [shouldFetch, setShouldFetch] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>('');
   const {
     register,
     handleSubmit,
@@ -52,19 +51,27 @@ export default function ProjectCreate() {
     setShouldFetch(!!slug);
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    // TODO: 실제 파일 업로드 API 호출
-    // 임시로 FileReader를 사용하여 base64 URL 생성
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64Url = reader.result as string;
-      setImageUrl(base64Url);
-      setValue('image', base64Url);
-    };
-    reader.readAsDataURL(file);
+  const handleFileUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const file = inputRef.current?.files?.[0];
+    if (!file) return alert('파일을 선택하세요.');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const result = await uploadFile(formData);
+
+    if (result.error) {
+      alert('업로드 실패: ' + result.error);
+    } else {
+      setValue(
+        'image',
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/portfolio/${result.data?.path}`,
+      );
+      alert('업로드 성공!');
+    }
   };
 
   const onSubmit = async (data: ProjectFormData) => {
@@ -195,12 +202,13 @@ export default function ProjectCreate() {
             type="file"
             id="image"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            onChange={handleFileChange}
+            onChange={handleFileUpload}
             accept="image/*"
+            ref={inputRef}
           />
-          {imageUrl && (
+          {watch('image') && (
             <div className="mt-2">
-              <Image src={imageUrl} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
+              <Image src={watch('image')} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
             </div>
           )}
           {errors.image && <p className="mt-2 text-sm text-red-600">{errors.image.message}</p>}
