@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     // 외부 API 호출
     const data = await getData(`/project/${slug}`);
 
-    return NextResponse.json({ status: true, data });
+    return NextResponse.json({ status: true, data: data || null });
   } catch (error) {
     return NextResponse.json({ status: false, data: [], error });
   }

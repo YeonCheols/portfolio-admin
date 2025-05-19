@@ -4,7 +4,7 @@
   "plugins": ["@typescript-eslint"],
   "root": true,
   "rules": {
-    "no-console": ["warn", { "allow": ["warn", "info"] }],
+    "no-console": ["error", { "allow": ["warn", "info"] }],
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/no-explicit-any": "off",
