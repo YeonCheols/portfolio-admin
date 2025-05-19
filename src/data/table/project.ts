@@ -39,4 +39,8 @@ export const projectTableHeader = [
     id: 11,
     name: '수정 날짜',
   },
+  {
+    id: 12,
+    name: '변경/삭제',
+  },
 ];

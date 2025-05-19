@@ -1,11 +1,11 @@
 'use client';
 
 import useSWR from 'swr';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import { fetcher } from '@/lib/fetcher';
-import {  useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { uploadFile } from '@/lib/file/upload';
 import { Button } from '@/components/ui/button';
 import { getFileUrl } from '@/lib/file/read';
@@ -22,9 +22,9 @@ export default function ProjectCreate() {
   const params = useSearchParams();
   const router = useRouter();
 
-  const parmsSlug = params.get('slug');
+  const slug = params.get('slug');
   const { data, error } = useSWR<{ data: ProjectFormData | null }>(
-    parmsSlug ? `/api/project/slug?slug=${parmsSlug}` : null,
+    slug ? `/api/project/slug?slug=${slug}` : null,
     fetcher,
   );
 
@@ -39,21 +39,19 @@ export default function ProjectCreate() {
   } = useForm<ProjectFormData>({
     mode: 'onChange',
     defaultValues: {
-      title: data?.data?.title,
-      slug: data?.data?.slug,
-      description: data?.data?.description,
-      stacks: data?.data?.slug,
-      image: data?.data?.image,
-      content: data?.data?.content,
+      title: '',
+      slug: '',
+      description: '',
+      stacks: '',
+      image: '',
+      content: '',
     },
   });
 
-  const slug = watch('slug');
-
-
+  const stateSlug = watch('slug');
 
   const handleCheckDuplicate = () => {
-    setShouldFetch(!!slug);
+    setShouldFetch(!!stateSlug);
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -99,8 +97,6 @@ export default function ProjectCreate() {
       alert('프로젝트 생성 중 오류가 발생했습니다.');
     }
   };
-
-
 
   return (
     <>
