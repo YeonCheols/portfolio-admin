@@ -23,6 +23,6 @@ app.prepare().then(() => {
     })
     .listen(PORT, err => {
       if (err) throw err;
-      console.log(`> HTTPS: Ready on https://localhost:${PORT}`);
+      console.info(`> HTTPS: Ready on https://localhost:${PORT}`);
     });
 });

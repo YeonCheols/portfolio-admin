@@ -1,9 +1,12 @@
 'use client';
 
+import dayjs from 'dayjs';
+import useSWR from 'swr';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
 import { fetcher } from '@/lib/fetcher';
-import useSWR from 'swr';
 
 interface ProjectData {
   id: number;
@@ -19,6 +22,7 @@ interface ProjectData {
 }
 
 export default function Project() {
+  const router = useRouter();
   const { data, isLoading } = useSWR<{ data: ProjectData[] }>(`/api/project?page=1&size=5`, fetcher);
 
   const projectTableData = data?.data.map(item => {
@@ -28,7 +32,7 @@ export default function Project() {
       slug: {
         link: {
           title: item.slug,
-          href: `/project/${item.slug}`,
+          href: `/project/preview/${item.slug}`,
         },
       },
       stack: JSON.parse(item.stacks).join(', '),
@@ -59,16 +63,21 @@ export default function Project() {
           title: item.is_show ? '사용' : '미사용',
         },
       },
-      updated_at: item.updated_at,
+      updated_at: dayjs(item.updated_at).format('YYYY-MM-DD HH:mm:ss'),
     };
   });
   return (
-    <Table
-      table={{
-        header: projectTableHeader,
-        body: projectTableData || [],
-      }}
-      isLoading={isLoading}
-    />
+    <>
+      <Button variant="secondary" className="mb-4" onClick={() => router.push('/project/create')}>
+        추가하기
+      </Button>
+      <Table
+        table={{
+          header: projectTableHeader,
+          body: projectTableData || [],
+        }}
+        isLoading={isLoading}
+      />
+    </>
   );
 }
