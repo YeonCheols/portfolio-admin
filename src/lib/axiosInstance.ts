@@ -2,6 +2,10 @@ import axios from 'axios';
 import https from 'https';
 
 const axiosInstance = axios.create({
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
   baseURL: process.env.API_URL,
   timeout: 10000,
   ...(process.env.NODE_ENV === 'development' && {

@@ -12,7 +12,7 @@ interface ProjectFormData {
   title: string;
   slug: string;
   description: string;
-  stack: string;
+  stacks: string;
   image: string;
   content: string;
 }
@@ -34,7 +34,7 @@ export default function ProjectCreate() {
       title: '',
       slug: '',
       description: '',
-      stack: '',
+      stacks: '',
       image: '',
       content: '',
     },
@@ -71,7 +71,10 @@ export default function ProjectCreate() {
     try {
       const response = await fetch('/api/project/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
         body: JSON.stringify(data),
       });
 
@@ -80,7 +83,7 @@ export default function ProjectCreate() {
       }
 
       alert('프로젝트가 성공적으로 생성되었습니다.');
-      // router.push('/project');
+      router.push('/project');
     } catch {
       alert('프로젝트 생성 중 오류가 발생했습니다.');
     }
@@ -88,7 +91,7 @@ export default function ProjectCreate() {
 
   return (
     <>
-      <form onClick={handleSubmit(onSubmit)} method="POST">
+      <form>
         <div className="mb-6">
           <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             프로젝트명
@@ -163,7 +166,7 @@ export default function ProjectCreate() {
               required: '설명은 필수입니다.',
               minLength: {
                 value: 5,
-                message: '설명은 5글자 이상이어야 합니다.',
+                message: '설명은 15글자 이상이어야 합니다.',
               },
             })}
           />
@@ -178,9 +181,11 @@ export default function ProjectCreate() {
             id="stack"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="기술스택을 입력해주세요."
-            {...register('stack', { required: '기술 스택은 필수입니다.' })}
+            {...register('stacks', {
+              required: '기술 스택은 필수입니다.',
+            })}
           />
-          {errors.stack && <p className="mt-2 text-sm text-red-600">{errors.stack.message}</p>}
+          {errors.stacks && <p className="mt-2 text-sm text-red-600">{errors.stacks.message}</p>}
         </div>
         <div className="mb-6">
           <label htmlFor="image" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -220,8 +225,9 @@ export default function ProjectCreate() {
           {errors.content && <p className="mt-2 text-sm text-red-600">{errors.content.message}</p>}
         </div>
         <button
-          type="submit"
+          type="button"
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          onClick={handleSubmit(onSubmit)}
         >
           프로젝트 생성
         </button>

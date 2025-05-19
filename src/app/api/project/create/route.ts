@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // 외부 API 호출
-    const data = await postData(`/project/create`, body);
+    const data = await postData(`/project`, body);
 
     return NextResponse.json({ status: true, data });
   } catch (error) {
