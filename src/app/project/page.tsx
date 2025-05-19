@@ -1,5 +1,6 @@
 'use client';
 
+import dayjs from 'dayjs';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -62,7 +63,7 @@ export default function Project() {
           title: item.is_show ? '사용' : '미사용',
         },
       },
-      updated_at: item.updated_at,
+      updated_at: dayjs(item.updated_at).format('YYYY-MM-DD HH:mm:ss'),
     };
   });
   return (

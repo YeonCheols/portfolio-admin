@@ -22,12 +22,12 @@ export default function ProjectCreate() {
     <>
       <form>
         <div className="mb-6">
-          <label htmlFor="project_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+          <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             프로젝트명
           </label>
           <input
             type="text"
-            id="project_name"
+            id="title"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="프로젝트 이름을 입력해주세요"
             maxLength={12}
@@ -70,6 +70,19 @@ export default function ProjectCreate() {
           )}
         </div>
         <div className="mb-6">
+          <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            설명
+          </label>
+          <input
+            type="text"
+            id="description"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="설명을 입력해주세요. 최대 15글자 이내"
+            maxLength={15}
+            required
+          />
+        </div>
+        <div className="mb-6">
           <label htmlFor="tech_stack" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             기술 스택
           </label>
@@ -82,40 +95,33 @@ export default function ProjectCreate() {
           />
         </div>
         <div className="mb-6">
-          <label htmlFor="confirm_password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Confirm password
+          <label htmlFor="image" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            이미지 추가하기
           </label>
           <input
-            type="password"
-            id="confirm_password"
+            type="file"
+            id="image"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="•••••••••"
             required
           />
         </div>
-        <div className="flex items-start mb-6">
-          <div className="flex items-center h-5">
-            <input
-              id="remember"
-              type="checkbox"
-              value=""
-              className="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
-              required
-            />
-          </div>
-          <label htmlFor="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-            I agree with the{' '}
-            <a href="#" className="text-blue-600 hover:underline dark:text-blue-500">
-              terms and conditions
-            </a>
-            .
+        <div className="mb-6">
+          <label htmlFor="content" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            내용
           </label>
+          <input
+            type="text"
+            id="content"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="내용을 입력해주세요."
+            required
+          />
         </div>
         <button
           type="submit"
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
-          Submit
+          프로젝트 생성
         </button>
       </form>
     </>
