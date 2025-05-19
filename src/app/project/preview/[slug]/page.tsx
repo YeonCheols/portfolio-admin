@@ -4,14 +4,14 @@ import useSWR from 'swr';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { fetcher } from '@/lib/fetcher';
-import { useParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import type { Components } from 'react-markdown';
 import { Loading } from '@/components/ui/loading';
 import Image from 'next/image';
 
 // TODO: 프로젝트 미리보기 모듈화
 export default function ProjectPreview() {
-  const params = useParams();
+  const params = useSearchParams();
   const { data } = useSWR<{ data: { title: string; content: string; image: string } }>(
     `/api/project/slug?slug=${params.slug}`,
     fetcher,
