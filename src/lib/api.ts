@@ -17,3 +17,12 @@ export async function postData(url: string, data: Record<string, any>) {
     return { status: false, error };
   }
 }
+
+export async function patchData(url: string, data: Record<string, any>) {
+  try {
+    const response = await axiosInstance.patch(url, data);
+    return response.data;
+  } catch (error) {
+    return { status: false, error };
+  }
+}
