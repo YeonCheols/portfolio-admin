@@ -1,6 +1,10 @@
 import axiosInstance from './axiosInstance';
 
-export async function getData(url: string, params?: Record<string, unknown>) {
+function setBaseUrl(client?: boolean) {
+  client && (axiosInstance.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL);
+}
+export async function getData(url: string, params?: Record<string, unknown>, client?: boolean) {
+  setBaseUrl(client);
   try {
     const { data } = await axiosInstance.get(url, { params });
     return data;
@@ -9,7 +13,8 @@ export async function getData(url: string, params?: Record<string, unknown>) {
   }
 }
 
-export async function postData(url: string, data: Record<string, any>) {
+export async function postData(url: string, data: Record<string, any>, client?: boolean) {
+  setBaseUrl(client);
   try {
     const response = await axiosInstance.post(url, data);
     return response.data;
@@ -18,7 +23,8 @@ export async function postData(url: string, data: Record<string, any>) {
   }
 }
 
-export async function patchData(url: string, data: Record<string, any>) {
+export async function patchData(url: string, data: Record<string, any>, client?: boolean) {
+  setBaseUrl(client);
   try {
     const response = await axiosInstance.patch(url, data);
     return response.data;

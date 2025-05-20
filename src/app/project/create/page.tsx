@@ -62,7 +62,7 @@ export default function ProjectCreate() {
     const formData = new FormData();
     formData.append('file', file);
 
-    const result = await uploadFile(formData);
+    const result = await uploadFile(formData, 'main');
 
     if (result.error) {
       alert('업로드 실패: ' + result.error);

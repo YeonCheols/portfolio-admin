@@ -9,7 +9,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { uploadFile } from '@/lib/file/upload';
 import { Button } from '@/components/ui/button';
 import { getFileUrl } from '@/lib/file/read';
-import { patchData } from '@/lib/api';
+import { getData, patchData } from '@/lib/api';
+import { deleteFile } from '@/lib/file/delete';
 interface ProjectFormData {
   title: string;
   slug: string;
@@ -29,7 +30,19 @@ export default function ProjectCreate() {
     fetcher,
   );
 
-  const [shouldFetch, setShouldFetch] = useState(false);
+  /*
+    success : 사용할 수 있는 slug입니다.
+    over: 이미 사용 중인 slug입니다.
+    error : 데이터 요청 중 오류가 발생했습니다.
+    none : 데이터 요청 전
+  */
+  const [overSlug, setOverSlug] = useState<{
+    status: 'success' | 'over' | 'error' | 'none';
+    count?: number;
+  }>({
+    status: 'none',
+    count: 0,
+  });
   const {
     register,
     handleSubmit,
@@ -49,10 +62,13 @@ export default function ProjectCreate() {
     },
   });
 
-  const stateSlug = watch('slug');
+  const handleCheckDuplicate = async () => {
+    const response = await getData(`/project/over-slug/${watch('slug')}`, {}, true);
 
-  const handleCheckDuplicate = () => {
-    setShouldFetch(!!stateSlug);
+    setOverSlug({
+      status: response.error ? 'error' : response > 0 ? 'over' : 'success',
+      count: typeof response === 'number' ? response : 0,
+    });
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,11 +81,16 @@ export default function ProjectCreate() {
     const formData = new FormData();
     formData.append('file', file);
 
-    const result = await uploadFile(formData);
+    const result = await uploadFile(formData, 'main');
 
     if (result.error) {
       alert('업로드 실패: ' + result.error);
     } else {
+      // 업로드 성공 시 원본 이미지 제거
+      const originImage = watch('image');
+      if (originImage) {
+        await deleteFile([originImage]);
+      }
       const { url } = await getFileUrl(result.data?.path as string);
 
       setValue('image', url);
@@ -139,27 +160,24 @@ export default function ProjectCreate() {
                 },
               })}
             />
-            <Button
-              variant="secondary"
-              className="mt-2"
-              size="sm"
-              onClick={handleCheckDuplicate}
-              type="button"
-              disabled={shouldFetch}
-            >
+            <Button variant="secondary" className="mt-2" size="sm" onClick={handleCheckDuplicate} type="button">
               중복 확인
             </Button>
-            {data && (
-              <>
-                {!data?.data && <p className="mt-2 text-sm text-green-600">사용할 수 있는 slug입니다.</p>}
-                {data?.data && <p className="mt-2 text-sm text-green-600">이미 사용 중인 slug입니다.</p>}
-                {error && (
-                  <p className="mt-2 text-sm text-red-600">
-                    데이터를 가져오는 과정에서 오류가 발생했습니다. error : {error}
-                  </p>
-                )}
-              </>
-            )}
+            <>
+              {overSlug.status === 'success' && (
+                <p className="mt-2 text-sm text-green-600">사용할 수 있는 slug입니다.</p>
+              )}
+              {overSlug.status === 'over' && (
+                <p className="mt-2 text-sm text-orange-600">
+                  이미 사용 중인 slug입니다. 중복 확인 후 다시 입력해주세요. 개수 : {overSlug.count}
+                </p>
+              )}
+              {overSlug.status === 'error' && (
+                <p className="mt-2 text-sm text-red-600">
+                  데이터를 가져오는 과정에서 오류가 발생했습니다. error : {error}
+                </p>
+              )}
+            </>
             {errors.slug && <p className="mt-2 text-sm text-red-600">{errors.slug.message}</p>}
           </div>
           <div className="mb-6">
