@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, isValidElement, type ReactElement } from 'react';
 import type { Table, TableOptions } from '@/types/table';
 import { Loading } from './loading';
 import Link from 'next/link';
 
-type TableData = Record<string, string | number | boolean | TableOptions>;
+type TableData = Record<string, string | number | boolean | ReactElement | TableOptions>;
 
 function Table({ table, isLoading = false }: { table: Table<TableData>; isLoading: boolean }) {
   const header = useMemo(() => {
@@ -59,6 +59,13 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
 
   const renderItem = (data: TableData) => {
     return Object.entries(data).map(([key, value]) => {
+      if (isValidElement(value)) {
+        return (
+          <td key={key} className="px-6 py-4">
+            {value}
+          </td>
+        );
+      }
       if (typeof value === 'object') {
         return (
           <td key={key} className="px-6 py-4">

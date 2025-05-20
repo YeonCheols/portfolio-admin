@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
 import { fetcher } from '@/lib/fetcher';
+import { type ReactElement } from 'react';
 
 interface ProjectData {
   id: number;
@@ -19,6 +20,7 @@ interface ProjectData {
   description: string;
   is_show: boolean;
   updated_at: string;
+  buttonGroup: ReactElement;
 }
 
 export default function Project() {
@@ -64,6 +66,26 @@ export default function Project() {
         },
       },
       updated_at: dayjs(item.updated_at).format('YYYY-MM-DD HH:mm:ss'),
+      buttonGroup: (
+        <>
+          <Button
+            variant="secondary"
+            className="bg-green-500"
+            size="sm"
+            onClick={() => router.push(`/project/edit?slug=${item.slug}`)}
+          >
+            수정
+          </Button>
+          <Button
+            variant="secondary"
+            className="bg-red-500 mt-2"
+            size="sm"
+            onClick={() => router.push('/project/delete')}
+          >
+            삭제
+          </Button>
+        </>
+      ),
     };
   });
   return (

@@ -8,6 +8,7 @@ import { fetcher } from '@/lib/fetcher';
 import { useRouter } from 'next/navigation';
 import { uploadFile } from '@/lib/file/upload';
 import { Button } from '@/components/ui/button';
+import { getFileUrl } from '@/lib/file/read';
 interface ProjectFormData {
   title: string;
   slug: string;
@@ -61,15 +62,14 @@ export default function ProjectCreate() {
     const formData = new FormData();
     formData.append('file', file);
 
-    const result = await uploadFile(formData);
+    const result = await uploadFile(formData, 'main');
 
     if (result.error) {
       alert('업로드 실패: ' + result.error);
     } else {
-      setValue(
-        'image',
-        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/portfolio/${result.data?.path}`,
-      );
+      const { url } = await getFileUrl(result.data?.path as string);
+
+      setValue('image', url);
       alert('업로드 성공!');
     }
   };
