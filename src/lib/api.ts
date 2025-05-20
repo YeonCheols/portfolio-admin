@@ -1,7 +1,9 @@
 import axiosInstance from './axiosInstance';
 
 function setBaseUrl(client?: boolean) {
-  client && (axiosInstance.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL);
+  if (client) {
+    axiosInstance.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
+  }
 }
 export async function getData(url: string, params?: Record<string, unknown>, client?: boolean) {
   setBaseUrl(client);
