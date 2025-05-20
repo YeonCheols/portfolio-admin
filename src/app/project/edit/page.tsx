@@ -86,13 +86,7 @@ export default function ProjectCreate() {
     if (result.error) {
       alert('업로드 실패: ' + result.error);
     } else {
-      // 업로드 성공 시 원본 이미지 제거
-      const originImage = watch('image');
-      if (originImage) {
-        await deleteFile([originImage]);
-      }
       const { url } = await getFileUrl(result.data?.path as string);
-
       setValue('image', url);
       alert('업로드 성공!');
     }
