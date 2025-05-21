@@ -34,3 +34,13 @@ export async function patchData(url: string, data: Record<string, any>, client?:
     return { status: false, error };
   }
 }
+
+export async function deleteData(url: string, data: Record<string, any>, client?: boolean) {
+  setBaseUrl(client);
+  try {
+    const response = await axiosInstance.delete(url, data);
+    return response.data;
+  } catch (error) {
+    return { status: false, error };
+  }
+}
