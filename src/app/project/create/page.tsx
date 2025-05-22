@@ -1,14 +1,13 @@
 'use client';
 
-import useSWR from 'swr';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
-import { fetcher } from '@/lib/fetcher';
 import { useRouter } from 'next/navigation';
 import { uploadFile } from '@/lib/file/upload';
 import { Button } from '@/components/ui/button';
 import { getFileUrl } from '@/lib/file/read';
+import { getData } from '@/lib/api';
 interface ProjectFormData {
   title: string;
   slug: string;
@@ -21,7 +20,6 @@ interface ProjectFormData {
 export default function ProjectCreate() {
   const router = useRouter();
 
-  const [shouldFetch, setShouldFetch] = useState(false);
   const {
     register,
     handleSubmit,
@@ -40,16 +38,27 @@ export default function ProjectCreate() {
     },
   });
 
-  const slug = watch('slug');
+  /*
+    success : 사용할 수 있는 slug입니다.
+    over: 이미 사용 중인 slug입니다.
+    error : 데이터 요청 중 오류가 발생했습니다.
+    none : 데이터 요청 전
+  */
+  const [overSlug, setOverSlug] = useState<{
+    status: 'success' | 'over' | 'error' | 'none';
+    count?: number;
+  }>({
+    status: 'none',
+    count: 0,
+  });
 
-  // slug 중복 확인
-  const { data, error } = useSWR<{ data: { title: string; content: string; image: string } | null }>(
-    shouldFetch ? `/api/project/slug?slug=${slug}` : null,
-    fetcher,
-  );
+  const handleCheckDuplicate = async () => {
+    const response = await getData(`/project/over-slug/${watch('slug')}`, {}, true);
 
-  const handleCheckDuplicate = () => {
-    setShouldFetch(!!slug);
+    setOverSlug({
+      status: response.error ? 'error' : response > 0 ? 'over' : 'success',
+      count: typeof response === 'number' ? response : 0,
+    });
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -136,27 +145,20 @@ export default function ProjectCreate() {
               },
             })}
           />
-          <Button
-            variant="secondary"
-            className="mt-2"
-            size="sm"
-            onClick={handleCheckDuplicate}
-            type="button"
-            disabled={shouldFetch}
-          >
+          <Button variant="secondary" className="mt-2" size="sm" onClick={handleCheckDuplicate} type="button">
             중복 확인
           </Button>
-          {data && (
-            <>
-              {!data?.data && <p className="mt-2 text-sm text-green-600">사용할 수 있는 slug입니다.</p>}
-              {data?.data && <p className="mt-2 text-sm text-green-600">이미 사용 중인 slug입니다.</p>}
-              {error && (
-                <p className="mt-2 text-sm text-red-600">
-                  데이터를 가져오는 과정에서 오류가 발생했습니다. error : {error}
-                </p>
-              )}
-            </>
-          )}
+          <>
+            {overSlug.status === 'success' && <p className="mt-2 text-sm text-green-600">사용할 수 있는 slug입니다.</p>}
+            {overSlug.status === 'over' && (
+              <p className="mt-2 text-sm text-orange-600">
+                이미 사용 중인 slug입니다. 중복 확인 후 다시 입력해주세요. 개수 : {overSlug.count}
+              </p>
+            )}
+            {overSlug.status === 'error' && (
+              <p className="mt-2 text-sm text-red-600">데이터를 가져오는 과정에서 오류가 발생했습니다.</p>
+            )}
+          </>
           {errors.slug && <p className="mt-2 text-sm text-red-600">{errors.slug.message}</p>}
         </div>
         <div className="mb-6">

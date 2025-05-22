@@ -8,6 +8,8 @@ import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
 import { fetcher } from '@/lib/fetcher';
 import { type ReactElement } from 'react';
+import { patchData } from '@/lib/api';
+import { Loading } from '@/components/ui/loading';
 
 interface ProjectData {
   id: number;
@@ -25,7 +27,17 @@ interface ProjectData {
 
 export default function Project() {
   const router = useRouter();
-  const { data, isLoading } = useSWR<{ data: ProjectData[] }>(`/api/project?page=1&size=5`, fetcher);
+
+  const { data, isLoading, isValidating, mutate } = useSWR<{ data: ProjectData[] }>(
+    `/api/project?page=1&size=5`,
+    fetcher,
+  );
+
+  const handleChangeStatus = async (request: ProjectData) => {
+    const { slug, is_show } = request;
+    await patchData('/api/project/show', { slug, is_show: !is_show });
+    await mutate();
+  };
 
   const projectTableData = data?.data.map(item => {
     return {
@@ -68,17 +80,22 @@ export default function Project() {
       updated_at: dayjs(item.updated_at).format('YYYY-MM-DD HH:mm:ss'),
       buttonGroup: (
         <>
+          <Button variant="secondary" className="bg-gray-500 mb-2" size="sm" onClick={() => handleChangeStatus(item)}>
+            상태 변경
+          </Button>
+          <br />
           <Button
             variant="secondary"
-            className="bg-green-500"
+            className="bg-green-500 mb-2"
             size="sm"
             onClick={() => router.push(`/project/edit?slug=${item.slug}`)}
           >
             수정
           </Button>
+          <br />
           <Button
             variant="secondary"
-            className="bg-red-500 mt-2"
+            className="bg-red-500 mb-2"
             size="sm"
             onClick={() => router.push('/project/delete')}
           >
@@ -88,8 +105,10 @@ export default function Project() {
       ),
     };
   });
+
   return (
     <>
+      {isValidating && <Loading />}
       <Button variant="secondary" className="mb-4" onClick={() => router.push('/project/create')}>
         추가하기
       </Button>

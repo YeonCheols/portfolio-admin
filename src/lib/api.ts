@@ -17,6 +17,7 @@ export async function getData(url: string, params?: Record<string, unknown>, cli
 
 export async function postData(url: string, data: Record<string, any>, client?: boolean) {
   setBaseUrl(client);
+
   try {
     const response = await axiosInstance.post(url, data);
     return response.data;

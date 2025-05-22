@@ -10,7 +10,6 @@ import { uploadFile } from '@/lib/file/upload';
 import { Button } from '@/components/ui/button';
 import { getFileUrl } from '@/lib/file/read';
 import { getData, patchData } from '@/lib/api';
-import { deleteFile } from '@/lib/file/delete';
 interface ProjectFormData {
   title: string;
   slug: string;
