@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import axios from 'axios';
-import https from 'https';
 import { getData } from '@/lib/api';
 
 export async function GET(request: Request) {

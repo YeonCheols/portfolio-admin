@@ -1,4 +1,4 @@
-import { ToastProps } from '@/types/toast';
+import type { ToastProps } from '@/types/toast';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 

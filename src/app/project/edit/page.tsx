@@ -110,7 +110,7 @@ export default function ProjectCreate() {
     if (data?.data) {
       reset(data.data);
     }
-  }, [data]);
+  }, [data, reset]);
 
   return (
     <>
