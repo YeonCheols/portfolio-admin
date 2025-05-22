@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { getData, patchData } from '@/lib/api';
@@ -83,15 +84,27 @@ export default function ProjectCreate() {
     const result = await uploadFile(formData, 'main');
 
     if (result.error) {
-      alert('업로드 실패: ' + result.error);
+      toast.error('업로드 실패: ' + result.error);
     } else {
       const { url } = await getFileUrl(result.data?.path as string);
       setValue('image', url);
-      alert('업로드 성공!');
+      toast.success('업로드 성공!');
     }
   };
 
   const onSubmit = async (data: ProjectFormData) => {
+    switch (overSlug.status) {
+      case 'over':
+        toast.error('중복된 slug를 사용할 수 없습니다.');
+        return;
+      case 'error':
+        toast.error('중복 확인 중 오류가 발생했습니다.');
+        return;
+      default:
+        break;
+    }
+
+    toast('프로젝트 수정 진행 중...');
     try {
       const response = await patchData(`/api/project/edit`, data);
 
@@ -99,10 +112,10 @@ export default function ProjectCreate() {
         throw new Error('프로젝트 수정에 실패했습니다.');
       }
 
-      alert('프로젝트가 수정 되었습니다.');
+      toast.success('프로젝트가 수정 되었습니다.');
       router.push('/project');
     } catch {
-      alert('프로젝트 수정중 오류가 발생했습니다.');
+      toast.error('프로젝트 수정중 오류가 발생했습니다.');
     }
   };
 

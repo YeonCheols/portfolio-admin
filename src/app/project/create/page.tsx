@@ -4,8 +4,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
-import { getData } from '@/lib/api';
+import { getData, postData } from '@/lib/api';
 import { getFileUrl } from '@/lib/file/read';
 import { uploadFile } from '@/lib/file/upload';
 interface ProjectFormData {
@@ -64,6 +65,7 @@ export default function ProjectCreate() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = async (e: React.FormEvent) => {
+    toast('파일 업로드 진행 중...');
     e.preventDefault();
     const file = inputRef.current?.files?.[0];
     if (!file) return alert('파일을 선택하세요.');
@@ -74,16 +76,17 @@ export default function ProjectCreate() {
     const result = await uploadFile(formData, 'main');
 
     if (result.error) {
-      alert('업로드 실패: ' + result.error);
+      toast.error('업로드 실패: ' + result.error);
     } else {
       const { url } = await getFileUrl(result.data?.path as string);
 
       setValue('image', url);
-      alert('업로드 성공!');
+      toast.success('업로드 성공!');
     }
   };
 
   const onSubmit = async (data: ProjectFormData) => {
+    toast('프로젝트 생성 진행 중...');
     try {
       const response = await fetch('/api/project/create', {
         method: 'POST',
@@ -94,14 +97,14 @@ export default function ProjectCreate() {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error('프로젝트 생성에 실패했습니다.');
+      if (response.status === 200) {
+        toast.success('프로젝트가 성공적으로 생성되었습니다.');
+        router.push('/project');
+      } else {
+        toast.error('프로젝트 생성 중 오류가 발생했습니다.');
       }
-
-      alert('프로젝트가 성공적으로 생성되었습니다.');
-      router.push('/project');
     } catch {
-      alert('프로젝트 생성 중 오류가 발생했습니다.');
+      toast.error('프로젝트 생성 중 오류가 발생했습니다.');
     }
   };
 
@@ -142,6 +145,11 @@ export default function ProjectCreate() {
               pattern: {
                 value: /^[a-z0-9-]+$/,
                 message: 'slug는 영문 소문자, 숫자, 하이픈(-)만 사용 가능합니다.',
+              },
+              validate: _ => {
+                if (overSlug.status === 'success') {
+                  return true;
+                }
               },
             })}
           />
@@ -209,7 +217,7 @@ export default function ProjectCreate() {
             ref={inputRef}
           />
           {watch('image') && (
-            <div className="mt-2">
+            <div className="mgt-2">
               <Image src={watch('image')} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
             </div>
           )}

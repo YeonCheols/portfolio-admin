@@ -7,7 +7,7 @@ import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
-import { patchData } from '@/lib/api';
+import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 
 interface ProjectData {
@@ -35,10 +35,22 @@ export default function Project() {
     const response = await patchData('/api/project/show', { slug, is_show: !is_show });
     await mutate();
 
-    if (response.status !== 200) {
-      toast.error('프로젝트 상태 변경 실패');
-    } else {
+    if (response.status === 200) {
       toast.success('프로젝트 상태 변경 완료');
+    } else {
+      toast.error(`프로젝트 상태 변경 실패 : ${response.error}`);
+    }
+  };
+
+  const handleDelete = async (slug: ProjectData['slug']) => {
+    toast('프로젝트 삭제 진행 중...');
+    const response = await deleteData(`/api/project/delete?slug=${slug}`);
+    await mutate();
+
+    if (response.status === 200) {
+      toast.success('프로젝트 삭제 완료');
+    } else {
+      toast.error(`프로젝트 삭제 실패 : ${response.error}`);
     }
   };
 
@@ -96,12 +108,7 @@ export default function Project() {
             수정
           </Button>
           <br />
-          <Button
-            variant="secondary"
-            className="bg-red-500 mb-2"
-            size="sm"
-            onClick={() => router.push('/project/delete')}
-          >
+          <Button variant="secondary" className="bg-red-500 mb-2" size="sm" onClick={() => handleDelete(item.slug)}>
             삭제
           </Button>
         </>

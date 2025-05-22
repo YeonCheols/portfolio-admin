@@ -8,8 +8,8 @@ export async function POST(request: Request) {
     // 외부 API 호출
     const data = await postData(`/project`, body);
 
-    return NextResponse.json({ status: true, data });
+    return NextResponse.json({ status: 200, data });
   } catch (error) {
-    return NextResponse.json({ status: false, error });
+    return NextResponse.json({ status: 500, error });
   }
 }

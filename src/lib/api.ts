@@ -15,7 +15,7 @@ export async function getData(url: string, params?: Record<string, unknown>, cli
   }
 }
 
-export async function postData(url: string, data: Record<string, any>, client?: boolean) {
+export async function postData(url: string, data?: Record<string, any>, client?: boolean) {
   setBaseUrl(client);
 
   try {
@@ -26,7 +26,7 @@ export async function postData(url: string, data: Record<string, any>, client?: 
   }
 }
 
-export async function patchData(url: string, data: Record<string, any>, client?: boolean) {
+export async function patchData(url: string, data?: Record<string, any>, client?: boolean) {
   setBaseUrl(client);
   try {
     const response = await axiosInstance.patch(url, data);
@@ -36,7 +36,7 @@ export async function patchData(url: string, data: Record<string, any>, client?:
   }
 }
 
-export async function deleteData(url: string, data: Record<string, any>, client?: boolean) {
+export async function deleteData(url: string, data?: Record<string, any>, client?: boolean) {
   setBaseUrl(client);
   try {
     const response = await axiosInstance.delete(url, data);
