@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
-import { getData, postData } from '@/lib/api';
+import { getData } from '@/lib/api';
 import { getFileUrl } from '@/lib/file/read';
 import { uploadFile } from '@/lib/file/upload';
 interface ProjectFormData {
