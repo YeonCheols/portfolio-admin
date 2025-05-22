@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo, isValidElement, type ReactElement } from 'react';
-import type { Table, TableOptions } from '@/types/table';
-import { Loading } from './loading';
 import Link from 'next/link';
+import { useMemo, isValidElement, type ReactElement } from 'react';
+import { Loading } from './loading';
+import type { Table, TableOptions } from '@/types/table';
 
 type TableData = Record<string, string | number | boolean | ReactElement | TableOptions>;
 

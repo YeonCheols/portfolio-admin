@@ -4,6 +4,18 @@
   "plugins": ["@typescript-eslint"],
   "root": true,
   "rules": {
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "parent", "sibling", "internal", "type"],
+        "pathGroups": [{ "pattern": "@/**", "group": "parent" }],
+        "pathGroupsExcludedImportTypes": ["type"],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
     "no-console": ["error", { "allow": ["warn", "info"] }],
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",

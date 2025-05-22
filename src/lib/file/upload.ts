@@ -1,8 +1,8 @@
 'use server';
 
 import { supabase } from '@/lib/file/supabaseClient';
-import { convertBufferToWebp } from './webp-converter';
 import { changeFileExt } from './changeFileName';
+import { convertBufferToWebp } from './webp-converter';
 
 export async function uploadFile(formData: FormData, folderName: string) {
   const file = formData.get('file') as File;

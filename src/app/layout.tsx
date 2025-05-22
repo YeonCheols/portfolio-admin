@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
 import { Gabarito } from 'next/font/google';
 import { SideNav } from '@/components/nav';
+import { Toast } from '@/components/ui/toast';
 import { siteConfig } from '@/config/site';
 import { cn } from '@/lib/utils';
-import '@/style/globals.css';
 import { Providers } from './providers';
-import { Toast } from '@/components/ui/toast';
+import type { Metadata } from 'next';
+import '@/style/globals.css';
 
 const gabarito = Gabarito({ subsets: ['latin'], variable: '--font-gabarito' });
 

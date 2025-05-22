@@ -1,15 +1,14 @@
 'use client';
-
 import dayjs from 'dayjs';
-import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
+import { type ReactElement } from 'react';
+import toast from 'react-hot-toast';
+import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
-import { fetcher } from '@/lib/fetcher';
-import { useState, type ReactElement } from 'react';
 import { patchData } from '@/lib/api';
-import toast from 'react-hot-toast';
+import { fetcher } from '@/lib/fetcher';
 
 interface ProjectData {
   id: number;
@@ -33,9 +32,14 @@ export default function Project() {
   const handleChangeStatus = async (request: ProjectData) => {
     toast('프로젝트 상태 변경 진행 중...');
     const { slug, is_show } = request;
-    await patchData('/api/project/show', { slug, is_show: !is_show });
+    const response = await patchData('/api/project/show', { slug, is_show: !is_show });
     await mutate();
-    toast.success('프로젝트 상태 변경 완료');
+
+    if (response.status !== 200) {
+      toast.error('프로젝트 상태 변경 실패');
+    } else {
+      toast.success('프로젝트 상태 변경 완료');
+    }
   };
 
   const projectTableData = data?.data.map(item => {

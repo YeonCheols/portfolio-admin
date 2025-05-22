@@ -2,12 +2,12 @@
 
 import { useAtomValue } from "jotai";
 import { FilePlus2 } from "lucide-react";
-import { ticketChartDataAtom } from "@/lib/atoms";
-import type { TicketMetric } from "@/types/types";
 import ChartTitle from "../../components/chart-title";
+import { ticketChartDataAtom } from "@/lib/atoms";
 import Chart from "./chart";
 import { DatePickerWithRange } from "./components/date-range-picker";
 import MetricCard from "./components/metric-card";
+import type { TicketMetric } from "@/types/types";
 
 const calMetricCardValue = (
   data: TicketMetric[],
