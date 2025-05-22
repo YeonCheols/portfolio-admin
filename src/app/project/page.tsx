@@ -9,7 +9,7 @@ import { projectTableHeader } from '@/data/table/project';
 import { fetcher } from '@/lib/fetcher';
 import { useState, type ReactElement } from 'react';
 import { patchData } from '@/lib/api';
-import { Loading } from '@/components/ui/loading';
+import { Toast } from '@/components/ui/toast';
 
 interface ProjectData {
   id: number;
@@ -108,7 +108,7 @@ export default function Project() {
 
   return (
     <>
-      {retry && <Loading />}
+      <Toast type="success" message="프로젝트 생성 완료" />
       <Button variant="secondary" className="mb-4" onClick={() => router.push('/project/create')}>
         추가하기
       </Button>
