@@ -9,7 +9,7 @@ import { projectTableHeader } from '@/data/table/project';
 import { fetcher } from '@/lib/fetcher';
 import { useState, type ReactElement } from 'react';
 import { patchData } from '@/lib/api';
-import { Toast } from '@/components/ui/toast';
+import toast from 'react-hot-toast';
 
 interface ProjectData {
   id: number;
@@ -27,16 +27,15 @@ interface ProjectData {
 
 export default function Project() {
   const router = useRouter();
-  const [retry, setRetry] = useState(false);
 
   const { data, isLoading, mutate } = useSWR<{ data: ProjectData[] }>(`/api/project?page=1&size=5`, fetcher);
 
   const handleChangeStatus = async (request: ProjectData) => {
-    setRetry(true);
+    toast('프로젝트 상태 변경 진행 중...');
     const { slug, is_show } = request;
     await patchData('/api/project/show', { slug, is_show: !is_show });
     await mutate();
-    setRetry(false);
+    toast.success('프로젝트 상태 변경 완료');
   };
 
   const projectTableData = data?.data.map(item => {
@@ -108,7 +107,6 @@ export default function Project() {
 
   return (
     <>
-      <Toast type="success" message="프로젝트 생성 완료" />
       <Button variant="secondary" className="mb-4" onClick={() => router.push('/project/create')}>
         추가하기
       </Button>

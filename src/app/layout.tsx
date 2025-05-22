@@ -5,6 +5,7 @@ import { siteConfig } from '@/config/site';
 import { cn } from '@/lib/utils';
 import '@/style/globals.css';
 import { Providers } from './providers';
+import { Toast } from '@/components/ui/toast';
 
 const gabarito = Gabarito({ subsets: ['latin'], variable: '--font-gabarito' });
 
@@ -23,7 +24,9 @@ export default function RootLayout({
       <body className={cn('bg-background font-sans', gabarito.variable)}>
         <Providers>
           <div id="modal" />
-          <div id="toast" />
+          <div id="toast">
+            <Toast />
+          </div>
           <div className="flex min-h-[100dvh]">
             <SideNav />
             <div className="flex-grow overflow-auto">{children}</div>
