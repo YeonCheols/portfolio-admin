@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
 import { fetcher } from '@/lib/fetcher';
-import { type ReactElement } from 'react';
+import { useState, type ReactElement } from 'react';
 import { patchData } from '@/lib/api';
 import { Loading } from '@/components/ui/loading';
 
@@ -27,16 +27,16 @@ interface ProjectData {
 
 export default function Project() {
   const router = useRouter();
+  const [retry, setRetry] = useState(false);
 
-  const { data, isLoading, isValidating, mutate } = useSWR<{ data: ProjectData[] }>(
-    `/api/project?page=1&size=5`,
-    fetcher,
-  );
+  const { data, isLoading, mutate } = useSWR<{ data: ProjectData[] }>(`/api/project?page=1&size=5`, fetcher);
 
   const handleChangeStatus = async (request: ProjectData) => {
+    setRetry(true);
     const { slug, is_show } = request;
     await patchData('/api/project/show', { slug, is_show: !is_show });
     await mutate();
+    setRetry(false);
   };
 
   const projectTableData = data?.data.map(item => {
@@ -108,7 +108,7 @@ export default function Project() {
 
   return (
     <>
-      {isValidating && <Loading />}
+      {retry && <Loading />}
       <Button variant="secondary" className="mb-4" onClick={() => router.push('/project/create')}>
         추가하기
       </Button>
