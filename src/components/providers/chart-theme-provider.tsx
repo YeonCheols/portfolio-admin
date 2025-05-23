@@ -1,8 +1,8 @@
 "use client";
 
+import { type ITheme, ThemeManager } from "@visactor/vchart";
 import { useTheme } from "next-themes";
 import { createContext, useContext, useEffect, useState } from "react";
-import { type ITheme, ThemeManager } from "@visactor/vchart";
 import { customDarkTheme, customLightTheme } from "@/config/chart-theme";
 
 type ChartTheme = "light" | "dark" | "system";

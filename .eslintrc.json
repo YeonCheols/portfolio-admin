@@ -4,11 +4,23 @@
   "plugins": ["@typescript-eslint"],
   "root": true,
   "rules": {
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "parent", "sibling", "internal", "type"],
+        "pathGroups": [{ "pattern": "@/**", "group": "parent" }],
+        "pathGroupsExcludedImportTypes": ["type"],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
     "no-console": ["error", { "allow": ["warn", "info"] }],
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-var-requires": "warn",
+    "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-require-imports": "off",
     "@typescript-eslint/consistent-type-imports": [
       "warn",

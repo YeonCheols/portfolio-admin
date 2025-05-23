@@ -1,5 +1,5 @@
-import type { LucideIcon } from "lucide-react";
 import { chartTitle } from "@/components/primitives";
+import type { LucideIcon } from "lucide-react";
 
 export default function ChartTitle({
   title,

@@ -1,13 +1,13 @@
 'use client';
 
-import useSWR from 'swr';
+import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { fetcher } from '@/lib/fetcher';
-import { useParams } from 'next/navigation';
-import type { Components } from 'react-markdown';
+import useSWR from 'swr';
 import { Loading } from '@/components/ui/loading';
-import Image from 'next/image';
+import { fetcher } from '@/lib/fetcher';
+import type { Components } from 'react-markdown';
 
 // TODO: 프로젝트 미리보기 모듈화
 export default function ProjectPreview() {

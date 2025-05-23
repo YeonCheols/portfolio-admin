@@ -1,9 +1,9 @@
 import { SmilePlus, ThumbsDown, ThumbsUp } from "lucide-react";
+import ChartTitle from "../../components/chart-title";
 import {
   customerSatisfication,
   totalCustomers,
 } from "@/data/customer-satisfication";
-import ChartTitle from "../../components/chart-title";
 import LinearProgress from "./components/linear-progress";
 
 const customerSatisficationOptions = [

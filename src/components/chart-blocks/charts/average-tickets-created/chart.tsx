@@ -1,10 +1,10 @@
 "use client";
 
-import { useAtomValue } from "jotai";
 import { VChart } from "@visactor/react-vchart";
-import type { IBarChartSpec } from "@visactor/vchart";
+import { useAtomValue } from "jotai";
 import { ticketChartDataAtom } from "@/lib/atoms";
 import type { TicketMetric } from "@/types/types";
+import type { IBarChartSpec } from "@visactor/vchart";
 
 const generateSpec = (data: TicketMetric[]): IBarChartSpec => ({
   type: "bar",

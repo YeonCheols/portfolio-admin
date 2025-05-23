@@ -2,7 +2,7 @@ import axiosInstance from './axiosInstance';
 
 function setBaseUrl(client?: boolean) {
   if (client) {
-    axiosInstance.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
+    axiosInstance.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_URL}`;
   }
 }
 export async function getData(url: string, params?: Record<string, unknown>, client?: boolean) {
@@ -15,8 +15,9 @@ export async function getData(url: string, params?: Record<string, unknown>, cli
   }
 }
 
-export async function postData(url: string, data: Record<string, any>, client?: boolean) {
+export async function postData(url: string, data?: Record<string, any>, client?: boolean) {
   setBaseUrl(client);
+
   try {
     const response = await axiosInstance.post(url, data);
     return response.data;
@@ -25,7 +26,7 @@ export async function postData(url: string, data: Record<string, any>, client?: 
   }
 }
 
-export async function patchData(url: string, data: Record<string, any>, client?: boolean) {
+export async function patchData(url: string, data?: Record<string, any>, client?: boolean) {
   setBaseUrl(client);
   try {
     const response = await axiosInstance.patch(url, data);
@@ -35,7 +36,7 @@ export async function patchData(url: string, data: Record<string, any>, client?:
   }
 }
 
-export async function deleteData(url: string, data: Record<string, any>, client?: boolean) {
+export async function deleteData(url: string, data?: Record<string, any>, client?: boolean) {
   setBaseUrl(client);
   try {
     const response = await axiosInstance.delete(url, data);
