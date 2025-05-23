@@ -33,7 +33,7 @@ export const projectTableHeader = [
   },
   {
     id: 10,
-    name: '노출 여부',
+    name: '발행 여부',
   },
   {
     id: 11,

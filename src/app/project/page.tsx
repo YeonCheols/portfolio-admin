@@ -1,7 +1,6 @@
 'use client';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
-import { type ReactElement } from 'react';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
@@ -9,20 +8,7 @@ import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
 import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
-
-interface ProjectData {
-  id: number;
-  title: string;
-  slug: string;
-  stacks: string;
-  link_github: string;
-  link_demo: string;
-  content: string;
-  description: string;
-  is_show: boolean;
-  updated_at: string;
-  buttonGroup: ReactElement;
-}
+import { type ProjectData } from '@/types/project';
 
 export default function Project() {
   const router = useRouter();
@@ -89,14 +75,14 @@ export default function Project() {
       is_show: {
         status: {
           status: item.is_show,
-          title: item.is_show ? '사용' : '미사용',
+          title: item.is_show ? '발행' : '미발행',
         },
       },
       updated_at: dayjs(item.updated_at).format('YYYY-MM-DD HH:mm:ss'),
       buttonGroup: (
         <>
           <Button variant="secondary" className="bg-gray-500 mb-2" size="sm" onClick={() => handleChangeStatus(item)}>
-            상태 변경
+            발행
           </Button>
           <br />
           <Button

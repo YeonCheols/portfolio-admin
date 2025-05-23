@@ -8,19 +8,11 @@ import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
+import { RadioCard } from '@/components/ui/radio-card';
 import { getData } from '@/lib/api';
 import { getFileUrl } from '@/lib/file/read';
 import { uploadFile } from '@/lib/file/upload';
-interface ProjectFormData {
-  title: string;
-  slug: string;
-  description: string;
-  stacks: string;
-  image: string;
-  content: string;
-  link_demo: string;
-  link_github: string;
-}
+import { type ProjectFormData } from '@/types/project';
 
 export default function ProjectCreate() {
   const router = useRouter();
@@ -42,6 +34,7 @@ export default function ProjectCreate() {
       content: '',
       link_demo: '',
       link_github: '',
+      is_show: false,
     },
   });
 
@@ -255,6 +248,21 @@ export default function ProjectCreate() {
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </FormSection>
+        <RadioCard
+          id="is_show"
+          label="프로젝트 발행"
+          name="is_publish"
+          checked={watch('is_show')}
+          onChange={e => setValue('is_show', e)}
+        />
+        <RadioCard
+          id="is_hide"
+          label="프로젝트 미발행"
+          name="is_publish"
+          checked={!watch('is_show')}
+          onChange={e => setValue('is_show', !e)}
+          className="mb-10"
+        />
         <button
           type="button"
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
