@@ -6,7 +6,7 @@ export async function PATCH(request: Request) {
     const body = await request.json();
 
     // 외부 API 호출
-    const data = await patchData(`/project/show`, body);
+    const data = await patchData(`/project/${body.slug}/show`, body);
 
     if (data.error) {
       return NextResponse.json({

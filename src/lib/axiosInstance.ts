@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
-  baseURL: `${process.env.API_URL}/admin`,
+  baseURL: process.env.API_URL,
   timeout: 10000,
   ...(process.env.NODE_ENV === 'development' && {
     httpsAgent: new https.Agent({ rejectUnauthorized: false }),
