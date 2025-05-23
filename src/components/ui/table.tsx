@@ -37,7 +37,7 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
       }
       // 외부 url
       return (
-        <a {...linkProps} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+        <a {...linkProps} href={href} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
           {title}
         </a>
       );
