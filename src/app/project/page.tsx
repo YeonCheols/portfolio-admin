@@ -68,7 +68,7 @@ export default function Project() {
       contents: {
         link: {
           title: item.content?.length > 10 ? item.content.slice(0, 10) + '...' : item.content,
-          href: `/project/${item.slug}`,
+          href: `/project/write/${item.slug}`,
         },
       },
       description: item.description,

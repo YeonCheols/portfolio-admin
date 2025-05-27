@@ -31,7 +31,6 @@ export default function ProjectCreate() {
       description: '',
       stacks: '',
       image: '',
-      content: '',
       link_demo: '',
       link_github: '',
       is_show: false,
