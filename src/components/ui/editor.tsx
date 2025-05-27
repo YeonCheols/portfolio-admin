@@ -137,6 +137,6 @@ const myPlugins = [
   markdownShortcutPlugin(),
 ];
 
-export function Editor({ markdown }: { markdown: string }) {
-  return <MDXEditor markdown={markdown} plugins={myPlugins} />;
+export function Editor({ markdown, onChange }: { markdown: string; onChange: (markdown: string) => void }) {
+  return <MDXEditor key={markdown} markdown={markdown} plugins={myPlugins} onChange={onChange} />;
 }
