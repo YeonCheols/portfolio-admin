@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -226,7 +226,7 @@ export default function ProjectCreate() {
             />
             {watch('image') && (
               <div className="mgt-2">
-                <Image src={watch('image')} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
+                <NextImage src={watch('image')} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
               </div>
             )}
           </FormSection>

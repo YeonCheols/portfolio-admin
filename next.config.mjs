@@ -11,6 +11,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'ywlmykjlvcpfabodffof.supabase.co',
+        pathname: '/storage/v1/object/public/portfolio-img/main/**',
       },
     ],
   },

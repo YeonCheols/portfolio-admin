@@ -1,21 +1,31 @@
 'use client';
 
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import useSWR from 'swr';
+import { TopNav } from '@/components/nav';
 import { Loading } from '@/components/ui/loading';
+import { usePropsContext } from '@/lib/context/props';
 import { fetcher } from '@/lib/fetcher';
+import { cn } from '@/lib/utils';
 import type { Components } from 'react-markdown';
 
 // TODO: 프로젝트 미리보기 모듈화
 export default function ProjectPreview() {
+  const { setContextProps } = usePropsContext();
   const params = useParams();
+
   const { data } = useSWR<{ data: { title: string; content: string; image: string } }>(
     `/api/project/slug?slug=${params.slug}`,
     fetcher,
   );
+
+  useEffect(() => {
+    setContextProps({ header: <TopNav title="프로젝트 미리보기" /> });
+  }, []);
 
   if (!data) {
     return <Loading />;
@@ -71,7 +81,14 @@ export default function ProjectPreview() {
   return (
     <>
       {data.data?.image && data.data.image.startsWith('https') && (
-        <Image src={data.data.image} width={800} height={400} alt={data.data.title} className="hover:scale-105 mb-8" />
+        <NextImage
+          className={cn('mb-4 duration-700 ease-in-out')}
+          src={data.data.image}
+          alt={data.data.title}
+          loading="lazy"
+          width={800}
+          height={400}
+        />
       )}
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {data?.data.content}

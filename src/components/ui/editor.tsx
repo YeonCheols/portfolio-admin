@@ -34,8 +34,10 @@ import {
   InsertSandpack,
   InsertAdmonition,
   InsertFrontmatter,
+  BlockTypeSelect,
   type EditorInFocus,
   type DirectiveNode,
+  ChangeAdmonitionType,
 } from '@mdxeditor/editor';
 
 function whenInAdmonition(editorInFocus: EditorInFocus | null) {
@@ -80,6 +82,16 @@ const MyToolbar = () => {
 
                 <InsertTable />
                 <InsertThematicBreak />
+
+                <ConditionalContents
+                  options={[
+                    {
+                      when: whenInAdmonition,
+                      contents: () => <ChangeAdmonitionType />,
+                    },
+                    { fallback: () => <BlockTypeSelect /> },
+                  ]}
+                />
 
                 <Separator />
                 <InsertCodeBlock />
