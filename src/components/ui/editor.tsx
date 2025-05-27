@@ -1,36 +1,142 @@
 'use client';
 
+import '@mdxeditor/editor/style.css';
 import {
+  MDXEditor,
   headingsPlugin,
   listsPlugin,
   quotePlugin,
   thematicBreakPlugin,
+  toolbarPlugin,
+  UndoRedo,
+  BoldItalicUnderlineToggles,
+  linkPlugin,
+  linkDialogPlugin,
+  imagePlugin,
+  tablePlugin,
+  frontmatterPlugin,
+  codeBlockPlugin,
+  codeMirrorPlugin,
+  diffSourcePlugin,
   markdownShortcutPlugin,
-  type MDXEditorMethods,
-  type MDXEditorProps,
+  CodeToggle,
+  CreateLink,
+  DiffSourceToggleWrapper,
+  InsertCodeBlock,
+  ConditionalContents,
+  ChangeCodeMirrorLanguage,
+  ShowSandpackInfo,
+  Separator,
+  ListsToggle,
+  InsertImage,
+  InsertTable,
+  InsertThematicBreak,
+  InsertSandpack,
+  InsertAdmonition,
+  InsertFrontmatter,
+  type EditorInFocus,
+  type DirectiveNode,
 } from '@mdxeditor/editor';
-import '@mdxeditor/editor/style.css';
-import dynamic from 'next/dynamic';
-import type { ForwardedRef } from 'react';
 
-export default function Editor({
-  editorRef,
-  ...props
-}: { editorRef: ForwardedRef<MDXEditorMethods> | null } & MDXEditorProps) {
-  const MDXEditor = dynamic(() => import('@mdxeditor/editor').then(mod => mod.MDXEditor), { ssr: false });
+function whenInAdmonition(editorInFocus: EditorInFocus | null) {
+  const node = editorInFocus?.rootNode;
+  if (!node || node.getType() !== 'directive') {
+    return false;
+  }
 
+  return ['note', 'tip', 'danger', 'info', 'caution'].includes((node as DirectiveNode).getMdastNode().name);
+}
+
+const MyToolbar = () => {
   return (
-    <MDXEditor
-      plugins={[
-        // Example Plugin Usage
-        headingsPlugin(),
-        listsPlugin(),
-        quotePlugin(),
-        thematicBreakPlugin(),
-        markdownShortcutPlugin(),
-      ]}
-      {...props}
-      ref={editorRef}
-    />
+    <DiffSourceToggleWrapper>
+      <ConditionalContents
+        options={[
+          {
+            when: editor => editor?.editorType === 'codeblock',
+            contents: () => <ChangeCodeMirrorLanguage />,
+          },
+          {
+            when: editor => editor?.editorType === 'sandpack',
+            contents: () => <ShowSandpackInfo />,
+          },
+          {
+            fallback: () => (
+              <>
+                <UndoRedo />
+                <Separator />
+                <BoldItalicUnderlineToggles />
+                <CodeToggle />
+                <Separator />
+                <ListsToggle />
+                <Separator />
+
+                <Separator />
+
+                <CreateLink />
+                <InsertImage />
+
+                <Separator />
+
+                <InsertTable />
+                <InsertThematicBreak />
+
+                <Separator />
+                <InsertCodeBlock />
+                <InsertSandpack />
+
+                <ConditionalContents
+                  options={[
+                    {
+                      when: editorInFocus => !whenInAdmonition(editorInFocus),
+                      contents: () => (
+                        <>
+                          <Separator />
+                          <InsertAdmonition />
+                        </>
+                      ),
+                    },
+                  ]}
+                />
+
+                <Separator />
+                <InsertFrontmatter />
+              </>
+            ),
+          },
+        ]}
+      />
+    </DiffSourceToggleWrapper>
   );
+};
+
+const myPlugins = [
+  toolbarPlugin({ toolbarContents: () => <MyToolbar /> }),
+  listsPlugin(),
+  quotePlugin(),
+  headingsPlugin({ allowedHeadingLevels: [1, 2, 3] }),
+  linkPlugin(),
+  linkDialogPlugin(),
+  imagePlugin({
+    imageAutocompleteSuggestions: ['https://via.placeholder.com/150', 'https://via.placeholder.com/150'],
+    imageUploadHandler: async () => Promise.resolve('https://picsum.photos/200/300'),
+  }),
+  tablePlugin(),
+  thematicBreakPlugin(),
+  frontmatterPlugin(),
+  codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),
+  codeMirrorPlugin({
+    codeBlockLanguages: {
+      js: 'JavaScript',
+      css: 'CSS',
+      txt: 'text',
+      tsx: 'TypeScript',
+    },
+  }),
+  diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: 'boo' }),
+  markdownShortcutPlugin(),
+];
+
+export function Editor({ markdown }: { markdown: string }) {
+  return <MDXEditor markdown={markdown} plugins={myPlugins} />;
 }

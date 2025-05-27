@@ -6,7 +6,6 @@ export interface ProjectFormData {
   description: string;
   stacks: string;
   image: string;
-  content: string;
   link_demo: string;
   link_github: string;
   is_show: boolean;

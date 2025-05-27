@@ -1,6 +1,5 @@
 'use client';
 
-import { type MDXEditorMethods } from '@mdxeditor/editor';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -8,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
-import Editor from '@/components/ui/editor';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
 import { RadioCard } from '@/components/ui/radio-card';
@@ -21,8 +19,6 @@ import { type ProjectFormData } from '@/types/project';
 export default function ProjectCreate() {
   const params = useSearchParams();
   const router = useRouter();
-
-  const editorRef = useRef<MDXEditorMethods>(null);
 
   const slug = params.get('slug');
   const { data } = useSWR<{ data: ProjectFormData | null }>(slug ? `/api/project/slug?slug=${slug}` : null, fetcher);
@@ -55,7 +51,6 @@ export default function ProjectCreate() {
       description: '',
       stacks: '',
       image: '',
-      content: '',
       link_demo: '',
       link_github: '',
       is_show: false,
@@ -234,26 +229,6 @@ export default function ProjectCreate() {
                 <Image src={watch('image')} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
               </div>
             )}
-          </FormSection>
-          {/* <FormSection>
-            <FormInput
-              id="content"
-              name="content"
-              register={register}
-              errors={errors}
-              placeholder="내용을 입력해주세요."
-              validation={{
-                required: '내용은 필수입니다.',
-                minLength: {
-                  value: 10,
-                  message: '내용은 10글자 이상이어야 합니다.',
-                },
-              }}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-          </FormSection> */}
-          <FormSection>
-            <Editor editorRef={editorRef} markdown={watch('content')} onChange={e => console.info('e : ', e)} />
           </FormSection>
           <FormSection>
             <FormInput
