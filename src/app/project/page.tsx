@@ -81,20 +81,30 @@ export default function Project() {
       updated_at: dayjs(item.updated_at).format('YYYY-MM-DD HH:mm:ss'),
       buttonGroup: (
         <>
-          <Button variant="secondary" className="bg-gray-500 mb-2" size="sm" onClick={() => handleChangeStatus(item)}>
-            발행
+          <Button
+            variant="secondary"
+            className="bg-gray-200 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-600 mb-2"
+            size="sm"
+            onClick={() => handleChangeStatus(item)}
+          >
+            변경
           </Button>
           <br />
           <Button
             variant="secondary"
-            className="bg-green-500 mb-2"
+            className="bg-green-200 dark:bg-green-500 hover:bg-green-400 dark:hover:bg-green-600 mb-2"
             size="sm"
             onClick={() => router.push(`/project/edit?slug=${item.slug}`)}
           >
             수정
           </Button>
           <br />
-          <Button variant="secondary" className="bg-red-500 mb-2" size="sm" onClick={() => handleDelete(item.slug)}>
+          <Button
+            variant="secondary"
+            className="bg-red-300 dark:bg-red-500 hover:bg-red-400 dark:hover:bg-red-600 mb-2"
+            size="sm"
+            onClick={() => handleDelete(item.slug)}
+          >
             삭제
           </Button>
         </>
@@ -105,7 +115,7 @@ export default function Project() {
   return (
     <>
       <Button variant="secondary" className="mb-4" onClick={() => router.push('/project/create')}>
-        추가하기
+        새 글 작성하기
       </Button>
       <Table
         table={{

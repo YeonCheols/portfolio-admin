@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
-import Editor from '@/components/ui/editor';
+import { Editor } from '@/components/ui/editor';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
 import { RadioCard } from '@/components/ui/radio-card';
@@ -253,7 +253,10 @@ export default function ProjectCreate() {
             />
           </FormSection> */}
           <FormSection>
-            <Editor editorRef={editorRef} markdown={watch('content')} onChange={e => console.info('e : ', e)} />
+            <label htmlFor="content" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              내용
+            </label>
+            <Editor markdown={watch('content')} />
           </FormSection>
           <FormSection>
             <FormInput
