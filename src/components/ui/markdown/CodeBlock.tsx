@@ -1,7 +1,6 @@
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { type ReactElement, useEffect, useState } from 'react';
 import { HiCheckCircle as CheckIcon, HiOutlineClipboardCopy as CopyIcon } from 'react-icons/hi';
-import { type CodeProps } from 'react-markdown/lib/ast-to-react';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import css from 'react-syntax-highlighter/dist/cjs/languages/prism/css';
 import diff from 'react-syntax-highlighter/dist/cjs/languages/prism/diff';
@@ -24,6 +23,13 @@ SyntaxHighlighter.registerLanguage(languages.typescript, typescript);
 SyntaxHighlighter.registerLanguage(languages.diff, diff);
 SyntaxHighlighter.registerLanguage(languages.tsx, tsx);
 SyntaxHighlighter.registerLanguage(languages.css, css);
+
+interface CodeProps {
+  className?: string;
+  children: ReactElement;
+  inline?: boolean;
+  [key: string]: any;
+}
 
 const CodeBlock = ({ className = '', children, inline, ...props }: CodeProps) => {
   const [isCopied, setIsCopied] = useState<boolean>(false);

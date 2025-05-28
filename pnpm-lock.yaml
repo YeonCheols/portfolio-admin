@@ -36,6 +36,9 @@ importers:
       '@visactor/vchart':
         specifier: ^1.12.10
         version: 1.12.10
+      ast-to-react:
+        specifier: link:react-markdown/lib/ast-to-react
+        version: link:react-markdown/lib/ast-to-react
       axios:
         specifier: ^1.9.0
         version: 1.9.0
