@@ -1,10 +1,10 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 interface PropsContextType<T> {
-  contextProps: T | null;
+  contextProps: T;
   setContextProps: (value: T | null) => void;
 }
 
@@ -19,12 +19,9 @@ export function PropsProvider<T>({ children, initialValue }: PropsProviderProps<
   const [contextProps, setContextProps] = useState<T | null>(initialValue ?? null);
 
   const pathname = usePathname();
-  const prevPath = useRef(pathname);
 
   useEffect(() => {
-    if (prevPath.current !== pathname) {
-      setContextProps(null);
-    }
+    setContextProps(null);
   }, [pathname]);
 
   return <PropsContext.Provider value={{ contextProps, setContextProps }}>{children}</PropsContext.Provider>;

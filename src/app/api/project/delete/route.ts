@@ -19,7 +19,6 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ status: 200, data });
   } catch (error) {
-    console.info('error : ', error);
     return NextResponse.json({ status: 500, error });
   }
 }

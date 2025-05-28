@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
 import { RadioCard } from '@/components/ui/radio-card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { getData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { getFileUrl } from '@/lib/file/read';
@@ -21,7 +22,10 @@ export default function ProjectCreate() {
   const router = useRouter();
 
   const slug = params.get('slug');
-  const { data } = useSWR<{ data: ProjectFormData | null }>(slug ? `/api/project/slug?slug=${slug}` : null, fetcher);
+  const { data, isLoading } = useSWR<{ data: ProjectFormData | null }>(
+    slug ? `/api/project/slug?slug=${slug}` : null,
+    fetcher,
+  );
 
   /*
     success : 사용할 수 있는 slug입니다.
@@ -122,6 +126,7 @@ export default function ProjectCreate() {
 
   return (
     <>
+      {isLoading && <Skeleton />}
       {data?.data && (
         <form>
           <FormSection>
@@ -162,7 +167,7 @@ export default function ProjectCreate() {
               }}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="프로젝트 고유 아이디입니다. 중복되지 않도록 입력해주세요"
-              maxLength={10}
+              maxLength={40}
             />
             <Button variant="secondary" className="mt-2" size="sm" onClick={handleCheckDuplicate} type="button">
               중복 확인
@@ -226,7 +231,7 @@ export default function ProjectCreate() {
             />
             {watch('image') && (
               <div className="mgt-2">
-                <Image src={watch('image')} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
+                <NextImage src={watch('image')} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
               </div>
             )}
           </FormSection>

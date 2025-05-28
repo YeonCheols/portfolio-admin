@@ -146,7 +146,7 @@ export default function ProjectCreate() {
             }}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="프로젝트 고유 아이디입니다. 중복되지 않도록 입력해주세요"
-            maxLength={10}
+            maxLength={40}
           />
           <Button variant="secondary" className="mt-2" size="sm" onClick={handleCheckDuplicate} type="button">
             중복 확인
@@ -177,7 +177,7 @@ export default function ProjectCreate() {
               },
             }}
             placeholder="설명을 입력해주세요."
-            maxLength={15}
+            maxLength={100}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </FormSection>
@@ -211,23 +211,6 @@ export default function ProjectCreate() {
               <Image src={watch('image')} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
             </div>
           )}
-        </FormSection>
-        <FormSection>
-          <FormInput
-            id="content"
-            name="content"
-            register={register}
-            errors={errors}
-            placeholder="내용을 입력해주세요."
-            validation={{
-              required: '내용은 필수입니다.',
-              minLength: {
-                value: 10,
-                message: '내용은 10글자 이상이어야 합니다.',
-              },
-            }}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          />
         </FormSection>
         <FormSection>
           <FormInput

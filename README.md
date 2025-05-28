@@ -1,40 +1,42 @@
 # 연철s 포트폴리오 어드민
 
-[VisActor](https://visactor.io/)와 Next.js로 구축된 현대적인 대시보드 템플릿으로, 아름다운 UI와 풍부한 데이터 시각화 컴포넌트를 제공합니다.
+개인 포트폴리오 웹사이트를 관리하기 위한 관리자 대시보드입니다. Next.js와 VisActor를 활용하여 현대적이고 직관적인 인터페이스를 제공합니다.
 
-[라이브 데모](https://visactor-next-template.vercel.app/)
+## 기능
 
-[![Vercel로 배포하기](https://vercel.com/button)](https://vercel.com/new/clone?demo-description=A%20modern%20dashboard%20with%20VisActor%20charts%2C%20dark%20mode%2C%20and%20data%20visualization%20for%20seamless%20analytics.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F646TLqKGSTOnp1CD1IUqoM%2Fa119adac1f5a844f9d42f807ddc075f5%2Fthumbnail.png&demo-title=VisActor%20Next.js%20Template&demo-url=https%3A%2F%2Fvisactor-next-template.vercel.app%2F&from=templates&project-name=VisActor%20Next.js%20Template&repository-name=visactor-nextjs-template&repository-url=https%3A%2F%2Fgithub.com%2Fmengxi-ream%2Fvisactor-next-template&skippable-integrations=1)
-
-## 주요 기능
-
-- 📊 **다양한 시각화** - VisActor 기반의 막대 차트, 게이지 차트, 서클 패킹 차트 등 제공
-- 🌗 **다크 모드** - 시스템 환경설정을 지원하는 원활한 다크/라이트 모드 전환
-- 📱 **반응형 디자인** - 모든 기기에서 작동하는 완전한 반응형 레이아웃
-- 🎨 **아름다운 UI** - Tailwind CSS로 구축된 현대적이고 깔끔한 인터페이스
-- ⚡️ **Next.js 15** - 최신 Next.js 기능과 모범 사례 기반
-- 🔄 **상태 관리** - Jotai를 사용한 효율적인 상태 관리
-- 📦 **컴포넌트 라이브러리** - Tailwind로 스타일링된 Shadcn 컴포넌트 포함
+- 📊 **포트폴리오 관리** - 프로젝트, 기술 스택, 경력 등 포트폴리오 콘텐츠 관리
+- 📝 **콘텐츠 에디터** - 마크다운 기반의 풍부한 텍스트 에디터
+- 🌗 **다크 모드** - 시스템 환경설정을 지원하는 다크/라이트 모드
+- 📱 **반응형 디자인** - 모든 디바이스에서 사용 가능
+- 🔒 **인증 시스템** - 관리자 로그인
+- 📈 **데이터 시각화** - 포트폴리오 방문자 통계 및 분석
 
 ## 기술 스택
 
-- [Next.js](https://nextjs.org/) - React 프레임워크
-- [VisActor](https://visactor.io/) - 시각화 라이브러리
-- [Tailwind CSS](https://tailwindcss.com/) - CSS 프레임워크
-- [Shadcn](https://ui.shadcn.com/) - UI 컴포넌트
-- [Jotai](https://jotai.org/) - 상태 관리
-- [TypeScript](https://www.typescriptlang.org/) - 타입 안정성
+- [Next.js 15.0.1](https://nextjs.org/) - React 프레임워크
+- [React 19.0.0-rc](https://react.dev/) - UI 라이브러리
+- [TypeScript 5.5.4](https://www.typescriptlang.org/) - 타입 안정성
+- [Tailwind CSS 3.4.1](https://tailwindcss.com/) - 스타일링
+- [VisActor 1.12.10](https://visactor.io/) - 데이터 시각화
+- [Supabase 2.49.4](https://supabase.com/) - 백엔드 및 데이터베이스
+- [AWS S3 SDK 3.812.0](https://aws.amazon.com/s3/) - 파일 스토리지
+- [React Hook Form 7.56.4](https://react-hook-form.com/) - 폼 관리
+- [SWR 2.3.3](https://swr.vercel.app/) - 데이터 페칭
+- [Jotai 2.10.1](https://jotai.org/) - 상태 관리
+- [React Markdown 10.1.0](https://github.com/remarkjs/react-markdown) - 마크다운 렌더링
+- [Next Themes 0.3.0](https://github.com/pacocoursey/next-themes) - 테마 관리
+- [React Hot Toast 2.5.2](https://react-hot-toast.com/) - 토스트 알림
+- [Radix UI 2.1.1](https://www.radix-ui.com/) - 접근성 컴포넌트
+- [Lucide React 0.436.0](https://lucide.dev/) - 아이콘
+- [Date-fns 3.6.0](https://date-fns.org/) - 날짜 유틸리티
 
-## 빠른 시작
+## 시작하기
 
-위의 버튼을 클릭하여 Vercel에 이 템플릿을 배포하거나, 이 저장소를 클론하여 로컬에서 실행할 수 있습니다.
-
-[Github 저장소](https://github.com/mengxi-ream/visactor-next-template)
-
-1. 이 저장소를 클론합니다
+1. 저장소를 클론합니다
 
 ```bash
-git clone https://github.com/mengxi-ream/visactor-next-template
+git clone https://github.com/your-username/portfolio-admin.git
+cd portfolio-admin
 ```
 
 2. 의존성을 설치합니다
@@ -43,40 +45,61 @@ git clone https://github.com/mengxi-ream/visactor-next-template
 pnpm install
 ```
 
-3. 개발 서버를 실행합니다
+3. 환경 변수를 설정합니다
+
+```bash
+cp .env.example .env.local
+```
+
+4. 개발 서버를 실행합니다
 
 ```bash
 pnpm dev
 ```
 
-4. 브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 결과를 확인합니다.
+5. 브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인합니다.
 
 ## 프로젝트 구조
 
 ```bash
 src/
-├── app/ # 앱 라우터 페이지
-├── components/ # React 컴포넌트
-│ ├── chart-blocks/ # 차트 컴포넌트
-│ ├── nav/ # 네비게이션 컴포넌트
-│ └── ui/ # UI 컴포넌트
-├── config/ # 설정 파일
-├── data/ # 샘플 데이터
-├── hooks/ # 커스텀 훅
-├── lib/ # 유틸리티 함수
-├── style/ # 전역 스타일
-└── types/ # TypeScript 타입
+├── app/                    # Next.js 앱 라우터
+│   ├── (auth)/            # 인증 관련 페이지
+│   ├── (dashboard)/       # 대시보드 페이지
+│   └── api/               # API 라우트
+├── components/            # React 컴포넌트
+│   ├── dashboard/        # 대시보드 컴포넌트
+│   ├── editor/          # 에디터 컴포넌트
+│   ├── forms/           # 폼 컴포넌트
+│   └── ui/              # UI 컴포넌트
+├── lib/                  # 유틸리티 함수
+├── styles/              # 전역 스타일
+└── types/               # TypeScript 타입
 ```
 
-## 차트
+## 주요 기능 상세
 
-이 템플릿은 다음과 같은 차트 예제를 포함합니다:
+### 포트폴리오 관리
 
-- 평균 티켓 생성 수 (막대 차트)
-- 채널별 티켓 (게이지 차트)
-- 전환율 (서클 패킹 차트)
-- 고객 만족도 (선형 진행률)
-- 지표 개요
+- 프로젝트 CRUD 작업
+- 마크다운 콘텐츠 미리보기
+- 프로젝트 상태 관리
+- 프로젝트 이미지 업로드
+- 기술 스택 관리
+
+### 콘텐츠 에디터
+
+- 마크다운 지원
+- 이미지 업로드
+- 코드 하이라이팅
+- 실시간 미리보기
+
+### 데이터 시각화
+
+- 방문자 통계
+- 페이지별 조회수
+- 사용자 행동 분석
+- 트래픽 소스 분석
 
 ## 라이선스
 

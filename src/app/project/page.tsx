@@ -65,12 +65,27 @@ export default function Project() {
           target: '_blank',
         },
       },
-      contents: {
-        link: {
-          title: item.content?.length > 10 ? item.content.slice(0, 10) + '...' : item.content,
-          href: `/project/write/${item.slug}`,
-        },
-      },
+      ...(item.content
+        ? {
+            contents: {
+              link: {
+                title: item.content?.length > 10 ? item.content.slice(0, 10) + '...' : item.content,
+                href: `/project/write/${item.slug}`,
+              },
+            },
+          }
+        : {
+            contents: (
+              <Button
+                variant="secondary"
+                className="bg-gray-200 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-600 mb-2"
+                size="sm"
+                onClick={() => router.push(`/project/write/${item.slug}`)}
+              >
+                내용 작성
+              </Button>
+            ),
+          }),
       description: item.description,
       is_show: {
         status: {
