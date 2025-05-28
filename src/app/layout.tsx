@@ -1,6 +1,6 @@
 import { Gabarito } from 'next/font/google';
-import { SideNav } from '@/components/nav';
-import { Toast } from '@/components/ui/toast';
+import { type ReactElement } from 'react';
+import AppLayout from '@/components/ui/app-layout';
 import { siteConfig } from '@/config/site';
 import { cn } from '@/lib/utils';
 import { Providers } from './providers';
@@ -17,20 +17,13 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactElement;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn('bg-background font-sans', gabarito.variable)}>
         <Providers>
-          <div id="modal" />
-          <div id="toast">
-            <Toast />
-          </div>
-          <div className="flex min-h-[100dvh]">
-            <SideNav />
-            <div className="flex-grow overflow-auto">{children}</div>
-          </div>
+          <AppLayout>{children}</AppLayout>
         </Providers>
       </body>
     </html>

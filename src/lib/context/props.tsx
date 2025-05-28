@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 
 interface PropsContextType<T> {
-  contextProps: T | null;
+  contextProps: T;
   setContextProps: (value: T | null) => void;
 }
 
@@ -22,7 +22,7 @@ export function PropsProvider<T>({ children, initialValue }: PropsProviderProps<
   const prevPath = useRef(pathname);
 
   useEffect(() => {
-    if (prevPath.current !== pathname) {
+    if (prevPath.current === pathname) {
       setContextProps(null);
     }
   }, [pathname]);

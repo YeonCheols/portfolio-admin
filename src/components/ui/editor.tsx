@@ -2,6 +2,5 @@
 import MDEditor from '@uiw/react-md-editor';
 
 export function Editor({ markdown, onChange }: { markdown: string; onChange: (markdown: string) => void }) {
-  return <MDEditor height={865} value={markdown} onChange={e => onChange(e as string)} />;
-  // return <MDXEditor key={markdown} markdown={markdown} plugins={myPlugins} onChange={onChange} />;
+  return <MDEditor height={1000} value={markdown} onChange={e => onChange(e as string)} />;
 }

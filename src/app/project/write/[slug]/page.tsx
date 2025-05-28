@@ -4,7 +4,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
-import { TopNav } from '@/components/nav';
 import { Button } from '@/components/ui/button';
 import { Editor } from '@/components/ui/editor';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -54,7 +53,7 @@ export default function ProjectEditContent() {
   }, [data]);
 
   useEffect(() => {
-    setContextProps({ header: <TopNav title="글 수정" /> });
+    setContextProps({ noneLayout: true });
   }, []);
 
   return (
