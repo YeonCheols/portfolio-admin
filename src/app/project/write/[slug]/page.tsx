@@ -26,7 +26,9 @@ export default function ProjectEditContent() {
   const [content, setContent] = useState('');
 
   const handleChangeContent = (markdown: string) => {
-    setContent(markdown);
+    if (data?.data?.content) {
+      setContent(markdown);
+    }
   };
   const handleContentSave = async () => {
     toast('프로젝트 수정 진행 중...');
