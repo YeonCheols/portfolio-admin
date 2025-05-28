@@ -26,9 +26,7 @@ export default function ProjectEditContent() {
   const [content, setContent] = useState('');
 
   const handleChangeContent = (markdown: string) => {
-    if (data?.data?.content) {
-      setContent(markdown);
-    }
+    setContent(markdown);
   };
   const handleContentSave = async () => {
     toast('프로젝트 수정 진행 중...');
@@ -66,7 +64,7 @@ export default function ProjectEditContent() {
       ) : (
         <>
           <div className="bg-gray-300 dark:bg-white rounded-lg">
-            <Editor markdown={data?.data?.content || ''} onChange={handleChangeContent} />
+            <Editor markdown={content} onChange={handleChangeContent} />
           </div>
           <Button variant="secondary" className="mt-4" onClick={handleContentSave}>
             출간하기
