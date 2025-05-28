@@ -3,11 +3,10 @@
 import NextImage from 'next/image';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import useSWR from 'swr';
 import { TopNav } from '@/components/nav';
 import { Loading } from '@/components/ui/loading';
+import MDXComponent from '@/components/ui/markdown/mdx';
 import { usePropsContext } from '@/lib/context/props';
 import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/lib/utils';
@@ -79,20 +78,21 @@ export default function ProjectPreview() {
   } as Components;
 
   return (
-    <>
-      {data.data?.image && data.data.image.startsWith('https') && (
+    <div className="mt-10">
+      {data.data?.image && (
         <NextImage
-          className={cn('mb-4 duration-700 ease-in-out')}
+          className={cn('mb-4 duration-700 ease-in-out hover:scale-105')}
           src={data.data.image}
           alt={data.data.title}
           loading="lazy"
           width={800}
           height={400}
+          unoptimized
         />
       )}
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-        {data?.data.content}
-      </ReactMarkdown>
-    </>
+      <div className="mt-8 space-y-6 leading-[1.8] dark:text-neutral-300">
+        <MDXComponent>{data?.data.content}</MDXComponent>
+      </div>
+    </div>
   );
 }
