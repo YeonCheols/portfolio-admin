@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
@@ -13,6 +14,7 @@ import { fetcher } from '@/lib/fetcher';
 
 export default function ProjectEditContent() {
   const { setContextProps } = usePropsContext();
+  const { theme } = useTheme();
 
   const router = useRouter();
   const params = useParams();
@@ -62,7 +64,7 @@ export default function ProjectEditContent() {
         <Skeleton />
       ) : (
         <>
-          <div className="bg-gray-300 dark:bg-white rounded-lg">
+          <div data-color-mode={theme}>
             <Editor markdown={content} onChange={handleChangeContent} />
           </div>
           <Button variant="secondary" className="mt-4" onClick={handleContentSave}>
