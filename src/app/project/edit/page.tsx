@@ -11,18 +11,18 @@ import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
 import { RadioCard } from '@/components/ui/radio-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { type AdminProjectUpdateRequest } from '@/docs/api';
 import { getData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { getFileUrl } from '@/lib/file/read';
 import { uploadFile } from '@/lib/file/upload';
-import { type ProjectFormData } from '@/types/project';
 
 export default function ProjectCreate() {
   const params = useSearchParams();
   const router = useRouter();
 
   const slug = params.get('slug');
-  const { data, isLoading } = useSWR<{ data: ProjectFormData | null }>(
+  const { data, isLoading } = useSWR<{ data: AdminProjectUpdateRequest | null }>(
     slug ? `/api/project/slug?slug=${slug}` : null,
     fetcher,
   );
@@ -47,7 +47,7 @@ export default function ProjectCreate() {
     setValue,
     reset,
     formState: { errors },
-  } = useForm<ProjectFormData>({
+  } = useForm<AdminProjectUpdateRequest>({
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -55,9 +55,9 @@ export default function ProjectCreate() {
       description: '',
       stacks: '',
       image: '',
-      link_demo: '',
-      link_github: '',
-      is_show: false,
+      linkDemo: '',
+      linkGithub: '',
+      isShow: false,
     },
   });
 
@@ -70,11 +70,10 @@ export default function ProjectCreate() {
     });
   };
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileUpload = async (e: React.FormEvent) => {
+  const handleFileUpload = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const file = inputRef.current?.files?.[0];
+
+    const file = e.currentTarget?.files?.[0];
     if (!file) return alert('파일을 선택하세요.');
 
     const formData = new FormData();
@@ -91,7 +90,7 @@ export default function ProjectCreate() {
     }
   };
 
-  const onSubmit = async (data: ProjectFormData) => {
+  const onSubmit = async (data: AdminProjectUpdateRequest) => {
     switch (overSlug.status) {
       case 'over':
         toast.error('중복된 slug를 사용할 수 없습니다.');
@@ -231,13 +230,19 @@ export default function ProjectCreate() {
             />
             {watch('image') && (
               <div className="mgt-2">
-                <NextImage src={watch('image')} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
+                <NextImage
+                  src={watch('image') as string}
+                  alt="Preview"
+                  width={300}
+                  height={200}
+                  className="max-w-xs h-auto"
+                />
               </div>
             )}
           </FormSection>
           <FormSection>
             <FormInput
-              id="link_demo"
+              id="linkDemo"
               name="사이트 주소"
               register={register}
               placeholder="사이트 주소를 입력해주세요."
@@ -246,7 +251,7 @@ export default function ProjectCreate() {
           </FormSection>
           <FormSection>
             <FormInput
-              id="link_github"
+              id="linkGithub"
               name="깃허브 주소"
               register={register}
               placeholder="깃허브 주소를 입력해주세요."
@@ -254,18 +259,18 @@ export default function ProjectCreate() {
             />
           </FormSection>
           <RadioCard
-            id="is_show"
+            id="isShow"
             label="프로젝트 발행"
-            name="is_publish"
-            checked={watch('is_show')}
-            onChange={e => setValue('is_show', e)}
+            name="isPublish"
+            checked={watch('isShow')}
+            onChange={e => setValue('isShow', e)}
           />
           <RadioCard
-            id="is_hide"
+            id="isHide"
             label="프로젝트 미발행"
-            name="is_publish"
-            checked={!watch('is_show')}
-            onChange={e => setValue('is_show', !e)}
+            name="isPublish"
+            checked={!watch('isShow')}
+            onChange={e => setValue('isShow', !e)}
             className="mb-10"
           />
           <button
