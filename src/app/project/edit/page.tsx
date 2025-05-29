@@ -70,11 +70,10 @@ export default function ProjectCreate() {
     });
   };
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileUpload = async (e: React.FormEvent) => {
+  const handleFileUpload = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const file = inputRef.current?.files?.[0];
+
+    const file = e.currentTarget?.files?.[0];
     if (!file) return alert('파일을 선택하세요.');
 
     const formData = new FormData();
@@ -231,7 +230,13 @@ export default function ProjectCreate() {
             />
             {watch('image') && (
               <div className="mgt-2">
-                <NextImage src={watch('image') as string} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
+                <NextImage
+                  src={watch('image') as string}
+                  alt="Preview"
+                  width={300}
+                  height={200}
+                  className="max-w-xs h-auto"
+                />
               </div>
             )}
           </FormSection>
