@@ -6,9 +6,9 @@ export interface ProjectFormData {
   description: string;
   stacks: string;
   image: string;
-  link_demo: string;
-  link_github: string;
-  is_show: boolean;
+  linkDemo: string;
+  linkGithub: string;
+  isShow: boolean;
 }
 
 export interface ProjectData {
@@ -16,11 +16,11 @@ export interface ProjectData {
   title: string;
   slug: string;
   stacks: string;
-  link_github: string;
-  link_demo: string;
+  linkGithub: string;
+  linkDemo: string;
   content: string;
   description: string;
-  is_show: boolean;
+  isShow: boolean;
   updated_at: string;
   buttonGroup: ReactElement;
 }

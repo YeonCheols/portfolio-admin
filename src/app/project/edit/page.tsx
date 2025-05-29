@@ -55,9 +55,9 @@ export default function ProjectCreate() {
       description: '',
       stacks: '',
       image: '',
-      link_demo: '',
-      link_github: '',
-      is_show: false,
+      linkDemo: '',
+      linkGithub: '',
+      isShow: false,
     },
   });
 
@@ -237,7 +237,7 @@ export default function ProjectCreate() {
           </FormSection>
           <FormSection>
             <FormInput
-              id="link_demo"
+              id="linkDemo"
               name="사이트 주소"
               register={register}
               placeholder="사이트 주소를 입력해주세요."
@@ -246,7 +246,7 @@ export default function ProjectCreate() {
           </FormSection>
           <FormSection>
             <FormInput
-              id="link_github"
+              id="linkGithub"
               name="깃허브 주소"
               register={register}
               placeholder="깃허브 주소를 입력해주세요."
@@ -254,18 +254,18 @@ export default function ProjectCreate() {
             />
           </FormSection>
           <RadioCard
-            id="is_show"
+            id="isShow"
             label="프로젝트 발행"
-            name="is_publish"
-            checked={watch('is_show')}
-            onChange={e => setValue('is_show', e)}
+            name="isPublish"
+            checked={watch('isShow')}
+            onChange={e => setValue('isShow', e)}
           />
           <RadioCard
-            id="is_hide"
+            id="isHide"
             label="프로젝트 미발행"
-            name="is_publish"
-            checked={!watch('is_show')}
-            onChange={e => setValue('is_show', !e)}
+            name="isPublish"
+            checked={!watch('isShow')}
+            onChange={e => setValue('isShow', !e)}
             className="mb-10"
           />
           <button
