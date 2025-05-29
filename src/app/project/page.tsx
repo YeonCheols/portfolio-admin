@@ -6,16 +6,17 @@ import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
+import { type AdminProjectResponse } from '@/docs/api';
 import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
-import { type ProjectData } from '@/types/project';
+import { type ProjectTableData } from '@/types/project';
 
 export default function Project() {
   const router = useRouter();
 
-  const { data, isLoading, mutate } = useSWR<{ data: ProjectData[] }>(`/api/project?page=1&size=5`, fetcher);
+  const { data, isLoading, mutate } = useSWR<{ data: AdminProjectResponse[] }>(`/api/project?page=1&size=5`, fetcher);
 
-  const handleChangeStatus = async (request: ProjectData) => {
+  const handleChangeStatus = async (request: ProjectTableData) => {
     toast('프로젝트 상태 변경 진행 중...');
     const { slug, isShow } = request;
     const response = await patchData('/api/project/show', { slug, isShow: !isShow });
@@ -28,7 +29,7 @@ export default function Project() {
     }
   };
 
-  const handleDelete = async (slug: ProjectData['slug']) => {
+  const handleDelete = async (slug: ProjectTableData['slug']) => {
     toast('프로젝트 삭제 진행 중...');
     const response = await deleteData(`/api/project/delete?slug=${slug}`);
     await mutate();
@@ -95,7 +96,7 @@ export default function Project() {
             title: item.isShow ? '발행' : '미발행',
           },
         },
-        updated_at: dayjs(item.updated_at).format('YYYY-MM-DD HH:mm:ss'),
+        updatedAt: dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss'),
         buttonGroup: (
           <>
             <Button

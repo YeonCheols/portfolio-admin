@@ -11,18 +11,18 @@ import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
 import { RadioCard } from '@/components/ui/radio-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { type AdminProjectUpdateRequest } from '@/docs/api';
 import { getData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { getFileUrl } from '@/lib/file/read';
 import { uploadFile } from '@/lib/file/upload';
-import { type ProjectFormData } from '@/types/project';
 
 export default function ProjectCreate() {
   const params = useSearchParams();
   const router = useRouter();
 
   const slug = params.get('slug');
-  const { data, isLoading } = useSWR<{ data: ProjectFormData | null }>(
+  const { data, isLoading } = useSWR<{ data: AdminProjectUpdateRequest | null }>(
     slug ? `/api/project/slug?slug=${slug}` : null,
     fetcher,
   );
@@ -47,7 +47,7 @@ export default function ProjectCreate() {
     setValue,
     reset,
     formState: { errors },
-  } = useForm<ProjectFormData>({
+  } = useForm<AdminProjectUpdateRequest>({
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -91,7 +91,7 @@ export default function ProjectCreate() {
     }
   };
 
-  const onSubmit = async (data: ProjectFormData) => {
+  const onSubmit = async (data: AdminProjectUpdateRequest) => {
     switch (overSlug.status) {
       case 'over':
         toast.error('중복된 slug를 사용할 수 없습니다.');
@@ -231,7 +231,7 @@ export default function ProjectCreate() {
             />
             {watch('image') && (
               <div className="mgt-2">
-                <NextImage src={watch('image')} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
+                <NextImage src={watch('image') as string} alt="Preview" width={300} height={200} className="max-w-xs h-auto" />
               </div>
             )}
           </FormSection>

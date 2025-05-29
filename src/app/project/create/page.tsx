@@ -9,10 +9,10 @@ import { Button } from '@/components/ui/button';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
 import { RadioCard } from '@/components/ui/radio-card';
+import { type AdminProjectCreateRequest } from '@/docs/api';
 import { getData } from '@/lib/api';
 import { getFileUrl } from '@/lib/file/read';
 import { uploadFile } from '@/lib/file/upload';
-import { type ProjectFormData } from '@/types/project';
 
 export default function ProjectCreate() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function ProjectCreate() {
     watch,
     setValue,
     formState: { errors },
-  } = useForm<ProjectFormData>({
+  } = useForm<AdminProjectCreateRequest>({
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -82,7 +82,7 @@ export default function ProjectCreate() {
     }
   };
 
-  const onSubmit = async (data: ProjectFormData) => {
+  const onSubmit = async (data: AdminProjectCreateRequest) => {
     toast('프로젝트 생성 진행 중...');
     try {
       const response = await fetch('/api/project/create', {
