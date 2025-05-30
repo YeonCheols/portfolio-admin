@@ -2,7 +2,7 @@
 
 import NextImage from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
@@ -72,6 +72,7 @@ export default function ProjectCreate() {
 
   const handleFileUpload = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
+    toast.success('업로드 진행중');
 
     const file = e.currentTarget?.files?.[0];
     if (!file) return alert('파일을 선택하세요.');

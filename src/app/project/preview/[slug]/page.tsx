@@ -7,6 +7,10 @@ import useSWR from 'swr';
 import { TopNav } from '@/components/nav';
 import { Loading } from '@/components/ui/loading';
 import MDXComponent from '@/components/ui/markdown/mdx';
+import StacksLink from '@/components/ui/project/link';
+import Tooltip from '@/components/ui/tooltip';
+import { STACKS } from '@/data/stacks';
+import { type ProjectResponse } from '@/docs/api';
 import { usePropsContext } from '@/lib/context/props';
 import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/lib/utils';
@@ -16,10 +20,7 @@ export default function ProjectPreview() {
   const { setContextProps } = usePropsContext();
   const params = useParams();
 
-  const { data } = useSWR<{ data: { title: string; content: string; image: string } }>(
-    `/api/project/slug?slug=${params.slug}`,
-    fetcher,
-  );
+  const { data } = useSWR<{ data: ProjectResponse }>(`/api/project/slug?slug=${params.slug}`, fetcher);
 
   useEffect(() => {
     setContextProps({ header: <TopNav title="프로젝트 미리보기" /> });
@@ -29,8 +30,23 @@ export default function ProjectPreview() {
     return <Loading />;
   }
 
+  const stacksArray = JSON.parse(data.data.stacks);
+
   return (
-    <div className="mt-10">
+    <div className="mt-10 space-y-8">
+      <div className="flex flex-col items-start justify-between gap-5 sm:flex-row lg:flex-row lg:items-center">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="mb-1 text-[15px] text-neutral-700 dark:text-neutral-300">Tech Stack :</span>
+          <div className="flex flex-wrap items-center gap-3">
+            {stacksArray?.map((stack: string, index: number) => (
+              <div key={index}>
+                <Tooltip title={stack}>{STACKS[stack]}</Tooltip>
+              </div>
+            ))}
+          </div>
+        </div>
+        <StacksLink title={data.data.title} linkDemo={data.data.linkDemo} linkGithub={data.data.linkGithub} />
+      </div>
       {data.data?.image && (
         <NextImage
           className={cn('mb-4 duration-700 ease-in-out hover:scale-105')}

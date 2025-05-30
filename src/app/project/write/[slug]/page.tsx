@@ -65,9 +65,9 @@ export default function ProjectEditContent() {
       ) : (
         <>
           <div data-color-mode={theme}>
-            <Editor markdown={content} onChange={handleChangeContent} />
+            <Editor markdown={content} onEditorChange={handleChangeContent} height={700} />
           </div>
-          <Button variant="secondary" className="mt-4" onClick={handleContentSave}>
+          <Button variant="secondary" size="lg" className="mt-8" onClick={handleContentSave}>
             출간하기
           </Button>
         </>
