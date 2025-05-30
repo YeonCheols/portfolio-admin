@@ -10,8 +10,8 @@ function Tabs({ tabs, activeTab, onTabChange }: TabProps) {
               <button
                 className={`inline-block p-4 border-b-2 rounded-t-lg ${
                   activeTab === tab.id
-                    ? 'text-purple-600 hover:text-purple-600 dark:text-purple-500 dark:hover:text-purple-500 border-purple-600 dark:border-purple-500'
-                    : 'dark:border-transparent text-gray-500 hover:text-gray-600 dark:text-gray-400 border-gray-100 hover:border-gray-300 dark:border-gray-700 dark:hover:text-gray-300'
+                    ? 'text-black dark:text-white border-black dark:border-white hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white'
+                    : 'dark:border-transparent text-gray-500 dark:text-gray-400 border-gray-100 dark:border-gray-700 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white'
                 }`}
                 type="button"
                 role="tab"
