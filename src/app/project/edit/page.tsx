@@ -2,7 +2,7 @@
 
 import NextImage from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
@@ -11,6 +11,7 @@ import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
 import { RadioCard } from '@/components/ui/radio-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs } from '@/components/ui/tab';
 import { type AdminProjectUpdateRequest } from '@/docs/api';
 import { getData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
@@ -40,6 +41,8 @@ export default function ProjectCreate() {
     status: 'none',
     count: 0,
   });
+  const [activeTab, setActiveTab] = useState<string>('url');
+
   const {
     register,
     handleSubmit,
@@ -72,6 +75,7 @@ export default function ProjectCreate() {
 
   const handleFileUpload = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
+    toast.success('업로드 진행중');
 
     const file = e.currentTarget?.files?.[0];
     if (!file) return alert('파일을 선택하세요.');
@@ -218,30 +222,6 @@ export default function ProjectCreate() {
           </FormSection>
           <FormSection>
             <FormInput
-              id="image"
-              name="image"
-              register={register}
-              errors={errors}
-              placeholder="이미지를 추가해주세요."
-              type="file"
-              onChange={handleFileUpload}
-              accept="image/*"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-            {watch('image') && (
-              <div className="mgt-2">
-                <NextImage
-                  src={watch('image') as string}
-                  alt="Preview"
-                  width={300}
-                  height={200}
-                  className="max-w-xs h-auto"
-                />
-              </div>
-            )}
-          </FormSection>
-          <FormSection>
-            <FormInput
               id="linkDemo"
               name="사이트 주소"
               register={register}
@@ -258,21 +238,93 @@ export default function ProjectCreate() {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             />
           </FormSection>
-          <RadioCard
-            id="isShow"
-            label="프로젝트 발행"
-            name="isPublish"
-            checked={watch('isShow')}
-            onChange={e => setValue('isShow', e)}
-          />
-          <RadioCard
-            id="isHide"
-            label="프로젝트 미발행"
-            name="isPublish"
-            checked={!watch('isShow')}
-            onChange={e => setValue('isShow', !e)}
-            className="mb-10"
-          />
+
+          <FormSection label="이미지 설정">
+            <Tabs
+              tabs={[
+                {
+                  id: 'url',
+                  label: 'URL 입력',
+                  content: (
+                    <FormSection>
+                      <FormInput
+                        id="image"
+                        name="이미지 URL"
+                        register={register}
+                        errors={errors}
+                        placeholder="이미지 주소를 입력해주세요."
+                        onChange={e => {
+                          setValue('image', e.target.value);
+                        }}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      />
+                      {watch('image') && (
+                        <div className="mt-8">
+                          <NextImage
+                            src={watch('image') as string}
+                            alt="Preview"
+                            width={300}
+                            height={200}
+                            className="max-w-xs h-auto"
+                            unoptimized
+                          />
+                        </div>
+                      )}
+                    </FormSection>
+                  ),
+                },
+                {
+                  id: 'upload',
+                  label: '파일 업로드',
+                  content: (
+                    <FormSection>
+                      <FormInput
+                        id="image"
+                        name="이미지 파일"
+                        register={register}
+                        placeholder="이미지를 추가해주세요."
+                        type="file"
+                        onChange={handleFileUpload}
+                        accept="image/*"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      />
+                      {watch('image') && (
+                        <div className="mt-8">
+                          <NextImage
+                            src={watch('image') as string}
+                            alt="Preview"
+                            width={300}
+                            height={200}
+                            className="max-w-xs h-auto object-cover"
+                            unoptimized
+                          />
+                        </div>
+                      )}
+                    </FormSection>
+                  ),
+                },
+              ]}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+          </FormSection>
+          <div>
+            <RadioCard
+              id="isShow"
+              label="프로젝트 발행"
+              name="isPublish"
+              checked={watch('isShow')}
+              onChange={e => setValue('isShow', e)}
+            />
+            <RadioCard
+              id="isHide"
+              label="프로젝트 미발행"
+              name="isPublish"
+              checked={!watch('isShow')}
+              onChange={e => setValue('isShow', !e)}
+              className="mb-10"
+            />
+          </div>
           <button
             type="button"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

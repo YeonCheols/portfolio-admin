@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
+import { TopNav } from '@/components/nav';
 import { Button } from '@/components/ui/button';
 import { Editor } from '@/components/ui/editor';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -55,7 +56,7 @@ export default function ProjectEditContent() {
   }, [data]);
 
   useEffect(() => {
-    setContextProps({ noneLayout: true });
+    setContextProps({ noneLayout: true, header: <TopNav title="프로젝트 내용 수정" /> });
   }, []);
 
   return (
@@ -65,9 +66,9 @@ export default function ProjectEditContent() {
       ) : (
         <>
           <div data-color-mode={theme}>
-            <Editor markdown={content} onChange={handleChangeContent} />
+            <Editor markdown={content} onEditorChange={handleChangeContent} height={700} />
           </div>
-          <Button variant="secondary" className="mt-4" onClick={handleContentSave}>
+          <Button variant="secondary" size="lg" className="mt-8" onClick={handleContentSave}>
             출간하기
           </Button>
         </>

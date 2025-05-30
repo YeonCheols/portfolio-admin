@@ -1,6 +1,7 @@
 'use client';
 import MDEditor from '@uiw/react-md-editor';
+import { type EditorProps } from '@/types/editor';
 
-export function Editor({ markdown, onChange }: { markdown: string; onChange: (markdown: string) => void }) {
-  return <MDEditor autoFocus height={1000} value={markdown} onChange={e => onChange(e as string)} />;
+export function Editor({ markdown, onEditorChange, ...props }: EditorProps) {
+  return <MDEditor autoFocus value={markdown} onChange={e => onEditorChange(e as string)} {...props} />;
 }

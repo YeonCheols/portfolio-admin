@@ -1,30 +1,56 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, isValidElement, type ReactElement } from 'react';
+import { useMemo, isValidElement, useEffect } from 'react';
+import { useTableStore } from '@/lib/zustand/table';
 import { Loading } from './loading';
-import type { Table, TableOptions } from '@/types/table';
-
-type TableData = Record<string, string | number | boolean | ReactElement | TableOptions>;
+import type { Table, TableData, TableHeader, TableOptions } from '@/types/table';
 
 function Table({ table, isLoading = false }: { table: Table<TableData>; isLoading: boolean }) {
+  const { table: tableStore, checkbox, setTable, selectCheckbox, allSelectCheckbox } = useTableStore();
+
   const header = useMemo(() => {
+    const renderHeaderItem = (item: TableHeader) => {
+      if (item.type === 'checkbox') {
+        return (
+          <th key={item.id} scope="col" className="px-6 py-4">
+            <input
+              type="checkbox"
+              className="w-4 h-4"
+              onChange={e => {
+                const checkboxList = tableStore.body.flatMap(row =>
+                  Object.values(row)
+                    .filter(value => (value as TableOptions).checkbox?.id && (value as TableOptions).checkbox?.value)
+                    .map(value => {
+                      const { id, value: val } = (value as TableOptions).checkbox!;
+                      return { id, value: val, checked: true };
+                    }),
+                );
+
+                allSelectCheckbox(e.currentTarget.checked ? checkboxList : []);
+              }}
+            />
+          </th>
+        );
+      }
+      return (
+        <th key={item.id} scope="col" className="px-6 py-4">
+          {item.name}
+        </th>
+      );
+    };
     return (
-      table.header && (
+      tableStore.header && (
         <tr>
-          {table.header.map(item => {
-            return (
-              <th key={item.id} scope="col" className="px-6 py-4">
-                {item.name}
-              </th>
-            );
+          {tableStore.header.map(item => {
+            return renderHeaderItem(item);
           })}
         </tr>
       )
     );
-  }, [table]);
+  }, [tableStore]);
 
-  const renderType = (options: TableOptions) => {
+  const renderType = (options: TableOptions, rowIndex: number, columnKey: string) => {
     if (options?.link && options.link.href) {
       const { href, title, ...linkProps } = options.link;
 
@@ -55,9 +81,25 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
         </div>
       );
     }
+    if (options?.checkbox) {
+      const { id, value } = options.checkbox;
+      const isChecked = checkbox.find(checkbox => checkbox.id === id)?.checked;
+      return (
+        <input
+          type="checkbox"
+          key={id}
+          value={value}
+          checked={isChecked || false}
+          onChange={e => {
+            selectCheckbox({ id, value, checked: e.currentTarget.checked });
+          }}
+          className="w-4 h-4"
+        />
+      );
+    }
   };
 
-  const renderItem = (data: TableData) => {
+  const renderItem = (data: TableData, index: number) => {
     return Object.entries(data).map(([key, value]) => {
       if (isValidElement(value)) {
         return (
@@ -69,7 +111,7 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
       if (typeof value === 'object') {
         return (
           <td key={key} className="px-6 py-4">
-            {renderType(value)}
+            {renderType(value, index, key)}
           </td>
         );
       }
@@ -84,20 +126,24 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
 
   const body = useMemo(() => {
     return (
-      table.body && (
+      tableStore.body && (
         <>
-          {table.body.map((item, index) => (
+          {tableStore.body.map((item, index) => (
             <tr
               key={index}
               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
-              {renderItem(item)}
+              {renderItem(item, index)}
             </tr>
           ))}
         </>
       )
     );
-  }, [table]);
+  }, [tableStore, checkbox]);
+
+  useEffect(() => {
+    setTable(table);
+  }, []);
 
   if (isLoading) {
     return <Loading />;

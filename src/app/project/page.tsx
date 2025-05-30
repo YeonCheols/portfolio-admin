@@ -9,11 +9,13 @@ import { projectTableHeader } from '@/data/table/project';
 import { type AdminProjectResponse } from '@/docs/api';
 import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
+import { useTableStore } from '@/lib/zustand/table';
 import { type ProjectTableData } from '@/types/project';
 
 export default function Project() {
   const router = useRouter();
 
+  const { table, checkbox } = useTableStore();
   const { data, isLoading, mutate } = useSWR<{ data: AdminProjectResponse[] }>(`/api/project?page=1&size=5`, fetcher);
 
   const handleChangeStatus = async (request: ProjectTableData) => {
@@ -41,11 +43,49 @@ export default function Project() {
     }
   };
 
+  const handleDownImg = async () => {
+    if (!data?.data) {
+      return;
+    }
+    if (checkbox.length === 0) {
+      toast.error('다운로드할 프로젝트를 선택해주세요.');
+      return;
+    }
+    if (checkbox.length > 1) {
+      toast.error(
+        <>
+          이미지 다운로드는 <br />
+          하나의 프로젝트에서만 가능합니다.
+        </>,
+        { position: 'bottom-left' },
+      );
+      return;
+    }
+
+    const { image } =
+      data?.data?.filter(item => item.slug === checkbox.find(checkbox => checkbox.checked)?.value)[0] || {};
+    if (!image) {
+      toast.error('이미지 url을 찾을 수 없습니다.', { position: 'bottom-left' });
+      return;
+    }
+    const a = document.createElement('a');
+    a.href = image + '?download';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   const projectTableData =
     data &&
     data?.data.map(item => {
       return {
-        id: item.id,
+        id: {
+          checkbox: {
+            id: `checkbox-${item.id}`,
+            value: item.slug,
+            checked: false,
+          },
+        },
         title: item.title,
         slug: {
           link: {
@@ -135,13 +175,23 @@ export default function Project() {
       <Button variant="secondary" className="mb-4" onClick={() => router.push('/project/create')}>
         새 글 작성하기
       </Button>
-      <Table
-        table={{
-          header: projectTableHeader,
-          body: projectTableData || [],
-        }}
-        isLoading={isLoading}
-      />
+      <Button
+        variant="ghost"
+        className="ml-4 bg-gray-200 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-600"
+        onClick={handleDownImg}
+      >
+        이미지 다운로드
+      </Button>
+
+      {projectTableData && (
+        <Table
+          table={{
+            header: projectTableHeader,
+            body: projectTableData || [],
+          }}
+          isLoading={isLoading}
+        />
+      )}
     </>
   );
 }
