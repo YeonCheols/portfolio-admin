@@ -1,7 +1,6 @@
 export const projectTableHeader = [
   {
     id: 1,
-    name: 'id',
   },
   {
     id: 3,
