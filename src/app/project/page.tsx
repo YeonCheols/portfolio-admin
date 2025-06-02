@@ -1,6 +1,7 @@
 'use client';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
+import { useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,7 @@ import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { useTableStore } from '@/lib/zustand/table';
 import { type ProjectTableData } from '@/types/project';
-import { useEffect, useMemo } from 'react';
+
 
 export default function Project() {
   const router = useRouter();
@@ -80,7 +81,6 @@ export default function Project() {
     if (!data?.data) return undefined;
     
     return data.data.map(item => {
-      console.log('item', item.isShow);
       return {
         id: {
           checkbox: {
