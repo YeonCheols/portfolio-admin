@@ -11,11 +11,12 @@ import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { useTableStore } from '@/lib/zustand/table';
 import { type ProjectTableData } from '@/types/project';
+import { useEffect, useMemo } from 'react';
 
 export default function Project() {
   const router = useRouter();
 
-  const { table, checkbox } = useTableStore();
+  const { table, checkbox, setTable } = useTableStore();
   const { data, isLoading, mutate } = useSWR<{ data: AdminProjectResponse[] }>(`/api/project?page=1&size=5`, fetcher);
 
   const handleChangeStatus = async (request: ProjectTableData) => {
@@ -75,9 +76,11 @@ export default function Project() {
     document.body.removeChild(a);
   };
 
-  const projectTableData =
-    data &&
-    data?.data.map(item => {
+  const projectTableData = useMemo(() => {
+    if (!data?.data) return undefined;
+    
+    return data.data.map(item => {
+      console.log('item', item.isShow);
       return {
         id: {
           checkbox: {
@@ -169,6 +172,17 @@ export default function Project() {
         ),
       };
     });
+  }, [data, router]);
+
+  // NOTE: refetch 시에는 table store 를 동기화함
+  useEffect(() => {
+    if (projectTableData) {
+      setTable({
+        header: projectTableHeader,
+        body: projectTableData,
+      });
+    }
+  }, [projectTableData]);
 
   return (
     <>

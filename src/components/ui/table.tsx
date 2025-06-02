@@ -142,7 +142,7 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
   }, [tableStore, checkbox]);
 
   useEffect(() => {
-    setTable(table);
+      setTable(table);
   }, []);
 
   if (isLoading) {
