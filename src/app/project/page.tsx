@@ -3,16 +3,16 @@ import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
+import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
-import { type AdminProjectResponse } from '@/docs/api';
+import { AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
 import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { useTableStore } from '@/lib/zustand/table';
 import { type ProjectTableData } from '@/types/project';
-
 
 export default function Project() {
   const router = useRouter();
@@ -77,10 +77,21 @@ export default function Project() {
     document.body.removeChild(a);
   };
 
+  const handleOrderUp = (item: AdminProjectOrderUpdateRequest) => {
+    console.info('item : ', item);
+    console.info('up');
+  };
+
+  const handleOrderDown = (item: AdminProjectOrderUpdateRequest) => {
+    console.info('item : ', item);
+    console.info('down');
+  };
+
   const projectTableData = useMemo(() => {
-    if (!data?.data) return undefined;
-    
-    return data.data.map(item => {
+    if (!data?.data) {
+      return [];
+    }
+    return data.data.map((item, index) => {
       return {
         id: {
           checkbox: {
@@ -89,6 +100,41 @@ export default function Project() {
             checked: false,
           },
         },
+        order: (
+          <div className="flex items-center text-center gap-[8px]">
+            {item.order}
+            <div>
+              {item.order < data.data.length && (
+                <FaAngleUp
+                  size={16}
+                  role="button"
+                  onClick={() =>
+                    handleOrderUp({
+                      nextSlug: item.slug,
+                      nextOrderNo: item.order + 1,
+                      prevSlug: data.data.filter(current => current.order === item.order + 1)[0].slug,
+                      prevOrderNo: item.order,
+                    })
+                  }
+                />
+              )}
+              {data.data.length - 1 !== index && (
+                <FaAngleDown
+                  size={16}
+                  role="button"
+                  onClick={() =>
+                    handleOrderDown({
+                      nextSlug: item.slug,
+                      nextOrderNo: item.order,
+                      prevSlug: data.data.filter(current => current.order === item.order - 1)[0].slug,
+                      prevOrderNo: data.data.filter(current => current.order === item.order - 1)[0].order,
+                    })
+                  }
+                />
+              )}
+            </div>
+          </div>
+        ),
         title: item.title,
         slug: {
           link: {

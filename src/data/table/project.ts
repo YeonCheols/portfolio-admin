@@ -3,6 +3,10 @@ export const projectTableHeader = [
     id: 1,
   },
   {
+    id: 2,
+    name: '정렬순서',
+  },
+  {
     id: 3,
     name: '프로젝트명',
   },
