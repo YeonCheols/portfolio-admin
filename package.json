@@ -10,7 +10,7 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "prepare": "husky",
-    "fetch-schema": "NODE_TLS_REJECT_UNAUTHORIZED=0 npx swagger-typescript-api -p https://ycseng-portflio-api.vercel.app/api-json -o ./docs -n api.ts --no-client --modular"
+    "fetch-schema": "NODE_TLS_REJECT_UNAUTHORIZED=0 npx swagger-typescript-api -p https://ycseng-portflio-api.vercel.app/api-json -o ./docs -n api.ts --no-client"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.812.0",
