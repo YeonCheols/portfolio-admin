@@ -267,41 +267,33 @@ export default function Project() {
             body: projectTableData,
             draggableOption: {
               draggable: true,
-              onDragStart: event => {
-                event.dataTransfer.setData('text/plain', event.currentTarget.dataset.rowIndex as string);
-                event.dataTransfer.dropEffect = 'move';
-              },
-              onDragOver: event => {
-                // NOTE: onDragOver 선언되지 않으면 onDrop 이벤트 발생하지 않음
-                event.preventDefault();
-                event.dataTransfer.dropEffect = 'move';
-              },
-              onDrop: async event => {
+              onDrop: async result => {
                 if (!data?.data) {
                   return;
                 }
 
-                event.preventDefault();
-                const transferIndex: number = Number(event.dataTransfer.getData('text/plain'));
-                const targetIndex: number = Number(event.currentTarget.dataset.rowIndex);
+                console.info('result : ', result);
+                // event.preventDefault();
+                // const transferIndex: number = Number(event.dataTransfer.getData('text/plain'));
+                // const targetIndex: number = Number(event.currentTarget.dataset.rowIndex);
 
-                const newData = swapArrayElements<AdminProjectResponse>(data?.data || [], transferIndex, targetIndex);
-                const newTableData = mapProjectTableData(
-                  newData,
-                  router,
-                  handleSortData,
-                  handleChangeStatus,
-                  handleDelete,
-                  data.data.length,
-                );
-                setBody(newTableData);
+                // const newData = swapArrayElements<AdminProjectResponse>(data?.data || [], transferIndex, targetIndex);
+                // const newTableData = mapProjectTableData(
+                //   newData,
+                //   router,
+                //   handleSortData,
+                //   handleChangeStatus,
+                //   handleDelete,
+                //   data.data.length,
+                // );
+                // setBody(newTableData);
 
-                console.info('pageView : ', {
-                  nextSlug: newData[transferIndex].slug,
-                  nextOrderNo: newData[transferIndex].order,
-                  prevSlug: newData[targetIndex].slug,
-                  prevOrderNo: newData[targetIndex].order,
-                });
+                // console.info('pageView : ', {
+                //   nextSlug: newData[transferIndex].slug,
+                //   nextOrderNo: newData[transferIndex].order,
+                //   prevSlug: newData[targetIndex].slug,
+                //   prevOrderNo: newData[targetIndex].order,
+                // });
                 // handleSortData({
                 //   nextSlug: newData[transferIndex].slug,
                 //   nextOrderNo: newData[transferIndex].order,

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, isValidElement, useEffect } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useTableStore } from '@/lib/zustand/table';
 import { Loading } from './loading';
 import type { Table, TableData, TableHeader, TableOptions, TableProps } from '@/types/table';
@@ -129,14 +130,24 @@ function Table({ table, isLoading = false }: TableProps) {
       tableStore.body && (
         <>
           {tableStore.body.map((item, index) => (
-            <tr
-              key={index}
-              data-row-index={index}
-              {...tableStore.draggableOption}
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+            <Draggable
+              key={`row-${index}`}
+              draggableId={`row-${index}`}
+              index={index}
+              isDragDisabled={!tableStore.draggableOption?.draggable}
             >
-              {renderItem(item)}
-            </tr>
+              {(provided, snapshot) => (
+                <tr
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  data-row-index={index}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  {renderItem(item)}
+                </tr>
+              )}
+            </Draggable>
           ))}
         </>
       )
@@ -157,7 +168,23 @@ function Table({ table, isLoading = false }: TableProps) {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           {header}
         </thead>
-        <tbody>{body}</tbody>
+        <DragDropContext onDragEnd={e => table.draggableOption?.onDrop?.(e)}>
+          <Droppable
+            droppableId="table-body"
+            direction="vertical"
+            type="table-body"
+            isDropDisabled={false}
+            isCombineEnabled={false}
+            ignoreContainerClipping={false}
+          >
+            {provided => (
+              <>
+                <tbody ref={provided.innerRef}>{body}</tbody>
+                {provided.placeholder}
+              </>
+            )}
+          </Droppable>
+        </DragDropContext>
       </table>
     </div>
   );

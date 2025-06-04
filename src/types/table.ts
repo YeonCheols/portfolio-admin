@@ -1,4 +1,5 @@
 import { type ReactElement, type AnchorHTMLAttributes, type HTMLAttributes } from 'react';
+import { DropResult } from 'react-beautiful-dnd';
 
 export type TableData = Record<string, string | number | boolean | ReactElement | TableOptions>;
 
@@ -17,9 +18,9 @@ export interface Checkbox {
   checked: boolean;
 }
 
-export interface DraggableOptions extends HTMLAttributes<HTMLTableRowElement> {
+export interface DraggableOptions {
   draggable: boolean;
-  'data-value'?: string;
+  onDrop?: (result: DropResult) => void;
 }
 
 export type TableOptions = {
