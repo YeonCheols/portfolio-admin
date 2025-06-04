@@ -131,6 +131,7 @@ function Table({ table, isLoading = false }: TableProps) {
           {tableStore.body.map((item, index) => (
             <tr
               key={index}
+              data-row-index={index}
               {...tableStore.draggableOption}
               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
             >

@@ -19,7 +19,7 @@ export interface Checkbox {
 
 export interface DraggableOptions extends HTMLAttributes<HTMLTableRowElement> {
   draggable: boolean;
-  'data-value'?: object | string;
+  'data-value'?: string;
 }
 
 export type TableOptions = {
