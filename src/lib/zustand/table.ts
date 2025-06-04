@@ -13,9 +13,12 @@ interface TableStore {
 }
 
 export const useTableStore = create<TableStore>(set => ({
-  table: { header: [], body: [] },
+  table: { header: [], body: [], draggableOption: { draggable: false } },
   checkbox: [],
-  setTable: table => set({ table }),
+  setTable: table => {
+    console.info('current table : ', table);
+    set({ table });
+  },
   setCheckbox: (checkbox: Checkbox[]) => set({ checkbox: { ...checkbox } }),
   addRow: row =>
     set(state => ({

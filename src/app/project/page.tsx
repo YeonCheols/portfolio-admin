@@ -1,14 +1,16 @@
 'use client';
 import dayjs from 'dayjs';
+import { isEqual } from 'lodash-es';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
+import { Loading } from '@/components/ui/loading';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
-import { AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
+import { type AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
 import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { useTableStore } from '@/lib/zustand/table';
@@ -77,14 +79,28 @@ export default function Project() {
     document.body.removeChild(a);
   };
 
-  const handleOrderUp = (item: AdminProjectOrderUpdateRequest) => {
+  const handleOrderUp = async (item: AdminProjectOrderUpdateRequest) => {
+    toast('프로젝트 정렬 변경 중...');
+
     console.info('item : ', item);
     console.info('up');
+
+    await patchData(`/api/project/order`, item);
+    await mutate();
+
+    toast('프로젝트 정렬 변경 완료');
   };
 
-  const handleOrderDown = (item: AdminProjectOrderUpdateRequest) => {
+  const handleOrderDown = async (item: AdminProjectOrderUpdateRequest) => {
+    toast('프로젝트 정렬 변경 중...');
+
     console.info('item : ', item);
     console.info('down');
+
+    await patchData(`/api/project/order`, item);
+    await mutate();
+
+    toast('프로젝트 정렬 변경 완료');
   };
 
   const projectTableData = useMemo(() => {
@@ -125,9 +141,9 @@ export default function Project() {
                   onClick={() =>
                     handleOrderDown({
                       nextSlug: item.slug,
-                      nextOrderNo: item.order,
+                      nextOrderNo: item.order - 1,
                       prevSlug: data.data.filter(current => current.order === item.order - 1)[0].slug,
-                      prevOrderNo: data.data.filter(current => current.order === item.order - 1)[0].order,
+                      prevOrderNo: item.order,
                     })
                   }
                 />
@@ -220,15 +236,19 @@ export default function Project() {
     });
   }, [data, router]);
 
-  // NOTE: refetch 시에는 table store 를 동기화함
+  // refetch 시 table store 동기화
   useEffect(() => {
-    if (projectTableData) {
+    if (!isEqual(projectTableData, table.body) && table.body.length > 0) {
       setTable({
         header: projectTableHeader,
         body: projectTableData,
       });
     }
-  }, [projectTableData]);
+  }, [projectTableData, table.body]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -243,13 +263,25 @@ export default function Project() {
         이미지 다운로드
       </Button>
 
-      {projectTableData && (
+      {projectTableData.length > 0 && (
         <Table
           table={{
             header: projectTableHeader,
-            body: projectTableData || [],
+            body: projectTableData,
+            draggableOption: {
+              draggable: true,
+              'data-value': {
+                slug: 'test',
+                order: 1,
+              },
+              onDragStart: event => {
+                console.info('onDragStart', event.currentTarget.dataset);
+              },
+              onDragEnd: event => {
+                console.info('onDragEnd', event.currentTarget.dataset);
+              },
+            },
           }}
-          isLoading={isLoading}
         />
       )}
     </>

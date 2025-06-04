@@ -6,7 +6,7 @@ export async function PATCH(request: Request) {
     const body = await request.json();
 
     // 외부 API 호출
-    const data = await patchData(`/project/${body.slug}`, body);
+    const data = await patchData(`/project/order`, body);
 
     if (data.error) {
       return NextResponse.json({
@@ -15,7 +15,7 @@ export async function PATCH(request: Request) {
       });
     }
 
-    return NextResponse.json({ ...data });
+    return NextResponse.json({ status: 200, data });
   } catch (error) {
     return NextResponse.json({ status: 500, error });
   }

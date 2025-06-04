@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { useMemo, isValidElement, useEffect } from 'react';
 import { useTableStore } from '@/lib/zustand/table';
 import { Loading } from './loading';
-import type { Table, TableData, TableHeader, TableOptions } from '@/types/table';
+import type { Table, TableData, TableHeader, TableOptions, TableProps } from '@/types/table';
 
-function Table({ table, isLoading = false }: { table: Table<TableData>; isLoading: boolean }) {
+function Table({ table, isLoading = false }: TableProps) {
   const { table: tableStore, checkbox, setTable, selectCheckbox, allSelectCheckbox } = useTableStore();
 
   const header = useMemo(() => {
@@ -50,7 +50,7 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
     );
   }, [tableStore]);
 
-  const renderType = (options: TableOptions, rowIndex: number, columnKey: string) => {
+  const renderType = (options: TableOptions) => {
     if (options?.link && options.link.href) {
       const { href, title, ...linkProps } = options.link;
 
@@ -89,7 +89,7 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
           type="checkbox"
           key={id}
           value={value}
-          checked={isChecked || false}
+          checked={isChecked}
           onChange={e => {
             selectCheckbox({ id, value, checked: e.currentTarget.checked });
           }}
@@ -99,7 +99,7 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
     }
   };
 
-  const renderItem = (data: TableData, index: number) => {
+  const renderItem = (data: TableData) => {
     return Object.entries(data).map(([key, value]) => {
       if (isValidElement(value)) {
         return (
@@ -111,7 +111,7 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
       if (typeof value === 'object') {
         return (
           <td key={key} className="px-6 py-4">
-            {renderType(value, index, key)}
+            {renderType(value)}
           </td>
         );
       }
@@ -131,9 +131,10 @@ function Table({ table, isLoading = false }: { table: Table<TableData>; isLoadin
           {tableStore.body.map((item, index) => (
             <tr
               key={index}
+              {...tableStore.draggableOption}
               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
-              {renderItem(item, index)}
+              {renderItem(item)}
             </tr>
           ))}
         </>
