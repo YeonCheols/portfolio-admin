@@ -5,6 +5,7 @@ interface TableStore {
   table: TableType<TableData>;
   checkbox: Checkbox[];
   setTable: (table: TableType<TableData>) => void;
+  setBody: (body: TableData[]) => void;
   addRow: (row: TableData) => void;
   updateRow: (rowIndex: number, updated: Partial<TableData>) => void;
   deleteRow: (rowIndex: number, checked: boolean) => void;
@@ -13,9 +14,10 @@ interface TableStore {
 }
 
 export const useTableStore = create<TableStore>(set => ({
-  table: { header: [], body: [] },
+  table: { header: [], body: [], draggableOption: { draggable: false } },
   checkbox: [],
   setTable: table => set({ table }),
+  setBody: body => set(state => ({ table: { ...state.table, body } })),
   setCheckbox: (checkbox: Checkbox[]) => set({ checkbox: { ...checkbox } }),
   addRow: row =>
     set(state => ({
