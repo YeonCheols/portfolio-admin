@@ -64,17 +64,28 @@ pnpm dev
 ```bash
 src/
 ├── app/                    # Next.js 앱 라우터
-│   ├── (auth)/            # 인증 관련 페이지
-│   ├── (dashboard)/       # 대시보드 페이지
-│   └── api/               # API 라우트
-├── components/            # React 컴포넌트
-│   ├── dashboard/        # 대시보드 컴포넌트
-│   ├── editor/          # 에디터 컴포넌트
-│   ├── forms/           # 폼 컴포넌트
-│   └── ui/              # UI 컴포넌트
-├── lib/                  # 유틸리티 함수
-├── styles/              # 전역 스타일
-└── types/               # TypeScript 타입
+│   ├── (dashboard)/        # 대시보드 페이지
+│   ├── project/            # 프로젝트 관련 페이지
+│   │   ├── create/         # 프로젝트 생성
+│   │   ├── edit/           # 프로젝트 수정
+│   │   ├── preview/        # 프로젝트 미리보기
+│   │   └── write/          # 프로젝트 작성
+│   ├── ticket/             # 티켓 관련 페이지
+│   └── api/                # API 라우트
+├── components/             # React 컴포넌트
+│   ├── nav/                # 네비게이션 컴포넌트
+│   ├── providers/          # Provider 컴포넌트
+│   └── ui/                 # UI 컴포넌트
+├── config/                 # 설정 파일
+├── data/                   # 정적 데이터 및 샘플 데이터
+├── hooks/                  # 커스텀 React 훅
+├── lib/                    # 유틸리티 함수 및 상태 관리
+│   ├── context/            # 컨텍스트 관련
+│   ├── file/               # 파일 관련 유틸
+│   └── zustand/            # Zustand 상태 관리
+├── docs/                   # api type
+├── style/                  # 전역 및 커스텀 스타일
+└── types/                  # 내부에서 사용하는 type
 ```
 
 ## 주요 기능 상세
@@ -85,7 +96,8 @@ src/
 - 마크다운 콘텐츠 미리보기
 - 프로젝트 상태 관리
 - 프로젝트 이미지 업로드
-- 기술 스택 관리
+- 기술 stack 관리
+- 프로젝트 순서 정렬 기능
 
 ### 콘텐츠 에디터
 
