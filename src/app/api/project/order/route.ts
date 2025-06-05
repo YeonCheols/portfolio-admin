@@ -15,7 +15,7 @@ export async function PATCH(request: Request) {
       });
     }
 
-    return NextResponse.json({ status: 200, data });
+    return NextResponse.json({ ...data });
   } catch (error) {
     return NextResponse.json({ status: 500, error });
   }

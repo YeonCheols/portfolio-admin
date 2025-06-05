@@ -83,12 +83,14 @@ export default function Project() {
   const handleSortData = async (item: AdminProjectOrderUpdateRequest) => {
     toast('프로젝트 정렬 변경 중...');
 
-    console.info('item : ', item);
-
-    await patchData(`/api/project/order`, item);
+    const response = await patchData(`/api/project/order`, item);
     await mutate();
 
-    toast('프로젝트 정렬 변경 완료');
+    if (response.status === 200) {
+      toast.success('프로젝트 정렬 변경 완료');
+    } else {
+      toast.error(`프로젝트 정렬 변경 실패 : ${response.error}`);
+    }
   };
 
   const mapProjectTableData = (
@@ -233,15 +235,11 @@ export default function Project() {
     return mapProjectTableData(data.data, router, handleSortData, handleChangeStatus, handleDelete, data.data.length);
   }, [data, router]);
 
-  // refetch 시 table store 동기화
-  // useEffect(() => {
-  //   if (!isEqual(projectTableData, table.body) && table.body.length > 0) {
-  //     setTable({
-  //       header: projectTableHeader,
-  //       body: projectTableData,
-  //     });
-  //   }
-  // }, [projectTableData, table.body]);
+  useEffect(() => {
+    if (!isEqual(projectTableData, table.body)) {
+      setBody(projectTableData);
+    }
+  }, [projectTableData]);
 
   if (isLoading) {
     return <Loading />;
@@ -268,38 +266,36 @@ export default function Project() {
             draggableOption: {
               draggable: true,
               onDrop: async result => {
-                if (!data?.data) {
+                const { source, destination } = result;
+
+                // target data 없으면 반환
+                if (!data?.data || !destination) {
                   return;
                 }
 
-                console.info('result : ', result);
-                // event.preventDefault();
-                // const transferIndex: number = Number(event.dataTransfer.getData('text/plain'));
-                // const targetIndex: number = Number(event.currentTarget.dataset.rowIndex);
+                // NOTE: 순서를 변경한 table data를 store 에 업데이트 함
+                const newData = swapArrayElements<AdminProjectResponse>(
+                  data?.data || [],
+                  source.index,
+                  destination?.index,
+                );
+                setBody(
+                  mapProjectTableData(
+                    newData,
+                    router,
+                    handleSortData,
+                    handleChangeStatus,
+                    handleDelete,
+                    data.data.length,
+                  ),
+                );
 
-                // const newData = swapArrayElements<AdminProjectResponse>(data?.data || [], transferIndex, targetIndex);
-                // const newTableData = mapProjectTableData(
-                //   newData,
-                //   router,
-                //   handleSortData,
-                //   handleChangeStatus,
-                //   handleDelete,
-                //   data.data.length,
-                // );
-                // setBody(newTableData);
-
-                // console.info('pageView : ', {
-                //   nextSlug: newData[transferIndex].slug,
-                //   nextOrderNo: newData[transferIndex].order,
-                //   prevSlug: newData[targetIndex].slug,
-                //   prevOrderNo: newData[targetIndex].order,
-                // });
-                // handleSortData({
-                //   nextSlug: newData[transferIndex].slug,
-                //   nextOrderNo: newData[transferIndex].order,
-                //   prevSlug: newData[targetIndex].slug,
-                //   prevOrderNo: newData[targetIndex].order,
-                // });
+                handleSortData({
+                  nextSlug: data.data[source.index].slug,
+                  nextOrderNo: data.data[destination.index].order,
+                  prevSlug: data.data[destination.index].slug,
+                  prevOrderNo: data.data[source.index].order,
+                });
               },
             },
           }}

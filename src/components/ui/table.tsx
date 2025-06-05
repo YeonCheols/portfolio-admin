@@ -42,11 +42,13 @@ function Table({ table, isLoading = false }: TableProps) {
     };
     return (
       tableStore.header && (
-        <tr>
-          {tableStore.header.map(item => {
-            return renderHeaderItem(item);
-          })}
-        </tr>
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            {tableStore.header.map(item => {
+              return renderHeaderItem(item);
+            })}
+          </tr>
+        </thead>
       )
     );
   }, [tableStore]);
@@ -127,30 +129,48 @@ function Table({ table, isLoading = false }: TableProps) {
 
   const body = useMemo(() => {
     return (
-      tableStore.body && (
-        <>
-          {tableStore.body.map((item, index) => (
-            <Draggable
-              key={`row-${index}`}
-              draggableId={`row-${index}`}
-              index={index}
-              isDragDisabled={!tableStore.draggableOption?.draggable}
-            >
-              {(provided, snapshot) => (
-                <tr
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  data-row-index={index}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
-                >
-                  {renderItem(item)}
-                </tr>
-              )}
-            </Draggable>
-          ))}
-        </>
-      )
+      <DragDropContext onDragEnd={e => table.draggableOption?.onDrop?.(e)}>
+        <Droppable
+          droppableId="table-body"
+          direction="vertical"
+          type="table-body"
+          isDropDisabled={false}
+          isCombineEnabled={false}
+          ignoreContainerClipping={false}
+        >
+          {(provided, snapshot) => (
+            <>
+              <tbody id="root-tbody" ref={provided.innerRef}>
+                {tableStore.body && (
+                  <>
+                    {tableStore.body.map((item, index) => (
+                      <Draggable
+                        key={`row-${index}`}
+                        draggableId={`row-${index}`}
+                        index={index}
+                        isDragDisabled={!tableStore.draggableOption?.draggable}
+                      >
+                        {provided => (
+                          <tr
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            data-row-index={index}
+                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
+                          >
+                            {renderItem(item)}
+                          </tr>
+                        )}
+                      </Draggable>
+                    ))}
+                  </>
+                )}
+              </tbody>
+              {provided.placeholder}
+            </>
+          )}
+        </Droppable>
+      </DragDropContext>
     );
   }, [tableStore, checkbox]);
 
@@ -165,26 +185,8 @@ function Table({ table, isLoading = false }: TableProps) {
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          {header}
-        </thead>
-        <DragDropContext onDragEnd={e => table.draggableOption?.onDrop?.(e)}>
-          <Droppable
-            droppableId="table-body"
-            direction="vertical"
-            type="table-body"
-            isDropDisabled={false}
-            isCombineEnabled={false}
-            ignoreContainerClipping={false}
-          >
-            {provided => (
-              <>
-                <tbody ref={provided.innerRef}>{body}</tbody>
-                {provided.placeholder}
-              </>
-            )}
-          </Droppable>
-        </DragDropContext>
+        {header}
+        {body}
       </table>
     </div>
   );
