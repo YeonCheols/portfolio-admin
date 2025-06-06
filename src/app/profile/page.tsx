@@ -55,7 +55,7 @@ export default function Project() {
       toast.error(
         <>
           이미지 다운로드는 <br />
-          하나의 프로젝트에서만 가능합니다.
+          하나의 프로필만 가능합니다.
         </>,
         { position: 'bottom-left' },
       );
@@ -88,15 +88,11 @@ export default function Project() {
     }
   };
 
-  const mapProfileTableData = (
-    profile: AdminProfileResponse[],
-    router: any,
-    handleSortData: (item: AdminProfileOrderUpdateRequest) => void,
-    handleChangeStatus: (item: AdminProfileResponse) => void,
-    handleDelete: (id: number) => void,
-    dataLength: number,
-  ) => {
-    return profile.map((item, index) => ({
+  const profileTableData = useMemo(() => {
+    if (!data?.data) {
+      return [];
+    }
+    return data.data.map(item => ({
       id: {
         checkbox: {
           id: `checkbox-${item.id}`,
@@ -104,13 +100,18 @@ export default function Project() {
           checked: false,
         },
       },
-      // description: item.description,
-      // isShow: {
-      //   status: {
-      //     status: item.isShow,
-      //     title: item.isShow ? '발행' : '미발행',
-      //   },
-      // },
+      imageUrl: {
+        link: {
+          title: item.imageUrl,
+          href: item.imageUrl,
+        },
+      },
+      isShow: {
+        status: {
+          status: item.isActive,
+          title: item.isActive ? '사용' : '미사용',
+        },
+      },
       updatedAt: dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss'),
       buttonGroup: (
         <>
@@ -143,13 +144,6 @@ export default function Project() {
         </>
       ),
     }));
-  };
-
-  const profileTableData = useMemo(() => {
-    if (!data?.data) {
-      return [];
-    }
-    return mapProfileTableData(data.data, router, handleSortData, handleChangeStatus, handleDelete, data.data.length);
   }, [data, router]);
 
   if (isLoading) {
