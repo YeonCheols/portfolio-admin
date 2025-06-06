@@ -1,4 +1,4 @@
-import { Gauge, type LucideIcon, MessagesSquare, FolderOpenDot } from 'lucide-react';
+import { Gauge, type LucideIcon, FolderOpenDot, User } from 'lucide-react';
 
 export type SiteConfig = typeof siteConfig;
 export type Navigation = {
@@ -9,7 +9,7 @@ export type Navigation = {
 
 export const siteConfig = {
   title: '연철s 포트폴리오',
-  description: '연철s 포트폴리오 프로젝트 관리 사이트입니다',
+  description: '연철s 포트폴리오 관리 사이트입니다',
 };
 
 export const navigations: Navigation[] = [
@@ -24,8 +24,13 @@ export const navigations: Navigation[] = [
     href: '/project',
   },
   {
-    icon: MessagesSquare,
-    name: 'Ticket',
-    href: '/ticket',
+    icon: User,
+    name: 'Profile',
+    href: '/profile',
   },
+  // {
+  //   icon: MessagesSquare,
+  //   name: 'Ticket',
+  //   href: '/ticket',
+  // },
 ];
