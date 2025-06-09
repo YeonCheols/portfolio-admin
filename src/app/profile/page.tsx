@@ -1,5 +1,6 @@
 'use client';
 import dayjs from 'dayjs';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -8,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Loading } from '@/components/ui/loading';
 import { Table } from '@/components/ui/table';
 import { profileTableHeader } from '@/data/table/profile';
-import { AdminProfileOrderUpdateRequest, AdminProfileResponse } from '@/docs/api';
+import { type AdminProfileOrderUpdateRequest, type AdminProfileResponse } from '@/docs/api';
 import { patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { useTableStore } from '@/lib/zustand/table';
@@ -16,7 +17,7 @@ import { useTableStore } from '@/lib/zustand/table';
 export default function Project() {
   const router = useRouter();
 
-  const { table, checkbox, setBody } = useTableStore();
+  const { checkbox } = useTableStore();
   const { data, isLoading, mutate } = useSWR<{ data: AdminProfileResponse[] }>(`/api/profile?page=1&size=5`, fetcher);
 
   const handleChangeStatus = async (request: AdminProfileResponse) => {
@@ -100,12 +101,20 @@ export default function Project() {
           checked: false,
         },
       },
-      imageUrl: {
-        link: {
-          title: item.imageUrl,
-          href: item.imageUrl,
-        },
-      },
+      img: (
+        <>
+          <Image src={item.imageUrl} alt="profile" className="mr-2 rounded-full" width={36} height={36} />
+          <div className="ps-3">
+            <div className="text-base font-semibold">Neil Sims</div>
+          </div>
+        </>
+      ),
+      // imageUrl: {
+      //   link: {
+      //     title: item.imageUrl,
+      //     href: item.imageUrl,
+      //   },
+      // },
       isShow: {
         status: {
           status: item.isActive,
@@ -153,14 +162,14 @@ export default function Project() {
   return (
     <>
       <Button variant="secondary" className="mb-4" onClick={() => router.push('/project/create')}>
-        새 글 작성하기
+        프로필 생성
       </Button>
       <Button
         variant="ghost"
         className="ml-4 bg-gray-200 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-600"
         onClick={handleDownImg}
       >
-        이미지 다운로드
+        프로필 다운로드
       </Button>
 
       {profileTableData.length > 0 && (

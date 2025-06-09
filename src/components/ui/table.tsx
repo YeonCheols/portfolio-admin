@@ -87,12 +87,13 @@ function Table({ table, isLoading = false }: TableProps) {
     if (options?.checkbox) {
       const { id, value } = options.checkbox;
       const isChecked = checkbox.find(checkbox => checkbox.id === id)?.checked;
+
       return (
         <input
           type="checkbox"
           key={id}
           value={value}
-          checked={isChecked}
+          checked={isChecked || false}
           onChange={e => {
             selectCheckbox({ id, value, checked: e.currentTarget.checked });
           }}
