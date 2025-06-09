@@ -199,13 +199,17 @@ export interface AdminProjectStatusUpdateRequest {
 
 export interface AdminProfileCreateRequest {
   /**
+   * 프로필 이름
+   * @example "1번 프로필"
+   */
+  name: string;
+  /**
    * 프로필 이미지 URL
    * @example "https://example.com/profile.jpg"
    */
   imageUrl: string;
   /**
    * 프로필 활성화 여부
-   * @default true
    * @example true
    */
   isActive?: boolean;
@@ -217,6 +221,8 @@ export interface AdminProfileResponse {
    * @example 1
    */
   id: number;
+  /** 프로필 이름 */
+  name: string;
   /**
    * 프로필 이미지 URL
    * @example "https://example.com/profile.jpg"
@@ -240,7 +246,25 @@ export interface AdminProfileResponse {
   updatedAt: string;
 }
 
+export interface AdminProfileOrderUpdateRequest {
+  /**
+   * 프로필 고유 ID
+   * @example 1
+   */
+  id: number;
+  /**
+   * 프로필 정렬 번호
+   * @example 1
+   */
+  order: number;
+}
+
 export interface AdminProfileUpdateRequest {
+  /**
+   * 프로필 이름
+   * @example "1번 프로필"
+   */
+  name?: string;
   /**
    * 프로필 이미지 URL
    * @example "https://example.com/profile.jpg"
@@ -248,16 +272,15 @@ export interface AdminProfileUpdateRequest {
   imageUrl?: string;
   /**
    * 프로필 활성화 여부
-   * @default true
    * @example true
    */
   isActive?: boolean;
 }
 
-export interface AdminProfileOrderUpdateRequest {
+export interface AdminProfileStatusUpdateRequest {
   /**
-   * 프로필 정렬 번호
-   * @example 1
+   * 프로필 노출 여부
+   * @example true
    */
-  order: number;
+  isActive: boolean;
 }
