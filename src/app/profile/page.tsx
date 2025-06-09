@@ -1,7 +1,7 @@
 'use client';
 import dayjs from 'dayjs';
 import { isEqual } from 'lodash-es';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -10,28 +10,30 @@ import { Button } from '@/components/ui/button';
 import { Loading } from '@/components/ui/loading';
 import { Table } from '@/components/ui/table';
 import { profileTableHeader } from '@/data/table/profile';
-import {  type AdminProfileResponse } from '@/docs/api';
-import { deleteData } from '@/lib/api';
+import { type AdminProfileResponse } from '@/docs/api';
+import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { useTableStore } from '@/lib/zustand/table';
 
-export default function Project() {
+export default function Profile() {
   const router = useRouter();
 
   const { table, checkbox, setBody } = useTableStore();
   const { data, isLoading, mutate } = useSWR<{ data: AdminProfileResponse[] }>(`/api/profile?page=1&size=5`, fetcher);
 
   const handleChangeStatus = async (request: AdminProfileResponse) => {
-    toast('프로젝트 상태 변경 진행 중...');
-    // const { slug, isShow } = request;
-    // const response = await patchData('/api/project/show', { slug, isShow: !isShow });
-    // await mutate();
+    toast('프로필 상태 변경 진행 중...');
+    const { id, isActive } = request;
+    const response = await patchData('/api/profile/show', { id, isActive: !isActive });
+    await mutate();
 
-    // if (response.status === 200) {
-    //   toast.success('프로젝트 상태 변경 완료');
-    // } else {
-    //   toast.error(`프로젝트 상태 변경 실패 : ${response.error}`);
-    // }
+    if (response.status === 200) {
+      toast.success('프로필 상태 변경 완료');
+    } else if (response.error.status === 400) {
+      toast.error('프로필은 1개만 활성화 하실 수 있습니다.');
+    } else {
+      toast.error(`프로필 상태 변경 실패 : ${response.error}`);
+    }
   };
 
   const handleDelete = async (slug: AdminProfileResponse['id']) => {
@@ -90,9 +92,16 @@ export default function Project() {
         },
       },
       img: (
-        <>
+        <div className="flex items-center text-gray-900 whitespace-nowrap dark:text-white">
           {item.imageUrl && (
-            <Image src={item.imageUrl} alt="profile" className="mr-2 rounded-full" width={36} height={36} />
+            <NextImage
+              src={item.imageUrl}
+              alt="profile"
+              className="mr-2 rounded-full"
+              width={40}
+              height={40}
+              unoptimized
+            />
           )}
           <div className="ps-3">
             <a
@@ -104,7 +113,7 @@ export default function Project() {
               <span className="text-base font-semibold">{item.name}</span>
             </a>
           </div>
-        </>
+        </div>
       ),
       isShow: {
         status: {
@@ -128,7 +137,7 @@ export default function Project() {
             variant="secondary"
             className="bg-green-200 dark:bg-green-500 hover:bg-green-400 dark:hover:bg-green-600 mb-2"
             size="sm"
-            onClick={() => router.push(`/project/edit?slug=${item.id}`)}
+            onClick={() => router.push(`/profile/edit?id=${item.id}`)}
           >
             수정
           </Button>

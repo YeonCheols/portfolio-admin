@@ -36,6 +36,16 @@ export async function patchData(url: string, data?: Record<string, any>, client?
   }
 }
 
+export async function putData(url: string, data?: Record<string, any>, client?: boolean) {
+  setBaseUrl(client);
+  try {
+    const response = await axiosInstance.put(url, data);
+    return response.data;
+  } catch (error) {
+    return { status: false, error };
+  }
+}
+
 export async function deleteData(url: string, data?: Record<string, any>, client?: boolean) {
   setBaseUrl(client);
   try {
