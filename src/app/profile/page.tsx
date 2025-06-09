@@ -1,23 +1,24 @@
 'use client';
 import dayjs from 'dayjs';
+import { isEqual } from 'lodash-es';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Loading } from '@/components/ui/loading';
 import { Table } from '@/components/ui/table';
 import { profileTableHeader } from '@/data/table/profile';
-import { type AdminProfileOrderUpdateRequest, type AdminProfileResponse } from '@/docs/api';
-import { patchData } from '@/lib/api';
+import {  type AdminProfileResponse } from '@/docs/api';
+import { deleteData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { useTableStore } from '@/lib/zustand/table';
 
 export default function Project() {
   const router = useRouter();
 
-  const { checkbox } = useTableStore();
+  const { table, checkbox, setBody } = useTableStore();
   const { data, isLoading, mutate } = useSWR<{ data: AdminProfileResponse[] }>(`/api/profile?page=1&size=5`, fetcher);
 
   const handleChangeStatus = async (request: AdminProfileResponse) => {
@@ -34,14 +35,14 @@ export default function Project() {
   };
 
   const handleDelete = async (slug: AdminProfileResponse['id']) => {
-    // toast('프로젝트 삭제 진행 중...');
-    // const response = await deleteData(`/api/project/delete?slug=${slug}`);
-    // await mutate();
-    // if (response.status === 200) {
-    //   toast.success('프로젝트 삭제 완료');
-    // } else {
-    //   toast.error(`프로젝트 삭제 실패 : ${response.error}`);
-    // }
+    toast('프로필 삭제 진행 중...');
+    const response = await deleteData(`/api/profile/delete?slug=${slug}`);
+    await mutate();
+    if (response.status === 200) {
+      toast.success('프로필 삭제 완료');
+    } else {
+      toast.error(`프로필 삭제 실패 : ${response.error}`);
+    }
   };
 
   const handleDownImg = async () => {
@@ -76,19 +77,6 @@ export default function Project() {
     document.body.removeChild(a);
   };
 
-  const handleSortData = async (item: AdminProfileOrderUpdateRequest) => {
-    toast('프로젝트 정렬 변경 중...');
-
-    const response = await patchData(`/api/project/order`, item);
-    await mutate();
-
-    if (response.status === 200) {
-      toast.success('프로젝트 정렬 변경 완료');
-    } else {
-      toast.error(`프로젝트 정렬 변경 실패 : ${response.error}`);
-    }
-  };
-
   const profileTableData = useMemo(() => {
     if (!data?.data) {
       return [];
@@ -103,18 +91,21 @@ export default function Project() {
       },
       img: (
         <>
-          <Image src={item.imageUrl} alt="profile" className="mr-2 rounded-full" width={36} height={36} />
+          {item.imageUrl && (
+            <Image src={item.imageUrl} alt="profile" className="mr-2 rounded-full" width={36} height={36} />
+          )}
           <div className="ps-3">
-            <div className="text-base font-semibold">Neil Sims</div>
+            <a
+              href={item.imageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tet-blue-600 hover:underline hover:font-semibold transition-colors duration-200"
+            >
+              <span className="text-base font-semibold">{item.name}</span>
+            </a>
           </div>
         </>
       ),
-      // imageUrl: {
-      //   link: {
-      //     title: item.imageUrl,
-      //     href: item.imageUrl,
-      //   },
-      // },
       isShow: {
         status: {
           status: item.isActive,
@@ -155,13 +146,19 @@ export default function Project() {
     }));
   }, [data, router]);
 
+  useEffect(() => {
+    if (!isEqual(profileTableData, table.body)) {
+      setBody(profileTableData);
+    }
+  }, [profileTableData]);
+
   if (isLoading) {
     return <Loading />;
   }
 
   return (
     <>
-      <Button variant="secondary" className="mb-4" onClick={() => router.push('/project/create')}>
+      <Button variant="secondary" className="mb-4" onClick={() => router.push('/profile/create')}>
         프로필 생성
       </Button>
       <Button

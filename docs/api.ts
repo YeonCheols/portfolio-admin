@@ -221,6 +221,8 @@ export interface AdminProfileResponse {
    * @example 1
    */
   id: number;
+  /** 프로필 이름 */
+  name: string;
   /**
    * 프로필 이미지 URL
    * @example "https://example.com/profile.jpg"
