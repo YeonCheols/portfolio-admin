@@ -79,6 +79,8 @@ export default function ProfileEdit() {
   const onSubmit = async (data: AdminProfileUpdateRequest) => {
     toast('프로필 수정 진행 중...');
 
+    console.info('current : ', watch('imageUrl'));
+
     try {
       const response = await putData(`/api/profile/edit`, data);
 
@@ -100,6 +102,8 @@ export default function ProfileEdit() {
       reset(data.data);
     }
   }, [data]);
+
+  console.info('data : ', watch('imageUrl'));
 
   return (
     <>
@@ -165,9 +169,9 @@ export default function ProfileEdit() {
                   content: (
                     <FormSection>
                       <FormInput
+                        {...(activeTab === 'upload' && register)}
                         id="imageUrl"
                         name="이미지 파일"
-                        register={register}
                         placeholder="이미지를 추가해주세요."
                         type="file"
                         onChange={handleFileUpload}
