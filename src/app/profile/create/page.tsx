@@ -13,7 +13,7 @@ import { getFileUrl } from '@/lib/file/read';
 import { uploadFile } from '@/lib/file/upload';
 import { validateFileType } from '@/lib/file/validation-file';
 
-export default function ProjectCreate() {
+export default function ProfileCreate() {
   const router = useRouter();
 
   const {

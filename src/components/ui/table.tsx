@@ -14,7 +14,7 @@ function Table({ table, isLoading = false }: TableProps) {
     const renderHeaderItem = (item: TableHeader) => {
       if (item.type === 'checkbox') {
         return (
-          <th key={item.id} scope="col" className="px-6 py-4">
+          <th key={item.id} scope="col" className="px-6 py-3">
             <input
               type="checkbox"
               className="w-4 h-4"
@@ -35,7 +35,7 @@ function Table({ table, isLoading = false }: TableProps) {
         );
       }
       return (
-        <th key={item.id} scope="col" className="px-6 py-4">
+        <th key={item.id} scope="col" className="px-6 py-3">
           {item.name}
         </th>
       );
@@ -107,21 +107,21 @@ function Table({ table, isLoading = false }: TableProps) {
     return Object.entries(data).map(([key, value]) => {
       if (isValidElement(value)) {
         return (
-          <td key={key} className="px-6 py-4">
+          <td key={key} className="px-6 py-3">
             {value}
           </td>
         );
       }
       if (typeof value === 'object') {
         return (
-          <td key={key} className="px-6 py-4">
+          <td key={key} className="px-6 py-3">
             {renderType(value)}
           </td>
         );
       }
 
       return (
-        <td key={key} className="px-6 py-4">
+        <td key={key} className="px-6 py-3">
           {value}
         </td>
       );
@@ -139,7 +139,7 @@ function Table({ table, isLoading = false }: TableProps) {
           isCombineEnabled={false}
           ignoreContainerClipping={false}
         >
-          {(provided, snapshot) => (
+          {provided => (
             <>
               <tbody id="root-tbody" ref={provided.innerRef}>
                 {tableStore.body && (
