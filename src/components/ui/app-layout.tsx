@@ -7,9 +7,8 @@ import { Toast } from './toast';
 
 export default function AppLayout({ children }: { children: ReactElement }) {
   const { contextProps } = usePropsContext<{ noneLayout: boolean }>();
-  const { noneLayout } = contextProps ?? {};
 
-  if (noneLayout) {
+  if (contextProps?.noneLayout) {
     return (
       <>
         <div id="modal" />
