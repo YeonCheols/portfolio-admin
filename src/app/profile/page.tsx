@@ -9,10 +9,13 @@ import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Loading } from '@/components/ui/loading';
 import { Table } from '@/components/ui/table';
+import { WaringInfo } from '@/components/ui/waring-info';
 import { profileTableHeader } from '@/data/table/profile';
 import { type AdminProfileResponse } from '@/docs/api';
 import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
+import { downloadFile } from '@/lib/file/downloadFile';
+import { resizeFile } from '@/lib/file/resizeFile';
 import { useTableStore } from '@/lib/zustand/table';
 
 export default function Profile() {
@@ -72,11 +75,19 @@ export default function Profile() {
       toast.error('이미지 url을 찾을 수 없습니다.', { position: 'bottom-left' });
       return;
     }
-    const a = document.createElement('a');
-    a.href = imageUrl + '?download';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+
+    downloadFile({ type: 'url', url: imageUrl });
+  };
+
+  const handleResizeFile = async (e: React.FormEvent<HTMLInputElement>) => {
+    toast('이미지 압축 진행 중...');
+
+    try {
+      await resizeFile(e.currentTarget?.files?.[0] as File);
+      toast.success('이미지 압축 성공');
+    } catch {
+      toast.error('이미지 압축 중 오류가 발생했습니다.');
+    }
   };
 
   const profileTableData = useMemo(() => {
@@ -167,6 +178,24 @@ export default function Profile() {
 
   return (
     <>
+      <WaringInfo
+        headTitle="이미지 업로드"
+        description={
+          <>
+            이미지는 최대 1MB 까지 업로드 하실 수 있습니다.
+            <br /> 용량 압축은 아래 파일 업로드 버튼을 클릭하여 진행해주세요.
+          </>
+        }
+      >
+        <input
+          className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+          id="resize"
+          type="file"
+          onChange={handleResizeFile}
+          accept="image/*"
+        />
+      </WaringInfo>
+
       <Button variant="secondary" className="mb-4" onClick={() => router.push('/profile/create')}>
         프로필 생성
       </Button>

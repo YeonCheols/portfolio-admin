@@ -15,7 +15,7 @@ import { putData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { getFileUrl } from '@/lib/file/read';
 import { uploadFile } from '@/lib/file/upload';
-import { validateFileType } from '@/lib/file/validation-file';
+import { validateFileCommon } from '@/lib/file/validationFile';
 
 export default function ProfileEdit() {
   const params = useSearchParams();
@@ -56,9 +56,8 @@ export default function ProfileEdit() {
       toast.error('파일을 선택하세요.');
       return;
     }
-    if (!validateFileType(file)) {
-      e.currentTarget.value = '';
-      return false;
+    if (!validateFileCommon(e)) {
+      return;
     }
 
     const formData = new FormData();
@@ -78,6 +77,8 @@ export default function ProfileEdit() {
 
   const onSubmit = async (data: AdminProfileUpdateRequest) => {
     toast('프로필 수정 진행 중...');
+
+    console.info('current : ', watch('imageUrl'));
 
     try {
       const response = await putData(`/api/profile/edit`, data);
@@ -165,9 +166,9 @@ export default function ProfileEdit() {
                   content: (
                     <FormSection>
                       <FormInput
+                        {...(activeTab === 'upload' && register)}
                         id="imageUrl"
                         name="이미지 파일"
-                        register={register}
                         placeholder="이미지를 추가해주세요."
                         type="file"
                         onChange={handleFileUpload}

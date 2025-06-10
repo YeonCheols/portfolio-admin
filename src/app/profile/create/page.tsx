@@ -11,7 +11,7 @@ import { Tabs } from '@/components/ui/tab';
 import { type AdminProfileCreateRequest } from '@/docs/api';
 import { getFileUrl } from '@/lib/file/read';
 import { uploadFile } from '@/lib/file/upload';
-import { validateFileType } from '@/lib/file/validation-file';
+import { validateFileCommon } from '@/lib/file/validationFile';
 
 export default function ProfileCreate() {
   const router = useRouter();
@@ -44,11 +44,9 @@ export default function ProfileCreate() {
       toast.error('파일을 선택하세요.');
       return;
     }
-    if (!validateFileType(file)) {
-      e.currentTarget.value = '';
-      return false;
+    if (!validateFileCommon(e)) {
+      return;
     }
-
     const formData = new FormData();
     formData.append('file', file);
 
