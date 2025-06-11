@@ -1,7 +1,7 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
 
 function LoginForm({ host, callbackUrl }: { host: string; callbackUrl: string }) {
   const { register, handleSubmit, watch } = useForm({

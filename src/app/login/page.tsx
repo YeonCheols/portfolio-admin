@@ -1,8 +1,8 @@
 'use server';
 
+import { headers } from 'next/headers';
 import { LoginForm } from '@/components/ui/login';
 import { getLoginRedirectUrl } from '@/lib/auth/cookie';
-import { headers } from 'next/headers';
 
 export default async function Login() {
   const header = await headers();
