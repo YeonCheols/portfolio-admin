@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { Toaster } from 'react-hot-toast';
 import { useToasterStore } from 'react-hot-toast';
 
-export function Toast() {
+function Toast() {
   const ref = useRef<Element | null>(null);
   const { toasts } = useToasterStore();
 
@@ -16,3 +16,7 @@ export function Toast() {
 
   return createPortal(toasts.length > 0 && toasts.map(toast => <Toaster key={toast.id} />), ref.current);
 }
+
+Toast.displayName = 'Toast';
+
+export { Toast };

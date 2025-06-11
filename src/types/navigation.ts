@@ -1,4 +1,5 @@
 export interface Navigation {
-  isTheme?: boolean;
   title: string;
+  isTheme?: boolean;
+  className?: string;
 }
