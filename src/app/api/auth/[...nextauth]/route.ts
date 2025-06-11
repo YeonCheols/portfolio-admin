@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { NextResponse } from 'next/server';
 
 // 임시 사용자  (실제 DB 연결 예정)
 const users = [
