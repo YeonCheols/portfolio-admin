@@ -1,3 +1,4 @@
+'use client';
 function Skeleton() {
   return (
     <div role="status" className="max-w-sm animate-pulse">

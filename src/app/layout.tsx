@@ -1,6 +1,7 @@
 import { Gabarito } from 'next/font/google';
+import { cookies, headers } from 'next/headers';
 import { type ReactElement } from 'react';
-import AppLayout from '@/components/ui/app-layout';
+import AppLayout from '@/components/ui/app/layout';
 import { siteConfig } from '@/config/site';
 import { cn } from '@/lib/utils';
 import { Providers } from './providers';
@@ -14,16 +15,20 @@ export const metadata: Metadata = {
   description: siteConfig.description,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactElement;
 }>) {
+  // NOTE: 로그인 인증 여부
+  const cookieStore = await cookies();
+  const callbackUrl = cookieStore.get('callbackUrl')?.value;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn('bg-background font-sans', gabarito.variable)}>
         <Providers>
-          <AppLayout>{children}</AppLayout>
+          <AppLayout isLogin={!!callbackUrl}>{children}</AppLayout>
         </Providers>
       </body>
     </html>

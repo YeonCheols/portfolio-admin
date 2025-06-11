@@ -1,14 +1,17 @@
-'use client';
+'use server';
 
-import { useEffect } from 'react';
-import { usePropsContext } from '@/lib/context/props';
+import { LoginForm } from '@/components/ui/login';
+import { getLoginRedirectUrl } from '@/lib/auth/cookie';
+import { headers } from 'next/headers';
 
-export default function Login() {
-  const { setContextProps } = usePropsContext();
+export default async function Login() {
+  const header = await headers();
+  const redirectUrl = decodeURIComponent((await getLoginRedirectUrl()) as string);
 
-  useEffect(() => {
-    setContextProps({ noneLayout: true });
-  }, []);
-
-  return <div className="mt-10 space-y-8"></div>;
+  return (
+    <LoginForm
+      host={`${header.get('x-forwarded-proto')}://${header.get('x-forwarded-host')}`}
+      callbackUrl={redirectUrl}
+    />
+  );
 }
