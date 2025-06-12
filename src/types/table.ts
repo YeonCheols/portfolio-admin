@@ -1,5 +1,5 @@
-import { type ReactElement, type AnchorHTMLAttributes, type HTMLAttributes } from 'react';
-import { DropResult } from 'react-beautiful-dnd';
+import { type ReactElement, type AnchorHTMLAttributes } from 'react';
+import { type DropResult } from 'react-beautiful-dnd';
 
 export type TableData = Record<string, string | number | boolean | ReactElement | TableOptions>;
 

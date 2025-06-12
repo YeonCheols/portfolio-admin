@@ -3,7 +3,7 @@
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 
-function LoginForm({ host, callbackUrl }: { host: string; callbackUrl: string }) {
+function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   const { register, handleSubmit, watch } = useForm({
     defaultValues: {
       email: '',
@@ -15,8 +15,8 @@ function LoginForm({ host, callbackUrl }: { host: string; callbackUrl: string })
     await signIn('credentials', {
       email: watch('email'),
       password: watch('password'),
-      callbackUrl: `${host}${callbackUrl}`,
-      redirect: false,
+      callbackUrl,
+      redirect: true,
     });
   };
 
