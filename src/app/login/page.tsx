@@ -2,7 +2,7 @@
 
 import { LoginForm } from '@/components/ui/login-form';
 
-export default async function Login({ searchParams }: { searchParams: { callbackUrl: string } }) {
+export default async function Login({ searchParams }: { searchParams: Promise<any> }) {
   const params = await searchParams;
   const callbackUrl = params.callbackUrl || '/';
 
