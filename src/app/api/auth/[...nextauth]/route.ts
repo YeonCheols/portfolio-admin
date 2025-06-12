@@ -12,7 +12,7 @@ const users = [
   },
 ];
 
-export const handler = NextAuth({
+export const { GET, POST } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     // Google({
@@ -44,7 +44,7 @@ export const handler = NextAuth({
             error: '404',
             message: 'not match password',
           };
-        } catch (error) {
+        } catch {
           return {
             error: '500',
             message: 'Internal Server Error',
@@ -71,5 +71,3 @@ export const handler = NextAuth({
     },
   },
 });
-
-export { handler as GET, handler as POST };
