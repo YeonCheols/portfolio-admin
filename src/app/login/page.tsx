@@ -1,17 +1,10 @@
 'use server';
 
-import { headers } from 'next/headers';
-import { LoginForm } from '@/components/ui/login';
-import { getLoginRedirectUrl } from '@/lib/auth/cookie';
+import { LoginForm } from '@/components/ui/login-form';
 
-export default async function Login() {
-  const header = await headers();
-  const redirectUrl = decodeURIComponent((await getLoginRedirectUrl()) as string);
+export default async function Login({ searchParams }: { searchParams: { callbackUrl: string } }) {
+  const params = await searchParams;
+  const callbackUrl = params.callbackUrl || '/';
 
-  return (
-    <LoginForm
-      host={`${header.get('x-forwarded-proto')}://${header.get('x-forwarded-host')}`}
-      callbackUrl={redirectUrl}
-    />
-  );
+  return <LoginForm callbackUrl={callbackUrl} />;
 }
