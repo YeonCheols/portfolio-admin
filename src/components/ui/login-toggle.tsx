@@ -2,6 +2,7 @@
 
 import { User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -9,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { signOut } from 'next-auth/react';
 
 export function LoginWithButton() {
   const router = useRouter();

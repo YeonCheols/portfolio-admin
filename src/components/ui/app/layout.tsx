@@ -1,9 +1,9 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { type ReactElement } from 'react';
 import { SideNav } from '../../nav';
 import AppContainer from './container';
-import { useSession } from 'next-auth/react';
 
 export default function AppLayout({ children }: { children: ReactElement }) {
   const { data: session } = useSession();

@@ -47,7 +47,7 @@ export const useTableStore = create<TableStore>(set => ({
         : [...state.checkbox, data],
     })),
   allSelectCheckbox: checkboxList =>
-    set(state => ({
+    set(_ => ({
       checkbox: checkboxList,
     })),
 }));

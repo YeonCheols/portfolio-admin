@@ -1,7 +1,7 @@
 'use client';
 
-import { SessionProvider } from 'next-auth/react';
 import { Provider as JotaiProvider } from 'jotai';
+import { SessionProvider } from 'next-auth/react';
 import { ChartThemeProvider } from '@/components/providers/chart-theme-provider';
 import { ModeThemeProvider } from '@/components/providers/mode-theme-provider';
 import { PropsProvider } from '@/lib/context/props';

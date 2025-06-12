@@ -2,9 +2,9 @@
 
 import Container from '../container';
 import { ThemeToggle } from '../theme-toggle';
+import { LoginWithButton } from '@/components/ui/login-toggle';
 import { cn } from '@/lib/utils';
 import { type Navigation } from '@/types/navigation';
-import { LoginWithButton } from '@/components/ui/login-toggle';
 
 export default function TopNav({ title, isTheme = true, isLogin = true, className }: Navigation) {
   return (
