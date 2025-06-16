@@ -4,7 +4,7 @@ import AppLayout from '@/components/ui/app/layout';
 import { siteConfig } from '@/config/site';
 import { cn } from '@/lib/utils';
 import { Providers } from './providers';
-import type { Metadata, NextApiRequest } from 'next';
+import type { Metadata } from 'next';
 import '@/style/globals.css';
 
 const gabarito = Gabarito({ subsets: ['latin'], variable: '--font-gabarito' });
