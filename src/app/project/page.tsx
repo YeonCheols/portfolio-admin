@@ -1,6 +1,6 @@
 'use client';
 import dayjs from 'dayjs';
-import { isEqual } from 'lodash-es';
+import { isArray, isEqual } from 'lodash-es';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -101,6 +101,9 @@ export default function Project() {
     handleDelete: (slug: string) => void,
     dataLength: number,
   ) => {
+    if (!isArray(projects)) {
+      return [];
+    }
     return projects.map((item, index) => ({
       id: {
         checkbox: {

@@ -1,6 +1,6 @@
 'use client';
 import dayjs from 'dayjs';
-import { isEqual } from 'lodash-es';
+import { isArray, isEqual } from 'lodash-es';
 import NextImage from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
@@ -91,7 +91,7 @@ export default function Profile() {
   };
 
   const profileTableData = useMemo(() => {
-    if (!data?.data) {
+    if (!data?.data || !isArray(data.data)) {
       return [];
     }
     return data.data.map(item => ({
