@@ -1,20 +1,17 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import { type ReactElement } from 'react';
 import { SideNav } from '../../nav';
 import AppContainer from './container';
 
 export default function AppLayout({ children }: { children: ReactElement }) {
-  const { data: session } = useSession();
-
-  if (!session?.user) {
-    return (
-      <AppContainer>
-        <div className="flex-grow overflow-auto">{children}</div>
-      </AppContainer>
-    );
-  }
+  // if (!session?.data?.user) {
+  //   return (
+  //     <AppContainer>
+  //       <div className="flex-grow overflow-auto">{children}</div>
+  //     </AppContainer>
+  //   );
+  // }
 
   return (
     <>

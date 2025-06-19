@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+import { getAccessToken } from './lib/auth';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   // NextAuth의 JWT 토큰 획득
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  const token = await getAccessToken();
 
   // 인증이 필요한 경로 설정
   const isLogin = request.nextUrl.pathname.startsWith('/login');
   const isWellKnown = request.nextUrl.pathname.match(/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/);
 
-  if (!token?.email && !isLogin && !isWellKnown) {
+  if (!token && !isLogin && !isWellKnown) {
     const currentPath = request.nextUrl.pathname;
     // 로그인 후 이동할 경로 설정
     return NextResponse.redirect(new URL('/login?callbackUrl=' + currentPath, request.url));
