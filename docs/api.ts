@@ -39,6 +39,125 @@ export interface ProjectResponse {
   updatedAt: string;
 }
 
+export interface ProfileResponse {
+  /**
+   * 프로필 ID
+   * @example 1
+   */
+  id: number;
+  /** 프로필 이름 */
+  name: string;
+  /**
+   * 프로필 이미지 URL
+   * @example "https://example.com/profile.jpg"
+   */
+  imageUrl: string;
+  /**
+   * 프로필 활성화 여부
+   * @example true
+   */
+  isActive: boolean;
+  /**
+   * 프로필 순서
+   * @example 1
+   */
+  order: number;
+  /**
+   * 프로필 업데이트 일자
+   * @format date-time
+   * @example "2025-05-29 01:30:21.469"
+   */
+  updatedAt: string;
+}
+
+export interface AdminProfileCreateRequest {
+  /**
+   * 프로필 이름
+   * @example "1번 프로필"
+   */
+  name: string;
+  /**
+   * 프로필 이미지 URL
+   * @example "https://example.com/profile.jpg"
+   */
+  imageUrl: string;
+  /**
+   * 프로필 활성화 여부
+   * @example true
+   */
+  isActive?: boolean;
+}
+
+export interface AdminProfileResponse {
+  /**
+   * 프로필 ID
+   * @example 1
+   */
+  id: number;
+  /** 프로필 이름 */
+  name: string;
+  /**
+   * 프로필 이미지 URL
+   * @example "https://example.com/profile.jpg"
+   */
+  imageUrl: string;
+  /**
+   * 프로필 활성화 여부
+   * @example true
+   */
+  isActive: boolean;
+  /**
+   * 프로필 순서
+   * @example 1
+   */
+  order: number;
+  /**
+   * 프로필 업데이트 일자
+   * @format date-time
+   * @example "2025-05-29 01:30:21.469"
+   */
+  updatedAt: string;
+}
+
+export interface AdminProfileOrderUpdateRequest {
+  /**
+   * 프로필 고유 ID
+   * @example 1
+   */
+  id: number;
+  /**
+   * 프로필 정렬 번호
+   * @example 1
+   */
+  order: number;
+}
+
+export interface AdminProfileUpdateRequest {
+  /**
+   * 프로필 이름
+   * @example "1번 프로필"
+   */
+  name?: string;
+  /**
+   * 프로필 이미지 URL
+   * @example "https://example.com/profile.jpg"
+   */
+  imageUrl?: string;
+  /**
+   * 프로필 활성화 여부
+   * @example true
+   */
+  isActive?: boolean;
+}
+
+export interface AdminProfileStatusUpdateRequest {
+  /**
+   * 프로필 노출 여부
+   * @example true
+   */
+  isActive: boolean;
+}
+
 export interface AdminProjectCreateRequest {
   /**
    * 프로젝트 슬러그 (URL에 사용되는 고유 식별자)
@@ -197,90 +316,23 @@ export interface AdminProjectStatusUpdateRequest {
   isShow: boolean;
 }
 
-export interface AdminProfileCreateRequest {
-  /**
-   * 프로필 이름
-   * @example "1번 프로필"
-   */
-  name: string;
-  /**
-   * 프로필 이미지 URL
-   * @example "https://example.com/profile.jpg"
-   */
-  imageUrl: string;
-  /**
-   * 프로필 활성화 여부
-   * @example true
-   */
-  isActive?: boolean;
+export interface AdminCreateUserRequest {
+  /** @example "admin@example.com" */
+  email: string;
+  /** @example "password123" */
+  password: string;
 }
 
-export interface AdminProfileResponse {
-  /**
-   * 프로필 ID
-   * @example 1
-   */
-  id: number;
-  /** 프로필 이름 */
-  name: string;
-  /**
-   * 프로필 이미지 URL
-   * @example "https://example.com/profile.jpg"
-   */
-  imageUrl: string;
-  /**
-   * 프로필 활성화 여부
-   * @example true
-   */
-  isActive: boolean;
-  /**
-   * 프로필 순서
-   * @example 1
-   */
-  order: number;
-  /**
-   * 프로필 업데이트 일자
-   * @format date-time
-   * @example "2025-05-29 01:30:21.469"
-   */
-  updatedAt: string;
+export interface AdminLoginRequest {
+  /** @example "admin@example.com" */
+  email: string;
+  /** @example "password123" */
+  password: string;
 }
 
-export interface AdminProfileOrderUpdateRequest {
-  /**
-   * 프로필 고유 ID
-   * @example 1
-   */
-  id: number;
-  /**
-   * 프로필 정렬 번호
-   * @example 1
-   */
-  order: number;
-}
-
-export interface AdminProfileUpdateRequest {
-  /**
-   * 프로필 이름
-   * @example "1번 프로필"
-   */
-  name?: string;
-  /**
-   * 프로필 이미지 URL
-   * @example "https://example.com/profile.jpg"
-   */
-  imageUrl?: string;
-  /**
-   * 프로필 활성화 여부
-   * @example true
-   */
-  isActive?: boolean;
-}
-
-export interface AdminProfileStatusUpdateRequest {
-  /**
-   * 프로필 노출 여부
-   * @example true
-   */
-  isActive: boolean;
+export interface AdminResetPasswordRequest {
+  /** @example "admin@example.com" */
+  email: string;
+  /** @example "password123" */
+  newPassword: string;
 }

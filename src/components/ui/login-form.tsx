@@ -1,10 +1,18 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { postData } from '@/lib/api';
 
 function LoginForm({ callbackUrl }: { callbackUrl: string }) {
-  const { register, handleSubmit, watch } = useForm({
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       email: '',
       password: '',
@@ -12,12 +20,24 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   });
 
   const onSubmit = async () => {
-    await signIn('credentials', {
-      email: watch('email'),
-      password: watch('password'),
-      callbackUrl,
-      redirect: true,
-    });
+    const response = await postData(
+      `/user/login`,
+      {
+        email: watch('email'),
+        password: watch('password'),
+      },
+      true,
+    );
+
+    if (response.status === false) {
+      toast.error(`인증 과정에서 오류가 발생했습니다 : ${response.error}`);
+      return;
+    }
+
+    console.info('response : ', response);
+    console.info('callbackUrl : ', callbackUrl);
+
+    router.push(callbackUrl);
   };
 
   return (
@@ -38,8 +58,15 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
-                  {...register('email')}
+                  {...register('email', {
+                    required: '이메일을 입력해주세요',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: '올바른 이메일 형식이 아닙니다',
+                    },
+                  })}
                 />
+                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
               </div>
               <div>
                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -50,8 +77,15 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
                   id="password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  {...register('password')}
+                  {...register('password', {
+                    required: '비밀번호를 입력해주세요',
+                    pattern: {
+                      value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+                      message: '비밀번호는 8자 이상이며 영문자, 숫자, 특수문자를 포함해야 합니다',
+                    },
+                  })}
                 />
+                {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
               </div>
               <button
                 type="button"
