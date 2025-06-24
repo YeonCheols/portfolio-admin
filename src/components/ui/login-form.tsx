@@ -20,6 +20,13 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   });
 
   const onSubmit = async () => {
+    toast.loading(
+      <>
+        로그인 중입니다.
+        <br />
+        잠시만 기다려주세요
+      </>,
+    );
     const response = await postData(
       `/user/login`,
       {
@@ -35,6 +42,8 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
     }
 
     router.push(callbackUrl);
+    toast.dismiss();
+    router.refresh();
   };
 
   return (
