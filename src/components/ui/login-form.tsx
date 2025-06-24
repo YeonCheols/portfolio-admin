@@ -38,6 +38,7 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
 
     if (response.status === false) {
       toast.error(`인증 과정에서 오류가 발생했습니다 : ${response.error}`);
+      toast.dismiss();
       return;
     }
 
