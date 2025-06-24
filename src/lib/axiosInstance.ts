@@ -10,9 +10,6 @@ const axiosInstance = axios.create({
   baseURL: process.env.API_URL,
   timeout: 10000,
   withCredentials: true,
-  ...(process.env.NODE_ENV === 'development' && {
-    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-  }),
 });
 
 axiosInstance.interceptors.request.use(
