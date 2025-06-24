@@ -2,7 +2,7 @@
 
 import Container from '../container';
 import { ThemeToggle } from '../theme-toggle';
-import { LoginWithButton } from '@/components/ui/login-toggle';
+import { LoginWithButton } from '@/components/ui/login-menu';
 import { cn } from '@/lib/utils';
 import { type Navigation } from '@/types/navigation';
 

@@ -20,15 +20,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: ReactElement;
 }>) {
-  const accessToken = await getAccessToken();
-
-  console.info('accessToken : ', accessToken);
+  const accessToken = !!(await getAccessToken());
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn('bg-background font-sans', gabarito.variable)}>
         <Providers>
-          <AppLayout>{children}</AppLayout>
+          <AppLayout isLogin={accessToken}>{children}</AppLayout>
         </Providers>
       </body>
     </html>

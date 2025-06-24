@@ -78,8 +78,6 @@ export default function ProfileEdit() {
   const onSubmit = async (data: AdminProfileUpdateRequest) => {
     toast('프로필 수정 진행 중...');
 
-    console.info('current : ', watch('imageUrl'));
-
     try {
       const response = await putData(`/api/profile/edit`, data);
 

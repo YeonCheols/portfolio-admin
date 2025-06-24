@@ -2,7 +2,6 @@
 
 import { User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { postData } from '@/lib/api';
 
 export function LoginWithButton() {
   const router = useRouter();
@@ -24,7 +24,14 @@ export function LoginWithButton() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => router.push('/login')}>Login</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login', redirect: true })}>Logout</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={async () => {
+            await postData(`/user/logout`, {}, true);
+            router.refresh();
+          }}
+        >
+          Logout
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -1,5 +1,5 @@
-import https from 'https';
 import axios from 'axios';
+import { getAccessToken } from './auth';
 
 const axiosInstance = axios.create({
   headers: {
@@ -9,15 +9,14 @@ const axiosInstance = axios.create({
   baseURL: process.env.API_URL,
   timeout: 10000,
   withCredentials: true,
-  ...(process.env.NODE_ENV === 'development' && {
-    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-  }),
 });
 
-// Request interceptor
 axiosInstance.interceptors.request.use(
-  config => {
-    // You can add auth token here if needed
+  async config => {
+    const accessToken = await getAccessToken();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
     return config;
   },
   error => {

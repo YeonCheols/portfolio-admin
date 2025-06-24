@@ -330,6 +330,11 @@ export interface AdminLoginRequest {
   password: string;
 }
 
+export interface AdminLoginResponse {
+  /** @example {"id":1,"email":"admin@example.com"} */
+  user: object;
+}
+
 export interface AdminResetPasswordRequest {
   /** @example "admin@example.com" */
   email: string;
