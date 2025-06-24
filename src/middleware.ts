@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getData } from './lib/api';
 import { getAccessToken } from './lib/auth';
 import type { NextRequest } from 'next/server';
 
@@ -9,16 +10,22 @@ export async function middleware(request: NextRequest) {
   // 인증이 필요한 경로 설정
   const isLogin = request.nextUrl.pathname.startsWith('/login');
   const isWellKnown = request.nextUrl.pathname.match(/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/);
+  const currentPath = request.nextUrl.pathname;
 
   if (!token && !isLogin && !isWellKnown) {
-    const currentPath = request.nextUrl.pathname;
-    // 로그인 후 이동할 경로 설정
     return NextResponse.redirect(new URL('/login?callbackUrl=' + currentPath, request.url));
+  }
+
+  // NOTE : 토큰이 존재하면 인증 재시도
+  if (token) {
+    const isAuthToken = await getData(`/user/auth/check`);
+    if (isAuthToken.status === 401) {
+      return NextResponse.redirect(new URL('/login?callbackUrl=' + currentPath, request.url));
+    }
   }
 
   // 인증되어 있으면 계속 진행
   const response = NextResponse.next();
-  response.cookies.delete('callbackUrl');
   return response;
 }
 
