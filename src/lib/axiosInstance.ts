@@ -1,5 +1,6 @@
 import https from 'https';
 import axios from 'axios';
+import { getAccessToken } from './auth';
 
 const axiosInstance = axios.create({
   headers: {
@@ -14,10 +15,12 @@ const axiosInstance = axios.create({
   }),
 });
 
-// Request interceptor
 axiosInstance.interceptors.request.use(
-  config => {
-    // You can add auth token here if needed
+  async config => {
+    const accessToken = await getAccessToken();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
     return config;
   },
   error => {

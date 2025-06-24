@@ -34,9 +34,6 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
       return;
     }
 
-    console.info('response : ', response);
-    console.info('callbackUrl : ', callbackUrl);
-
     router.push(callbackUrl);
   };
 

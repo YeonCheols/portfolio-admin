@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { postData } from '@/lib/api';
 
 export function LoginWithButton() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export function LoginWithButton() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => router.push('/login')}>Login</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login', redirect: true })}>Logout</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => postData(`/user/logout`, {}, true)}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
