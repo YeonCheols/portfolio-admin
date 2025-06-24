@@ -9,8 +9,8 @@ const handle = app.getRequestHandler();
 const PORT = 5001;
 
 const httpsOptions = {
-  key: fs.readFileSync('./cert/key.pem'),
-  cert: fs.readFileSync('./cert/cert.pem'),
+  key: fs.readFileSync('./cert/local.ycseng.com-key.pem'),
+  cert: fs.readFileSync('./cert/local.ycseng.com.pem'),
   requestCert: false,
   rejectUnauthorized: false,
 };
@@ -23,6 +23,6 @@ app.prepare().then(() => {
     })
     .listen(PORT, err => {
       if (err) throw err;
-      console.info(`> HTTPS: Ready on https://localhost:${PORT}`);
+      console.info(`> HTTPS: Ready on https://local.ycseng.com:${PORT}`);
     });
 });
