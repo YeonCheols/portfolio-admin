@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 5001",
-    "dev:https": "node server.js",
+    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 next dev -p 5001",
+    "dev:https": "NODE_TLS_REJECT_UNAUTHORIZED=0 node server.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
