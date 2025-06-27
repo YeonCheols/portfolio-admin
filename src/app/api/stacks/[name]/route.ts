@@ -45,9 +45,11 @@ const STACKS_METADATA: StackMetadata[] = [
   { name: 'Scss', icon: 'FaSass', color: 'text-pink-500', category: 'frontend' },
 ];
 
-export async function GET(request: Request, { params }: { params: { name: string } }) {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const name = searchParams.get('name');
   try {
-    const stackName = decodeURIComponent(params.name);
+    const stackName = decodeURIComponent(name || '');
     const stack = STACKS_METADATA.find(s => s.name === stackName);
 
     if (!stack) {
@@ -75,9 +77,11 @@ export async function GET(request: Request, { params }: { params: { name: string
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { name: string } }) {
+export async function PUT(request: Request) {
   try {
-    const stackName = decodeURIComponent(params.name);
+    const { searchParams } = new URL(request.url);
+    const name = searchParams.get('name');
+    const stackName = decodeURIComponent(name || '');
     const body: StackMetadata = await request.json();
 
     // 필수 필드 검증
@@ -142,9 +146,11 @@ export async function PUT(request: Request, { params }: { params: { name: string
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { name: string } }) {
+export async function DELETE(request: Request) {
   try {
-    const stackName = decodeURIComponent(params.name);
+    const { searchParams } = new URL(request.url);
+    const name = searchParams.get('name');
+    const stackName = decodeURIComponent(name || '');
     const stackIndex = STACKS_METADATA.findIndex(s => s.name === stackName);
 
     if (stackIndex === -1) {
