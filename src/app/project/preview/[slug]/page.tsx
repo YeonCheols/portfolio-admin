@@ -31,8 +31,8 @@ export default function ProjectPreview() {
         if (response.status) {
           setStacksMetadata(response.data);
         }
-      } catch (error) {
-        console.error('Failed to load stacks metadata:', error);
+      } catch {
+        console.info('Failed to load stacks metadata');
       }
     };
 

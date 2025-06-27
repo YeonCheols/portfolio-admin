@@ -8,8 +8,8 @@ import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Loading } from '@/components/ui/loading';
-import { Table } from '@/components/ui/table';
 import { StackIcon } from '@/components/ui/stack-icon';
+import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
 import { type AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
 import { deleteData, patchData } from '@/lib/api';
@@ -33,8 +33,8 @@ export default function Project() {
         if (response.status) {
           setStacksMetadata(response.data);
         }
-      } catch (error) {
-        console.error('Failed to load stacks metadata:', error);
+      } catch {
+        console.info('Failed to load stacks metadata');
       }
     };
 

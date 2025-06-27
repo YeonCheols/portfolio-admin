@@ -7,9 +7,9 @@ import FormInput from '@/components/ui/form/input';
 import { Loading } from '@/components/ui/loading';
 import { StackIcon } from '@/components/ui/stack-icon';
 import { Table } from '@/components/ui/table';
+import { stackTableHeader } from '@/data/table/stacks';
 import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/lib/utils';
-import { stackTableHeader } from '@/data/table/stacks';
 
 interface StackMetadata {
   name: string;
@@ -32,8 +32,8 @@ export default function StacksManagement() {
       if (response.status) {
         setStacks(response.data);
       }
-    } catch (error) {
-      console.error('Failed to load stacks:', error);
+    } catch {
+      console.info('Failed to load stacks');
     } finally {
       setLoading(false);
     }
@@ -65,8 +65,8 @@ export default function StacksManagement() {
         await loadStacks();
         setIsAdding(false);
       }
-    } catch (error) {
-      console.error('Failed to add stack:', error);
+    } catch {
+      console.info('Failed to add stack');
     }
   };
 
@@ -94,8 +94,8 @@ export default function StacksManagement() {
         await loadStacks();
         setEditingStack(null);
       }
-    } catch (error) {
-      console.error('Failed to update stack:', error);
+    } catch {
+      console.info('Failed to update stack');
     }
   };
 
@@ -111,8 +111,8 @@ export default function StacksManagement() {
       if (response.ok) {
         await loadStacks();
       }
-    } catch (error) {
-      console.error('Failed to delete stack:', error);
+    } catch {
+      console.info('Failed to delete stack');
     }
   };
 

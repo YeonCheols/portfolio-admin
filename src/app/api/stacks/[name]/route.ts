@@ -9,7 +9,7 @@ export interface StackMetadata {
 }
 
 // 스택 메타데이터 정의 (실제로는 데이터베이스에서 관리해야 함)
-let STACKS_METADATA: StackMetadata[] = [
+const STACKS_METADATA: StackMetadata[] = [
   { name: 'PHP', icon: 'SiPhp', color: 'text-blue-500', category: 'backend' },
   { name: 'JavaScript', icon: 'SiJavascript', color: 'text-yellow-400', category: 'frontend' },
   { name: 'TypeScript', icon: 'SiTypescript', color: 'text-blue-400', category: 'frontend' },
@@ -64,7 +64,7 @@ export async function GET(request: Request, { params }: { params: { name: string
       status: true,
       data: stack,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         status: false,
@@ -131,7 +131,7 @@ export async function PUT(request: Request, { params }: { params: { name: string
       data: updatedStack,
       message: 'Stack updated successfully',
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         status: false,
@@ -165,7 +165,7 @@ export async function DELETE(request: Request, { params }: { params: { name: str
       data: deletedStack,
       message: 'Stack deleted successfully',
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         status: false,

@@ -9,7 +9,7 @@ export interface StackMetadata {
 }
 
 // 스택 메타데이터 정의
-let STACKS_METADATA: StackMetadata[] = [
+const STACKS_METADATA: StackMetadata[] = [
   { name: 'PHP', icon: 'SiPhp', color: 'text-blue-500', category: 'backend' },
   { name: 'JavaScript', icon: 'SiJavascript', color: 'text-yellow-400', category: 'frontend' },
   { name: 'TypeScript', icon: 'SiTypescript', color: 'text-blue-400', category: 'frontend' },
@@ -68,7 +68,7 @@ export async function GET(request: Request) {
       data: filteredStacks,
       total: filteredStacks.length,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({
       status: false,
       error: 'Failed to fetch stacks metadata',
@@ -122,7 +122,7 @@ export async function POST(request: Request) {
       },
       { status: 201 },
     );
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         status: false,

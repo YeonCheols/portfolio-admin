@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { StackTag } from '@/components/ui/stack-icon';
 import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/lib/utils';
@@ -16,13 +16,7 @@ export interface StackSelectorProps {
   maxStacks?: number;
 }
 
-export function StackSelector({
-  name,
-  label = '기술 스택',
-  placeholder = '기술 스택을 선택하세요',
-  className = '',
-  maxStacks = 10,
-}: StackSelectorProps) {
+export function StackSelector({ name, label = '기술 스택', className = '', maxStacks = 10 }: StackSelectorProps) {
   const {
     register,
     setValue,
@@ -47,8 +41,8 @@ export function StackSelector({
         if (response.status) {
           setAvailableStacks(response.data);
         }
-      } catch (error) {
-        console.error('Failed to load stacks:', error);
+      } catch {
+        console.info('Failed to load stacks');
       } finally {
         setLoading(false);
       }
@@ -67,8 +61,8 @@ export function StackSelector({
           return stack || { name: stackName, icon: '', color: '' };
         });
         setSelectedStacks(stackObjects);
-      } catch (error) {
-        console.error('Failed to parse stacks:', error);
+      } catch {
+        console.info('Failed to parse stacks');
       }
     }
   }, [currentValue, availableStacks]);
