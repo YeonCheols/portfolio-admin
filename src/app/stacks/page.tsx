@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { type StackMetadata } from '../api/stacks/route';
 import { Button } from '@/components/ui/button';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
@@ -11,7 +12,6 @@ import { Table } from '@/components/ui/table';
 import { stackTableHeader } from '@/data/table/stacks';
 import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/lib/utils';
-import { StackMetadata } from '../api/stacks/route';
 
 interface StackFormData {
   name: string;
@@ -39,7 +39,6 @@ export default function StacksManagement() {
     setLoading(true);
     try {
       const response = await fetcher('/api/stacks');
-      console.log(response);
       if (response.status) {
         setStacks(response.data);
       }
