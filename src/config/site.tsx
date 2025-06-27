@@ -1,4 +1,4 @@
-import { Gauge, type LucideIcon, FolderOpenDot, User } from 'lucide-react';
+import { Gauge, type LucideIcon, FolderOpenDot, User, Layers } from 'lucide-react';
 
 export type SiteConfig = typeof siteConfig;
 export type Navigation = {
@@ -27,6 +27,11 @@ export const navigations: Navigation[] = [
     icon: User,
     name: 'Profile',
     href: '/profile',
+  },
+  {
+    icon: Layers,
+    name: 'Stacks',
+    href: '/stacks',
   },
   // {
   //   icon: MessagesSquare,

@@ -2,13 +2,14 @@
 import dayjs from 'dayjs';
 import { isArray, isEqual } from 'lodash-es';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Loading } from '@/components/ui/loading';
 import { Table } from '@/components/ui/table';
+import { StackIcon } from '@/components/ui/stack-icon';
 import { projectTableHeader } from '@/data/table/project';
 import { type AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
 import { deleteData, patchData } from '@/lib/api';
@@ -19,9 +20,31 @@ import { type ProjectTableData } from '@/types/project';
 
 export default function Project() {
   const router = useRouter();
+  const [stacksMetadata, setStacksMetadata] = useState<Array<{ name: string; icon: string; color: string }>>([]);
 
   const { table, checkbox, setBody } = useTableStore();
   const { data, isLoading, mutate } = useSWR<{ data: AdminProjectResponse[] }>(`/api/project?page=1&size=5`, fetcher);
+
+  // 스택 메타데이터 로드
+  useEffect(() => {
+    const loadStacksMetadata = async () => {
+      try {
+        const response = await fetcher('/api/stacks');
+        if (response.status) {
+          setStacksMetadata(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to load stacks metadata:', error);
+      }
+    };
+
+    loadStacksMetadata();
+  }, []);
+
+  // 스택 이름으로 메타데이터 찾기
+  const getStackMetadata = (stackName: string) => {
+    return stacksMetadata.find(stack => stack.name === stackName) || { name: stackName, icon: '', color: '' };
+  };
 
   const handleChangeStatus = async (request: ProjectTableData) => {
     toast('프로젝트 상태 변경 진행 중...');
@@ -104,131 +127,151 @@ export default function Project() {
     if (!isArray(projects)) {
       return [];
     }
-    return projects.map((item, index) => ({
-      id: {
-        checkbox: {
-          id: `checkbox-${item.id}`,
-          value: item.slug,
-          checked: false,
+    return projects.map((item, index) => {
+      const stacksArray = JSON.parse(item.stacks);
+
+      return {
+        id: {
+          checkbox: {
+            id: `checkbox-${item.id}`,
+            value: item.slug,
+            checked: false,
+          },
         },
-      },
-      order: (
-        <div className="flex items-center text-center gap-[8px]">
-          {item.order}
-          <div>
-            {item.order < dataLength && (
-              <FaAngleUp
-                size={16}
-                role="button"
-                onClick={() =>
-                  handleSortData({
-                    nextSlug: item.slug,
-                    nextOrderNo: item.order + 1,
-                    prevSlug: projects.filter(current => current.order === item.order + 1)[0].slug,
-                    prevOrderNo: item.order,
-                  })
-                }
-              />
-            )}
-            {dataLength - 1 !== index && (
-              <FaAngleDown
-                size={16}
-                role="button"
-                onClick={() =>
-                  handleSortData({
-                    nextSlug: item.slug,
-                    nextOrderNo: item.order - 1,
-                    prevSlug: projects.filter(current => current.order === item.order - 1)[0].slug,
-                    prevOrderNo: item.order,
-                  })
-                }
-              />
-            )}
+        order: (
+          <div className="flex items-center text-center gap-[8px]">
+            {item.order}
+            <div>
+              {item.order < dataLength && (
+                <FaAngleUp
+                  size={16}
+                  role="button"
+                  onClick={() =>
+                    handleSortData({
+                      nextSlug: item.slug,
+                      nextOrderNo: item.order + 1,
+                      prevSlug: projects.filter(current => current.order === item.order + 1)[0].slug,
+                      prevOrderNo: item.order,
+                    })
+                  }
+                />
+              )}
+              {dataLength - 1 !== index && (
+                <FaAngleDown
+                  size={16}
+                  role="button"
+                  onClick={() =>
+                    handleSortData({
+                      nextSlug: item.slug,
+                      nextOrderNo: item.order - 1,
+                      prevSlug: projects.filter(current => current.order === item.order - 1)[0].slug,
+                      prevOrderNo: item.order,
+                    })
+                  }
+                />
+              )}
+            </div>
           </div>
-        </div>
-      ),
-      title: item.title,
-      slug: {
-        link: {
-          title: item.slug,
-          href: `/project/preview/${item.slug}`,
+        ),
+        title: item.title,
+        slug: {
+          link: {
+            title: item.slug,
+            href: `/project/preview/${item.slug}`,
+          },
         },
-      },
-      stack: JSON.parse(item.stacks).join(', '),
-      linkGithub: {
-        link: {
-          title: item.linkGithub,
-          href: item.linkGithub,
-          target: '_blank',
+        stack: (
+          <div className="flex flex-wrap items-center gap-1">
+            {stacksArray.map((stack: string, stackIndex: number) => {
+              const metadata = getStackMetadata(stack);
+              return (
+                <StackIcon
+                  key={stackIndex}
+                  name={metadata.name}
+                  icon={metadata.icon}
+                  color={metadata.color}
+                  size={16}
+                  className="hover:scale-110 transition-transform"
+                />
+              );
+            })}
+          </div>
+        ),
+        linkGithub: {
+          link: {
+            title: item.linkGithub,
+            href: item.linkGithub,
+            target: '_blank',
+          },
         },
-      },
-      linkDemo: {
-        link: {
-          title: item.linkDemo,
-          href: item.linkDemo,
-          target: '_blank',
+        linkDemo: {
+          link: {
+            title: item.linkDemo,
+            href: item.linkDemo,
+            target: '_blank',
+          },
         },
-      },
-      ...(item.content
-        ? {
-            contents: {
-              link: {
-                title: item.content?.length > 10 ? item.content.slice(0, 10) + '...' : item.content,
-                href: `/project/write/${item.slug}`,
+        ...(item.content
+          ? {
+              contents: {
+                link: {
+                  title: item.content?.length > 10 ? item.content.slice(0, 10) + '...' : item.content,
+                  href: `/project/write/${item.slug}`,
+                },
               },
-            },
-          }
-        : {
-            contents: (
-              <Button
-                variant="secondary"
-                className="bg-gray-200 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-600 mb-2"
-                size="sm"
-                onClick={() => router.push(`/project/write/${item.slug}`)}
-              >
-                내용 작성
-              </Button>
-            ),
-          }),
-      description: item.description,
-      isShow: {
-        status: {
-          status: item.isShow,
-          title: item.isShow ? '발행' : '미발행',
+            }
+          : {
+              contents: (
+                <Button
+                  variant="secondary"
+                  className="bg-gray-200 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-600 mb-2"
+                  size="sm"
+                  onClick={() => router.push(`/project/write/${item.slug}`)}
+                >
+                  내용 작성
+                </Button>
+              ),
+            }),
+        description: item.description,
+        isShow: {
+          status: {
+            status: item.isShow,
+            title: item.isShow ? '발행' : '미발행',
+          },
         },
-      },
-      updatedAt: dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss'),
-      buttonGroup: (
-        <>
-          <Button
-            variant="secondary"
-            className="bg-gray-200 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-600 mb-2"
-            size="sm"
-            onClick={() => handleChangeStatus(item)}
-          >
-            변경
-          </Button>
-          <br />
-          <Button
-            variant="secondary"
-            className="bg-green-200 dark:bg-green-500 hover:bg-green-400 dark:hover:bg-green-600 mb-2"
-            size="sm"
-            onClick={() => router.push(`/project/edit?slug=${item.slug}`)}
-          >
-            수정
-          </Button>
-          <br />
-          <Button
-            variant="secondary"
-            className="bg-red-300 dark:bg-red-500 hover:bg-red-400 dark:hover:bg-red-600 mb-2"
-            size="sm"
-            onClick={() => handleDelete(item.slug)}
-          >
-            삭제
-          </Button>
-        </>
-      ),
-    }));
+        updatedAt: dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm:ss'),
+        buttonGroup: (
+          <>
+            <Button
+              variant="secondary"
+              className="bg-gray-200 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-600 mb-2"
+              size="sm"
+              onClick={() => handleChangeStatus(item)}
+            >
+              변경
+            </Button>
+            <br />
+            <Button
+              variant="secondary"
+              className="bg-green-200 dark:bg-green-500 hover:bg-green-400 dark:hover:bg-green-600 mb-2"
+              size="sm"
+              onClick={() => router.push(`/project/edit?slug=${item.slug}`)}
+            >
+              수정
+            </Button>
+            <br />
+            <Button
+              variant="secondary"
+              className="bg-red-300 dark:bg-red-500 hover:bg-red-400 dark:hover:bg-red-600 mb-2"
+              size="sm"
+              onClick={() => handleDelete(item.slug)}
+            >
+              삭제
+            </Button>
+          </>
+        ),
+      };
+    });
   };
 
   const projectTableData = useMemo(() => {

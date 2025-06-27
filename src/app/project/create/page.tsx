@@ -10,6 +10,7 @@ import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
 import { RadioCard } from '@/components/ui/radio-card';
 import { Tabs } from '@/components/ui/tab';
+import { StackSelector } from '@/components/ui/stack-selector';
 import { type AdminProjectCreateRequest } from '@/docs/api';
 import { getData } from '@/lib/api';
 import { getFileUrl } from '@/lib/file/read';
@@ -184,15 +185,11 @@ export default function ProjectCreate() {
           />
         </FormSection>
         <FormSection>
-          <FormInput
-            id="stacks"
+          <StackSelector
             name="stacks"
-            register={register}
-            errors={errors}
-            validation={{
-              required: '기술 스택은 필수입니다.',
-            }}
-            placeholder="기술 스택을 입력해주세요."
+            label="기술 스택"
+            placeholder="기술 스택을 선택하세요"
+            maxStacks={8}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </FormSection>
