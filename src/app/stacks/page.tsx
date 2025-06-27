@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
@@ -10,12 +11,13 @@ import { Table } from '@/components/ui/table';
 import { stackTableHeader } from '@/data/table/stacks';
 import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/lib/utils';
+import { StackMetadata } from '../api/stacks/route';
 
-interface StackMetadata {
+interface StackFormData {
   name: string;
   icon: string;
   color: string;
-  category: 'frontend' | 'backend' | 'database' | 'devops' | 'tool' | 'other';
+  category: StackMetadata['category'];
 }
 
 export default function StacksManagement() {
@@ -24,11 +26,20 @@ export default function StacksManagement() {
   const [editingStack, setEditingStack] = useState<StackMetadata | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<StackFormData>();
+
   // 스택 데이터 로드
   const loadStacks = async () => {
     setLoading(true);
     try {
       const response = await fetcher('/api/stacks');
+      console.log(response);
       if (response.status) {
         setStacks(response.data);
       }
@@ -44,12 +55,12 @@ export default function StacksManagement() {
   }, []);
 
   // 스택 추가
-  const handleAddStack = async (formData: FormData) => {
+  const handleAddStack = async (data: StackFormData) => {
     const newStack: StackMetadata = {
-      name: formData.get('name') as string,
-      icon: formData.get('icon') as string,
-      color: formData.get('color') as string,
-      category: formData.get('category') as StackMetadata['category'],
+      name: data.name,
+      icon: data.icon,
+      color: data.color,
+      category: data.category,
     };
 
     try {
@@ -64,6 +75,7 @@ export default function StacksManagement() {
       if (response.ok) {
         await loadStacks();
         setIsAdding(false);
+        reset();
       }
     } catch {
       console.info('Failed to add stack');
@@ -71,14 +83,14 @@ export default function StacksManagement() {
   };
 
   // 스택 수정
-  const handleEditStack = async (formData: FormData) => {
+  const handleEditStack = async (data: StackFormData) => {
     if (!editingStack) return;
 
     const updatedStack: StackMetadata = {
-      name: formData.get('name') as string,
-      icon: formData.get('icon') as string,
-      color: formData.get('color') as string,
-      category: formData.get('category') as StackMetadata['category'],
+      name: data.name,
+      icon: data.icon,
+      color: data.color,
+      category: data.category,
     };
 
     try {
@@ -93,6 +105,7 @@ export default function StacksManagement() {
       if (response.ok) {
         await loadStacks();
         setEditingStack(null);
+        reset();
       }
     } catch {
       console.info('Failed to update stack');
@@ -114,6 +127,27 @@ export default function StacksManagement() {
     } catch {
       console.info('Failed to delete stack');
     }
+  };
+
+  // 수정 모드 시작
+  const startEditing = (stack: StackMetadata) => {
+    setEditingStack(stack);
+    setValue('name', stack.name);
+    setValue('icon', stack.icon);
+    setValue('color', stack.color);
+    setValue('category', stack.category);
+  };
+
+  // 수정 모드 취소
+  const cancelEditing = () => {
+    setEditingStack(null);
+    reset();
+  };
+
+  // 추가 모드 취소
+  const cancelAdding = () => {
+    setIsAdding(false);
+    reset();
   };
 
   const tableData = stacks.map(stack => ({
@@ -153,7 +187,7 @@ export default function StacksManagement() {
     ),
     actions: (
       <div className="flex gap-2">
-        <Button size="sm" variant="outline" onClick={() => setEditingStack(stack)}>
+        <Button size="sm" variant="outline" onClick={() => startEditing(stack)}>
           수정
         </Button>
         <Button size="sm" variant="destructive" onClick={() => handleDeleteStack(stack.name)}>
@@ -177,19 +211,32 @@ export default function StacksManagement() {
       {isAdding && (
         <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
           <h2 className="text-lg font-semibold mb-4">새 스택 추가</h2>
-          <form action={handleAddStack} className="space-y-4">
+          <form onSubmit={handleSubmit(handleAddStack)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <FormSection>
-                <FormInput id="name" name="name" placeholder="예: React.js" required />
+                <FormInput
+                  id="name"
+                  {...register('name', { required: '스택명을 입력해주세요' })}
+                  placeholder="예: React.js"
+                />
+                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
               </FormSection>
               <FormSection>
-                <FormInput id="icon" name="icon" placeholder="예: SiReact" required />
+                <FormInput
+                  id="icon"
+                  {...register('icon', { required: '아이콘명을 입력해주세요' })}
+                  placeholder="예: SiReact"
+                />
+                {errors.icon && <span className="text-red-500 text-sm">{errors.icon.message}</span>}
               </FormSection>
               <FormSection>
-                <FormInput id="color" name="color" placeholder="예: text-sky-500" />
+                <FormInput id="color" {...register('color')} placeholder="예: text-sky-500" />
               </FormSection>
               <FormSection>
-                <select name="category" className="w-full p-2 border rounded-md" required>
+                <select
+                  {...register('category', { required: '카테고리를 선택해주세요' })}
+                  className="w-full p-2 border rounded-md"
+                >
                   <option value="">카테고리 선택</option>
                   <option value="frontend">Frontend</option>
                   <option value="backend">Backend</option>
@@ -198,11 +245,12 @@ export default function StacksManagement() {
                   <option value="tool">Tool</option>
                   <option value="other">Other</option>
                 </select>
+                {errors.category && <span className="text-red-500 text-sm">{errors.category.message}</span>}
               </FormSection>
             </div>
             <div className="flex gap-2">
               <Button type="submit">추가</Button>
-              <Button type="button" variant="outline" onClick={() => setIsAdding(false)}>
+              <Button type="button" variant="outline" onClick={cancelAdding}>
                 취소
               </Button>
             </div>
@@ -214,23 +262,31 @@ export default function StacksManagement() {
       {editingStack && (
         <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
           <h2 className="text-lg font-semibold mb-4">스택 수정</h2>
-          <form action={handleEditStack} className="space-y-4">
+          <form onSubmit={handleSubmit(handleEditStack)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <FormSection>
-                <FormInput id="name" name="name" placeholder="스택명" defaultValue={editingStack.name} required />
+                <FormInput
+                  id="edit-name"
+                  {...register('name', { required: '스택명을 입력해주세요' })}
+                  placeholder="스택명"
+                />
+                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
               </FormSection>
               <FormSection>
-                <FormInput id="icon" name="icon" placeholder="아이콘명" defaultValue={editingStack.icon} required />
+                <FormInput
+                  id="edit-icon"
+                  {...register('icon', { required: '아이콘명을 입력해주세요' })}
+                  placeholder="아이콘명"
+                />
+                {errors.icon && <span className="text-red-500 text-sm">{errors.icon.message}</span>}
               </FormSection>
               <FormSection>
-                <FormInput id="color" name="color" placeholder="색상 클래스" defaultValue={editingStack.color} />
+                <FormInput id="edit-color" {...register('color')} placeholder="색상 클래스" />
               </FormSection>
               <FormSection>
                 <select
-                  name="category"
+                  {...register('category', { required: '카테고리를 선택해주세요' })}
                   className="w-full p-2 border rounded-md"
-                  defaultValue={editingStack.category}
-                  required
                 >
                   <option value="frontend">Frontend</option>
                   <option value="backend">Backend</option>
@@ -239,11 +295,12 @@ export default function StacksManagement() {
                   <option value="tool">Tool</option>
                   <option value="other">Other</option>
                 </select>
+                {errors.category && <span className="text-red-500 text-sm">{errors.category.message}</span>}
               </FormSection>
             </div>
             <div className="flex gap-2">
               <Button type="submit">수정</Button>
-              <Button type="button" variant="outline" onClick={() => setEditingStack(null)}>
+              <Button type="button" variant="outline" onClick={cancelEditing}>
                 취소
               </Button>
             </div>
