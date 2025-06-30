@@ -1,21 +1,18 @@
 {
-    "inputs": [
-      {
-        "type": "promptString",
-        "id": "api-key",
-        "description": "API Key",
-        "password": true
-      }
-    ],
-    "servers": {
-        "github": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-github"],
-        "env": {
-          "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:api-key}"
-        }
-      }
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/seong-yeoncheol/Desktop",
+        "/Users/seong-yeoncheol/Documents"
+      ]
+    },
+    "eslint": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@eslint/mcp@latest"]
     }
   }
-  
+}
