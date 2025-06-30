@@ -29,12 +29,21 @@ export default function StacksManagement() {
   const [showIconManager, setShowIconManager] = useState(false);
 
   const {
+    watch,
     register,
     handleSubmit,
     reset,
     setValue,
     formState: { errors },
-  } = useForm<StackFormData>();
+  } = useForm<StackFormData>({
+    mode: 'onChange',
+    defaultValues: {
+      name: '',
+      icon: '',
+      color: '',
+      category: 'frontend' as StackMetadata['category'],
+    },
+  });
 
   // 스택 데이터 로드
   const loadStacks = async () => {
@@ -229,24 +238,33 @@ export default function StacksManagement() {
               <FormSection>
                 <FormInput
                   id="name"
-                  {...register('name', { required: '스택명을 입력해주세요' })}
+                  name="스택명"
+                  register={register}
+                  errors={errors}
+                  validation={{
+                    required: '스택명을 입력해주세요',
+                  }}
                   placeholder="예: React.js"
                 />
-                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
               </FormSection>
               <FormSection>
                 <FormInput
                   id="icon"
-                  {...register('icon', { required: '아이콘명을 입력해주세요' })}
+                  name="아이콘명"
+                  register={register}
+                  errors={errors}
+                  validation={{
+                    required: '아이콘명을 입력해주세요',
+                  }}
                   placeholder="예: SiReact"
                 />
-                {errors.icon && <span className="text-red-500 text-sm">{errors.icon.message}</span>}
               </FormSection>
               <FormSection>
-                <FormInput id="color" {...register('color')} placeholder="예: text-sky-500" />
+                <FormInput id="color" name="색상" register={register} errors={errors} placeholder="예: text-sky-500" />
               </FormSection>
               <FormSection>
                 <select
+                  id="category"
                   {...register('category', { required: '카테고리를 선택해주세요' })}
                   className="w-full p-2 border rounded-md"
                 >
@@ -279,22 +297,30 @@ export default function StacksManagement() {
             <div className="grid grid-cols-2 gap-4">
               <FormSection>
                 <FormInput
-                  id="edit-name"
-                  {...register('name', { required: '스택명을 입력해주세요' })}
+                  id="name"
+                  name="스택명"
+                  register={register}
+                  errors={errors}
+                  validation={{
+                    required: '스택명을 입력해주세요',
+                  }}
                   placeholder="스택명"
                 />
-                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
               </FormSection>
               <FormSection>
                 <FormInput
-                  id="edit-icon"
-                  {...register('icon', { required: '아이콘명을 입력해주세요' })}
+                  id="icon"
+                  name="아이콘명"
+                  register={register}
+                  errors={errors}
+                  validation={{
+                    required: '아이콘명을 입력해주세요',
+                  }}
                   placeholder="아이콘명"
                 />
-                {errors.icon && <span className="text-red-500 text-sm">{errors.icon.message}</span>}
               </FormSection>
               <FormSection>
-                <FormInput id="edit-color" {...register('color')} placeholder="색상 클래스" />
+                <FormInput id="color" name="색상" register={register} errors={errors} placeholder="색상 클래스" />
               </FormSection>
               <FormSection>
                 <select
