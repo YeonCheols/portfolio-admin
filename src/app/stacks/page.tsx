@@ -168,7 +168,6 @@ export default function StacksManagement() {
     ),
     color: (
       <div className="flex items-center gap-2">
-        <div className={cn('w-4 h-4 rounded', stack.color)}></div>
         <span className="text-sm">{stack.color}</span>
       </div>
     ),

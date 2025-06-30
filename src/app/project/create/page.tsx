@@ -3,7 +3,7 @@
 import NextImage from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { FormSection } from '@/components/ui/form/form-section';
@@ -186,6 +186,10 @@ export default function ProjectCreate() {
         </FormSection>
         <FormSection>
           <StackSelector
+            watch={watch}
+            register={register}
+            setValue={setValue}
+            errors={errors}
             name="stacks"
             label="기술 스택"
             placeholder="기술 스택을 선택하세요"

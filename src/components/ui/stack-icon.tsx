@@ -74,32 +74,6 @@ function getIconComponent(iconName: string): ComponentType<any> | null {
   return (iconLibrary as any)[library + name] || null;
 }
 
-// 스택 데이터를 가져오는 커스텀 훅
-function useStackData(name: string) {
-  const [stackData, setStackData] = useState<StackMetadata | null>(null);
-
-  useEffect(() => {
-    const fetchStackData = async () => {
-      try {
-        const response = await fetch('/api/stacks');
-        if (response.ok) {
-          const result = await response.json();
-          if (result.status) {
-            const foundStack = result.data.find((stack: StackMetadata) => stack.name === name);
-            setStackData(foundStack || null);
-          }
-        }
-      } catch (error) {
-        console.warn('Failed to fetch stack data:', error);
-      }
-    };
-
-    fetchStackData();
-  }, [name]);
-
-  return stackData;
-}
-
 export interface StackIconProps {
   name: string;
   icon: string;
@@ -110,7 +84,6 @@ export interface StackIconProps {
 
 // TODO : 아이콘 컴포넌트 공통 라이브러리로 이관
 export function StackIcon({ name, icon, color = '', size = 20, className = '' }: StackIconProps): JSX.Element {
-  const stackData = useStackData(name);
   const IconComponent = getIconComponent(icon);
 
   // NOTE: 아이콘을 찾을 수 없는 경우
@@ -124,10 +97,7 @@ export function StackIcon({ name, icon, color = '', size = 20, className = '' }:
     );
   }
 
-  // NOTE: 스택 데이터에서 색상을 가져오거나 props로 전달된 색상 사용
-  const iconColor = stackData?.color || color;
-
-  return <IconComponent size={size} className={`${iconColor} ${className}`} title={name} />;
+  return <IconComponent size={size} className={`${color} ${className}`} title={name} />;
 }
 
 // 스택 태그 컴포넌트
