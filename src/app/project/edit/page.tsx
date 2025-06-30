@@ -210,6 +210,10 @@ export default function ProjectCreate() {
           </FormSection>
           <FormSection>
             <StackSelector
+              register={register}
+              watch={watch}
+              setValue={setValue}
+              errors={errors}
               name="stacks"
               label="기술 스택"
               placeholder="기술 스택을 선택하세요"

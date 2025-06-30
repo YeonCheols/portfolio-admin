@@ -79,8 +79,8 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const name = searchParams.get('name');
+    const url = new URL(request.url);
+    const name = url.pathname.split('/')[3];
     const stackName = decodeURIComponent(name || '');
     const body: StackMetadata = await request.json();
 

@@ -6,6 +6,7 @@ import { type StackMetadata } from '../api/stacks/route';
 import { Button } from '@/components/ui/button';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
+import { IconManager } from '@/components/ui/icon-manager';
 import { Loading } from '@/components/ui/loading';
 import { StackIcon } from '@/components/ui/stack-icon';
 import { Table } from '@/components/ui/table';
@@ -25,14 +26,24 @@ export default function StacksManagement() {
   const [loading, setLoading] = useState(true);
   const [editingStack, setEditingStack] = useState<StackMetadata | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [showIconManager, setShowIconManager] = useState(false);
 
   const {
+    watch,
     register,
     handleSubmit,
     reset,
     setValue,
     formState: { errors },
-  } = useForm<StackFormData>();
+  } = useForm<StackFormData>({
+    mode: 'onChange',
+    defaultValues: {
+      name: '',
+      icon: '',
+      color: '',
+      category: 'frontend' as StackMetadata['category'],
+    },
+  });
 
   // 스택 데이터 로드
   const loadStacks = async () => {
@@ -166,7 +177,6 @@ export default function StacksManagement() {
     ),
     color: (
       <div className="flex items-center gap-2">
-        <div className={cn('w-4 h-4 rounded', stack.color)}></div>
         <span className="text-sm">{stack.color}</span>
       </div>
     ),
@@ -202,37 +212,59 @@ export default function StacksManagement() {
 
   return (
     <>
-      <Button variant="secondary" className="mb-4" onClick={() => setIsAdding(true)}>
-        새 스택 추가
-      </Button>
+      {/* 아이콘 관리자 토글 버튼 */}
+      <div className="flex items-center justify-between mb-4">
+        <Button variant="secondary" onClick={() => setIsAdding(true)}>
+          새 스택 추가
+        </Button>
+        <Button variant="outline" onClick={() => setShowIconManager(!showIconManager)}>
+          {showIconManager ? '아이콘 관리자 숨기기' : '아이콘 관리자 보기'}
+        </Button>
+      </div>
+
+      {/* 아이콘 관리자 */}
+      {showIconManager && (
+        <div className="mb-6">
+          <IconManager />
+        </div>
+      )}
 
       {/* 스택 추가 폼 */}
       {isAdding && (
-        <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 mb-6">
           <h2 className="text-lg font-semibold mb-4">새 스택 추가</h2>
           <form onSubmit={handleSubmit(handleAddStack)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <FormSection>
                 <FormInput
                   id="name"
-                  {...register('name', { required: '스택명을 입력해주세요' })}
+                  name="스택명"
+                  register={register}
+                  errors={errors}
+                  validation={{
+                    required: '스택명을 입력해주세요',
+                  }}
                   placeholder="예: React.js"
                 />
-                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
               </FormSection>
               <FormSection>
                 <FormInput
                   id="icon"
-                  {...register('icon', { required: '아이콘명을 입력해주세요' })}
+                  name="아이콘명"
+                  register={register}
+                  errors={errors}
+                  validation={{
+                    required: '아이콘명을 입력해주세요',
+                  }}
                   placeholder="예: SiReact"
                 />
-                {errors.icon && <span className="text-red-500 text-sm">{errors.icon.message}</span>}
               </FormSection>
               <FormSection>
-                <FormInput id="color" {...register('color')} placeholder="예: text-sky-500" />
+                <FormInput id="color" name="색상" register={register} errors={errors} placeholder="예: text-sky-500" />
               </FormSection>
               <FormSection>
                 <select
+                  id="category"
                   {...register('category', { required: '카테고리를 선택해주세요' })}
                   className="w-full p-2 border rounded-md"
                 >
@@ -259,28 +291,36 @@ export default function StacksManagement() {
 
       {/* 스택 수정 폼 */}
       {editingStack && (
-        <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 mb-6">
           <h2 className="text-lg font-semibold mb-4">스택 수정</h2>
           <form onSubmit={handleSubmit(handleEditStack)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <FormSection>
                 <FormInput
-                  id="edit-name"
-                  {...register('name', { required: '스택명을 입력해주세요' })}
+                  id="name"
+                  name="스택명"
+                  register={register}
+                  errors={errors}
+                  validation={{
+                    required: '스택명을 입력해주세요',
+                  }}
                   placeholder="스택명"
                 />
-                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
               </FormSection>
               <FormSection>
                 <FormInput
-                  id="edit-icon"
-                  {...register('icon', { required: '아이콘명을 입력해주세요' })}
+                  id="icon"
+                  name="아이콘명"
+                  register={register}
+                  errors={errors}
+                  validation={{
+                    required: '아이콘명을 입력해주세요',
+                  }}
                   placeholder="아이콘명"
                 />
-                {errors.icon && <span className="text-red-500 text-sm">{errors.icon.message}</span>}
               </FormSection>
               <FormSection>
-                <FormInput id="edit-color" {...register('color')} placeholder="색상 클래스" />
+                <FormInput id="color" name="색상" register={register} errors={errors} placeholder="색상 클래스" />
               </FormSection>
               <FormSection>
                 <select
@@ -306,7 +346,8 @@ export default function StacksManagement() {
           </form>
         </div>
       )}
-      {/* 스택 목록 테이블 */}
+
+      {/* 스택 테이블 */}
       <Table table={{ header: stackTableHeader, body: tableData }} />
     </>
   );

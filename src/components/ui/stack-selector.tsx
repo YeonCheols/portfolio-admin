@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { type UseFormSetValue, type UseFormRegister, type UseFormWatch, type FieldErrors } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { StackTag } from '@/components/ui/stack-icon';
@@ -9,6 +9,10 @@ import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/lib/utils';
 
 export interface StackSelectorProps {
+  register: UseFormRegister<any>;
+  watch: UseFormWatch<any>;
+  setValue: UseFormSetValue<any>;
+  errors: FieldErrors<any>;
   name: string;
   label?: string;
   placeholder?: string;
@@ -16,13 +20,16 @@ export interface StackSelectorProps {
   maxStacks?: number;
 }
 
-export function StackSelector({ name, label = '기술 스택', className = '', maxStacks = 10 }: StackSelectorProps) {
-  const {
-    register,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useFormContext();
+export function StackSelector({
+  register,
+  watch,
+  setValue,
+  errors,
+  name,
+  label = '기술 스택',
+  className = '',
+  maxStacks = 10,
+}: StackSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStacks, setSelectedStacks] = useState<Array<{ name: string; icon: string; color: string }>>([]);
