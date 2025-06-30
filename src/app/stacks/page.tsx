@@ -6,6 +6,7 @@ import { type StackMetadata } from '../api/stacks/route';
 import { Button } from '@/components/ui/button';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
+import { IconManager } from '@/components/ui/icon-manager';
 import { Loading } from '@/components/ui/loading';
 import { StackIcon } from '@/components/ui/stack-icon';
 import { Table } from '@/components/ui/table';
@@ -25,6 +26,7 @@ export default function StacksManagement() {
   const [loading, setLoading] = useState(true);
   const [editingStack, setEditingStack] = useState<StackMetadata | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [showIconManager, setShowIconManager] = useState(false);
 
   const {
     register,
@@ -202,13 +204,26 @@ export default function StacksManagement() {
 
   return (
     <>
-      <Button variant="secondary" className="mb-4" onClick={() => setIsAdding(true)}>
-        새 스택 추가
-      </Button>
+      {/* 아이콘 관리자 토글 버튼 */}
+      <div className="flex items-center justify-between mb-4">
+        <Button variant="secondary" onClick={() => setIsAdding(true)}>
+          새 스택 추가
+        </Button>
+        <Button variant="outline" onClick={() => setShowIconManager(!showIconManager)}>
+          {showIconManager ? '아이콘 관리자 숨기기' : '아이콘 관리자 보기'}
+        </Button>
+      </div>
+
+      {/* 아이콘 관리자 */}
+      {showIconManager && (
+        <div className="mb-6">
+          <IconManager />
+        </div>
+      )}
 
       {/* 스택 추가 폼 */}
       {isAdding && (
-        <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 mb-6">
           <h2 className="text-lg font-semibold mb-4">새 스택 추가</h2>
           <form onSubmit={handleSubmit(handleAddStack)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -259,7 +274,7 @@ export default function StacksManagement() {
 
       {/* 스택 수정 폼 */}
       {editingStack && (
-        <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+        <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 mb-6">
           <h2 className="text-lg font-semibold mb-4">스택 수정</h2>
           <form onSubmit={handleSubmit(handleEditStack)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -306,7 +321,8 @@ export default function StacksManagement() {
           </form>
         </div>
       )}
-      {/* 스택 목록 테이블 */}
+
+      {/* 스택 테이블 */}
       <Table table={{ header: stackTableHeader, body: tableData }} />
     </>
   );
