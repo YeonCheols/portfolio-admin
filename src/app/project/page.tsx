@@ -11,7 +11,7 @@ import { Loading } from '@/components/ui/loading';
 import { StackIcon } from '@/components/ui/stack-icon';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
-import { AdminTagResponse, type AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
+import { type AdminTagResponse, type AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
 import { deleteData, getData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { swapArrayElements } from '@/lib/utils';
@@ -20,30 +20,14 @@ import { type ProjectTableData } from '@/types/project';
 
 export default function Project() {
   const router = useRouter();
-  const [stacksMetadata, setStacksMetadata] = useState<Array<{ name: string; icon: string; color: string }>>([]);
 
   const { table, checkbox, setBody } = useTableStore();
   const { data, isLoading, mutate } = useSWR<{ data: AdminProjectResponse[] }>(`/api/project?page=1&size=5`, fetcher);
-
-  // 스택 메타데이터 로드
-  useEffect(() => {
-    const loadStacksMetadata = async () => {
-      try {
-        const response = await getData<{ data: AdminTagResponse[] }>('/api/stacks');
-        if (response.status) {
-          setStacksMetadata(response.data.data);
-        }
-      } catch {
-        console.info('Failed to load stacks metadata');
-      }
-    };
-
-    loadStacksMetadata();
-  }, []);
+  const { data: stacksData } = useSWR<{ data: AdminTagResponse[] }>(`/api/stacks`, fetcher);
 
   // 스택 이름으로 메타데이터 찾기
   const getStackMetadata = (stackName: string) => {
-    return stacksMetadata.find(stack => stack.name === stackName) || { name: stackName, icon: '', color: '' };
+    return stacksData?.data.find(stack => stack.name === stackName) || { name: stackName, icon: '', color: '' };
   };
 
   const handleChangeStatus = async (request: ProjectTableData) => {
@@ -279,7 +263,7 @@ export default function Project() {
       return [];
     }
     return mapProjectTableData(data.data, router, handleSortData, handleChangeStatus, handleDelete, data.data.length);
-  }, [data, router]);
+  }, [data, stacksData, router]);
 
   useEffect(() => {
     if (!isEqual(projectTableData, table.body)) {
