@@ -15,9 +15,12 @@ export async function GET(request: Request) {
     };
 
     // 외부 API 호출
-    const data = await getData(`/profile`, requestParams);
-
-    return NextResponse.json({ status: 200, data });
+    const response = await getData(`/profile`, requestParams);
+    if (response.status) {
+      return NextResponse.json({ status: 200, data: response.data });
+    } else {
+      return NextResponse.json({ status: 500, error: response.error, data: [] });
+    }
   } catch (error) {
     return NextResponse.json({ status: 500, error, data: [] });
   }

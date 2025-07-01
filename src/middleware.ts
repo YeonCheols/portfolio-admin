@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { type AdminLoginResponse } from '@/docs/api';
 import { getData } from './lib/api';
 import { getAccessToken } from './lib/auth';
 import type { NextRequest } from 'next/server';
@@ -18,8 +19,8 @@ export async function middleware(request: NextRequest) {
 
   // NOTE : 토큰이 존재하면 인증 재시도
   if (token) {
-    const isAuthToken = await getData(`/user/auth/check`);
-    if (isAuthToken.status === 401) {
+    const isAuthToken = await getData<AdminLoginResponse>(`/user/auth/check`);
+    if (!isAuthToken.status) {
       return NextResponse.redirect(new URL('/login?callbackUrl=' + currentPath, request.url));
     }
   }

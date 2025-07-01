@@ -15,9 +15,12 @@ export async function GET(request: Request) {
     };
 
     // 외부 API 호출
-    const data = await getData(`/project`, requestParams);
-
-    return NextResponse.json({ status: true, data });
+    const response = await getData(`/project`, requestParams);
+    if (response.status) {
+      return NextResponse.json({ status: true, data: response.data });
+    } else {
+      return NextResponse.json({ status: false, error: response.error, data: [] });
+    }
   } catch (error) {
     return NextResponse.json({ status: false, error, data: [] });
   }

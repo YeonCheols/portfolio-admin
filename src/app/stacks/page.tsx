@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { type StackMetadata } from '../api/stacks/route';
 import { Button } from '@/components/ui/button';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
@@ -11,25 +10,25 @@ import { Loading } from '@/components/ui/loading';
 import { StackIcon } from '@/components/ui/stack-icon';
 import { Table } from '@/components/ui/table';
 import { stackTableHeader } from '@/data/table/stacks';
-import { fetcher } from '@/lib/fetcher';
+import { type AdminTagResponse } from '@/docs/api';
+import { getData } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
 interface StackFormData {
   name: string;
   icon: string;
   color: string;
-  category: StackMetadata['category'];
+  category: AdminTagResponse['category'];
 }
 
 export default function StacksManagement() {
-  const [stacks, setStacks] = useState<StackMetadata[]>([]);
+  const [stacks, setStacks] = useState<AdminTagResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingStack, setEditingStack] = useState<StackMetadata | null>(null);
+  const [editingStack, setEditingStack] = useState<AdminTagResponse | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [showIconManager, setShowIconManager] = useState(false);
 
   const {
-    watch,
     register,
     handleSubmit,
     reset,
@@ -41,7 +40,7 @@ export default function StacksManagement() {
       name: '',
       icon: '',
       color: '',
-      category: 'frontend' as StackMetadata['category'],
+      category: 'frontend',
     },
   });
 
@@ -49,12 +48,13 @@ export default function StacksManagement() {
   const loadStacks = async () => {
     setLoading(true);
     try {
-      const response = await fetcher('/api/stacks');
+      const response = await getData<{ data: AdminTagResponse[] }>('/api/stacks');
+
       if (response.status) {
-        setStacks(response.data);
+        setStacks(response.data.data);
       }
     } catch {
-      console.info('Failed to load stacks');
+      console.error('Failed to load stacks');
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ export default function StacksManagement() {
 
   // 스택 추가
   const handleAddStack = async (data: StackFormData) => {
-    const newStack: StackMetadata = {
+    const newStack: Pick<AdminTagResponse, 'name' | 'icon' | 'color' | 'category'> = {
       name: data.name,
       icon: data.icon,
       color: data.color,
@@ -96,7 +96,7 @@ export default function StacksManagement() {
   const handleEditStack = async (data: StackFormData) => {
     if (!editingStack) return;
 
-    const updatedStack: StackMetadata = {
+    const updatedStack: Pick<AdminTagResponse, 'name' | 'icon' | 'color' | 'category'> = {
       name: data.name,
       icon: data.icon,
       color: data.color,
@@ -140,7 +140,7 @@ export default function StacksManagement() {
   };
 
   // 수정 모드 시작
-  const startEditing = (stack: StackMetadata) => {
+  const startEditing = (stack: AdminTagResponse) => {
     setEditingStack(stack);
     setValue('name', stack.name);
     setValue('icon', stack.icon);

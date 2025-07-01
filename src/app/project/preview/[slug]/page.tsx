@@ -10,7 +10,8 @@ import MDXComponent from '@/components/ui/markdown/mdx';
 import StacksLink from '@/components/ui/project/link';
 import { StackIcon } from '@/components/ui/stack-icon';
 import Tooltip from '@/components/ui/tooltip';
-import { type ProjectResponse } from '@/docs/api';
+import { type AdminTagResponse, type ProjectResponse } from '@/docs/api';
+import { getData } from '@/lib/api';
 import { usePropsContext } from '@/lib/context/props';
 import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/lib/utils';
@@ -27,12 +28,12 @@ export default function ProjectPreview() {
   useEffect(() => {
     const loadStacksMetadata = async () => {
       try {
-        const response = await fetcher('/api/stacks');
+        const response = await getData<{ data: AdminTagResponse[] }>('/api/stacks');
         if (response.status) {
-          setStacksMetadata(response.data);
+          setStacksMetadata(response.data.data);
         }
       } catch {
-        console.info('Failed to load stacks metadata');
+        console.error('Failed to load stacks metadata');
       }
     };
 
