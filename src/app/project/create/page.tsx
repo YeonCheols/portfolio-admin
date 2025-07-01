@@ -55,12 +55,19 @@ export default function ProjectCreate() {
   const [activeTab, setActiveTab] = useState<string>('url');
 
   const handleCheckDuplicate = async () => {
-    const response = await getData(`/project/over-slug/${watch('slug')}`, {}, true);
+    const response = await getData<number>(`/project/over-slug/${watch('slug')}`, {}, true);
 
-    setOverSlug({
-      status: response.error ? 'error' : response > 0 ? 'over' : 'success',
-      count: typeof response === 'number' ? response : 0,
-    });
+    if (response.status) {
+      setOverSlug({
+        status: response.data > 0 ? 'over' : 'success',
+        count: typeof response.data === 'number' ? response.data : 0,
+      });
+    } else {
+      setOverSlug({
+        status: 'error',
+        count: 0,
+      });
+    }
   };
 
   const handleFileUpload = async (e: React.FormEvent<HTMLInputElement>) => {

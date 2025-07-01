@@ -13,10 +13,10 @@ export async function getData<T = any>(
 ): Promise<ApiResult<T>> {
   setBaseUrl(client);
   try {
-    const { data } = await axiosInstance.get(url, { params });
+    const { data } = await axiosInstance.get<T>(url, { params });
     return { status: true, data };
   } catch (error) {
-    return { status: false, error };
+    return { status: false, error, data: undefined };
   }
 }
 

@@ -10,8 +10,6 @@ export async function GET(request: Request) {
 
     const response = await getData<AdminTagResponse[]>(`/tag`);
 
-    let filteredStacks: AdminTagResponse[] = [];
-
     // api 호출 실패 시
     if (!response.status) {
       return NextResponse.json({
@@ -21,20 +19,10 @@ export async function GET(request: Request) {
       });
     }
 
-    // 카테고리 필터링
-    if (category) {
-      filteredStacks = response.data.filter(stack => stack.category === category);
-    }
-
-    // 검색 필터링
-    if (search) {
-      filteredStacks = filteredStacks.filter(stack => stack.name.toLowerCase().includes(search.toLowerCase()));
-    }
-
     return NextResponse.json({
       status: true,
-      data: filteredStacks,
-      total: filteredStacks.length,
+      data: response.data,
+      total: response.data.length,
     });
   } catch {
     return NextResponse.json({

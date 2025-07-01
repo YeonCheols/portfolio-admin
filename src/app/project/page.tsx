@@ -11,8 +11,8 @@ import { Loading } from '@/components/ui/loading';
 import { StackIcon } from '@/components/ui/stack-icon';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
-import { type AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
-import { deleteData, patchData } from '@/lib/api';
+import { AdminTagResponse, type AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
+import { deleteData, getData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { swapArrayElements } from '@/lib/utils';
 import { useTableStore } from '@/lib/zustand/table';
@@ -29,9 +29,9 @@ export default function Project() {
   useEffect(() => {
     const loadStacksMetadata = async () => {
       try {
-        const response = await fetcher('/api/stacks');
+        const response = await getData<{ data: AdminTagResponse[] }>('/api/stacks');
         if (response.status) {
-          setStacksMetadata(response.data);
+          setStacksMetadata(response.data.data);
         }
       } catch {
         console.info('Failed to load stacks metadata');

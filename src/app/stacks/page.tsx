@@ -11,7 +11,7 @@ import { StackIcon } from '@/components/ui/stack-icon';
 import { Table } from '@/components/ui/table';
 import { stackTableHeader } from '@/data/table/stacks';
 import { type AdminTagResponse } from '@/docs/api';
-import { fetcher } from '@/lib/fetcher';
+import { getData } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
 interface StackFormData {
@@ -48,12 +48,13 @@ export default function StacksManagement() {
   const loadStacks = async () => {
     setLoading(true);
     try {
-      const response = await fetcher('/api/stacks');
+      const response = await getData<{ data: AdminTagResponse[] }>('/api/stacks');
+
       if (response.status) {
-        setStacks(response.data);
+        setStacks(response.data.data);
       }
     } catch {
-      console.info('Failed to load stacks');
+      console.error('Failed to load stacks');
     } finally {
       setLoading(false);
     }
