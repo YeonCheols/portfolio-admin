@@ -1,3 +1,4 @@
+import { type ApiResult } from '@/types/api';
 import axiosInstance from './axiosInstance';
 
 function setBaseUrl(client?: boolean) {
@@ -5,11 +6,15 @@ function setBaseUrl(client?: boolean) {
     axiosInstance.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_URL}`;
   }
 }
-export async function getData(url: string, params?: Record<string, unknown>, client?: boolean) {
+export async function getData<T = any>(
+  url: string,
+  params?: Record<string, unknown>,
+  client?: boolean,
+): Promise<ApiResult<T>> {
   setBaseUrl(client);
   try {
     const { data } = await axiosInstance.get(url, { params });
-    return data;
+    return { status: true, data };
   } catch (error) {
     return { status: false, error };
   }
