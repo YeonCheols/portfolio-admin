@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server';
-import { type AdminTagResponse } from '@/docs/api';
-import { getData } from '@/lib/api';
+import { type AdminTagCreateRequest, type AdminTagResponse } from '@/docs/api';
+import { getData, postData } from '@/lib/api';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const category = searchParams.get('category');
-    const search = searchParams.get('search');
-
     const response = await getData<AdminTagResponse[]>(`/tag`);
 
     // api 호출 실패 시
@@ -33,58 +29,43 @@ export async function GET(request: Request) {
   }
 }
 
-// export async function POST(request: Request) {
-//   try {
-//     const body: StackMetadata = await request.json();
+export async function POST(request: Request) {
+  try {
+    const body: AdminTagCreateRequest = await request.json();
 
-//     // 필수 필드 검증
-//     if (!body.name || !body.icon || !body.category) {
-//       return NextResponse.json(
-//         {
-//           status: false,
-//           error: 'Missing required fields: name, icon, category',
-//         },
-//         { status: 400 },
-//       );
-//     }
+    // 필수 필드 검증
+    if (!body.name || !body.icon || !body.category) {
+      return NextResponse.json({
+        status: false,
+        error: 'Missing required fields: name, icon, category',
+      });
+    }
 
-//     // 중복 검사
-//     const existingStack = STACKS_METADATA.find(stack => stack.name === body.name);
-//     if (existingStack) {
-//       return NextResponse.json(
-//         {
-//           status: false,
-//           error: 'Stack with this name already exists',
-//         },
-//         { status: 409 },
-//       );
-//     }
+    // 새 스택 추가
+    const newStack: AdminTagCreateRequest = {
+      name: body.name,
+      icon: body.icon,
+      color: body.color,
+      category: body.category,
+    };
 
-//     // 새 스택 추가
-//     const newStack: StackMetadata = {
-//       name: body.name,
-//       icon: body.icon,
-//       color: body.color || '',
-//       category: body.category,
-//     };
+    const response = await postData(`/tag`, newStack);
 
-//     STACKS_METADATA.push(newStack);
+    if (!response.status) {
+      return NextResponse.json({
+        status: false,
+        error: response.error,
+      });
+    }
 
-//     return NextResponse.json(
-//       {
-//         status: true,
-//         data: newStack,
-//         message: 'Stack created successfully',
-//       },
-//       { status: 201 },
-//     );
-//   } catch {
-//     return NextResponse.json(
-//       {
-//         status: false,
-//         error: 'Failed to create stack',
-//       },
-//       { status: 500 },
-//     );
-//   }
-// }
+    return NextResponse.json({
+      status: true,
+      data: response.data,
+    });
+  } catch {
+    return NextResponse.json({
+      status: false,
+      error: 'Failed to create stack',
+    });
+  }
+}
