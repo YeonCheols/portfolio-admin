@@ -396,7 +396,7 @@ export interface AdminTagCreateRequest {
    * 카테고리
    * @example "frontend"
    */
-  category: string;
+  category: 'frontend' | 'backend' | 'database' | 'devops' | 'tool' | 'other';
 }
 
 export interface AdminTagUpdateRequest {
@@ -419,5 +419,5 @@ export interface AdminTagUpdateRequest {
    * 카테고리
    * @example "frontend"
    */
-  category?: string;
+  category?: 'frontend' | 'backend' | 'database' | 'devops' | 'tool' | 'other';
 }

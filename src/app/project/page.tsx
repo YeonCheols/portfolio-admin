@@ -12,7 +12,7 @@ import { StackIcon } from '@/components/ui/stack-icon';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
 import { type AdminTagResponse, type AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
-import { deleteData, getData, patchData } from '@/lib/api';
+import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { swapArrayElements } from '@/lib/utils';
 import { useTableStore } from '@/lib/zustand/table';
