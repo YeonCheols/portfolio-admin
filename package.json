@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 next dev -p 5001",
-    "dev:https": "NODE_TLS_REJECT_UNAUTHORIZED=0 node server.js",
+    "dev": "next dev -p 5001",
+    "dev:https": "NODE_EXTRA_CA_CERTS=\"$(mkcert -CAROOT)/rootCA.pem\" node server.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "prepare": "husky",
-    "fetch-schema": "NODE_TLS_REJECT_UNAUTHORIZED=0 npx swagger-typescript-api -p https://api.ycseng.com/api-json -o ./docs -n api.ts --no-client",
+    "fetch-schema": "NODE_EXTRA_CA_CERTS=\"$(mkcert -CAROOT)/rootCA.pem\" npx swagger-typescript-api -p https://api.ycseng.com/api-json -o ./docs -n api.ts --no-client",
     "export-token": "source tool/export-token.sh"
   },
   "dependencies": {
