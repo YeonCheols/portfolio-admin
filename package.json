@@ -10,7 +10,7 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "prepare": "husky",
-    "fetch-schema": "NODE_EXTRA_CA_CERTS=\"$(mkcert -CAROOT)/rootCA.pem\" npx swagger-typescript-api -p https://api.ycseng.com/api-json -o ./docs -n api.ts --no-client",
+    "fetch-schema": "npx swagger-typescript-api -p https://api.ycseng.com/api-json -o ./docs -n api.ts --no-client",
     "export-token": "source tool/export-token.sh"
   },
   "dependencies": {
