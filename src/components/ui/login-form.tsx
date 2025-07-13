@@ -11,6 +11,7 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -27,7 +28,7 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
         잠시만 기다려주세요
       </>,
     );
-    const response = await postData(
+    const { error } = await postData(
       `/user/login`,
       {
         email: watch('email'),
@@ -36,8 +37,8 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
       true,
     );
 
-    if (response.status === false) {
-      toast.error(`인증 과정에서 오류가 발생했습니다 : ${response.error}`);
+    if (error?.status === 401) {
+      setError('password', { type: 'manual', message: '이메일 또는 비밀번호가 올바르지 않습니다.' });
       toast.dismiss();
       return;
     }

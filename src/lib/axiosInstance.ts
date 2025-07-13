@@ -13,9 +13,17 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async config => {
+    const isEdge = process.env.NEXT_RUNTIME === 'edge';
+    const dev = process.env.NODE_ENV === 'development';
     const accessToken = await getAccessToken();
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    if (dev && !isEdge) {
+      const https = require('https');
+      config.httpsAgent = new https.Agent({
+        rejectUnauthorized: false,
+      });
     }
     return config;
   },

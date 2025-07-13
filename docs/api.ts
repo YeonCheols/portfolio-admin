@@ -70,6 +70,40 @@ export interface ProfileResponse {
   updatedAt: string;
 }
 
+export interface TagResponse {
+  /**
+   * 태그 ID
+   * @example 1
+   */
+  id: number;
+  /**
+   * 태그 이름
+   * @example "React"
+   */
+  name: string;
+  /**
+   * 아이콘
+   * @example "react-icon"
+   */
+  icon: string;
+  /**
+   * 색상
+   * @example "#61dafb"
+   */
+  color: string;
+  /**
+   * 카테고리
+   * @example "frontend"
+   */
+  category: 'frontend' | 'backend' | 'database' | 'devops' | 'tool' | 'other';
+  /**
+   * 업데이트 일자
+   * @format date-time
+   * @example "2025-06-30T00:00:00.000Z"
+   */
+  updatedAt: string;
+}
+
 export interface AdminProfileCreateRequest {
   /**
    * 프로필 이름

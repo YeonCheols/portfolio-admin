@@ -52,7 +52,7 @@ app.prepare().then(() => {
       .listen(port, err => {
         if (err) throw err;
 
-        console.info(`${strings.http}  ${strings.ready} on http://localhost:${port}`);
+        console.info(`${strings.http}  ${strings.ready} on http://local.ycseng.com:${port}`);
       });
   }
 });
