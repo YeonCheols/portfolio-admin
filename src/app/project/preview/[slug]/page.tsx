@@ -1,5 +1,6 @@
 'use client';
 
+import { StackIcon } from '@yeoncheols/portfolio-core-ui';
 import NextImage from 'next/image';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -8,7 +9,6 @@ import { TopNav } from '@/components/nav';
 import { Loading } from '@/components/ui/loading';
 import MDXComponent from '@/components/ui/markdown/mdx';
 import StacksLink from '@/components/ui/project/link';
-import { StackIcon } from '@/components/ui/stack-icon';
 import Tooltip from '@/components/ui/tooltip';
 import { type AdminTagResponse, type ProjectResponse } from '@/docs/api';
 import { getData } from '@/lib/api';

@@ -1,9 +1,9 @@
 'use client';
 
+import { StackIcon } from '@yeoncheols/portfolio-core-ui';
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { useIconManager } from '@/hooks/use-icon-manager';
-import { StackIcon } from './stack-icon';
 
 interface IconManagerProps {
   className?: string;

@@ -1,5 +1,6 @@
 'use client';
 
+import { StackTag } from '@yeoncheols/portfolio-core-ui';
 import { isEqual } from 'lodash-es';
 import { useState, useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -9,7 +10,6 @@ import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
 import { IconManager } from '@/components/ui/icon-manager';
 import { Loading } from '@/components/ui/loading';
-import { StackIcon } from '@/components/ui/stack-icon';
 import { Table } from '@/components/ui/table';
 import { stackTableHeader } from '@/data/table/stacks';
 import { type AdminTagUpdateRequest, type AdminTagCreateRequest, type AdminTagResponse } from '@/docs/api';
@@ -144,8 +144,7 @@ export default function StacksManagement() {
         name: stack.name,
         icon: (
           <div className="flex items-center gap-2">
-            <StackIcon name={stack.name} icon={stack.icon} color={stack.color} size={20} />
-            <span className="text-sm">{stack.icon}</span>
+            <StackTag name={stack.name} icon={stack.icon} color={stack.color} size={20} showName />
           </div>
         ),
         color: (
