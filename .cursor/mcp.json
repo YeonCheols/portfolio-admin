@@ -1,20 +1,17 @@
 {
-    "mcpServers": {
-      "filesystem": {
-        "command": "npx",
-        "args": [
-          "-y",
-          "@modelcontextprotocol/server-filesystem",
-          "/Users/seong-yeoncheol/Desktop",
-          "/Users/seong-yeoncheol/Documents"
-        ]
-      },
-      "eslint": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["-y", "@eslint/mcp@latest"],
-        "env": {}
-      }
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@smithery-ai/github",
+        "--key",
+        "90ef4c77-2bb3-4712-88ed-ff980d8f88ea",
+        "--profile",
+        "comprehensive-chicken-zhA4oT"
+      ]
     }
   }
-  
+}

@@ -7,4 +7,4 @@ stty echo
 echo
 
 export GITHUB_NPM_TOKEN="$GITHUB_NPM_TOKEN"
-echo "GITHUB_NPM_TOKEN이 현재 터미널에 설정되었습니다."
+echo "$GITHUB_NPM_TOKEN 이 현재 터미널에 설정되었습니다."

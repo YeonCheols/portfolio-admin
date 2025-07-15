@@ -1,31 +1,27 @@
 'use client';
 
+import { StackSelector } from '@yeoncheols/portfolio-core-ui';
 import NextImage from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { FormSection } from '@/components/ui/form/form-section';
 import FormInput from '@/components/ui/form/input';
 import { RadioCard } from '@/components/ui/radio-card';
-import { StackSelector } from '@/components/ui/stack-selector';
 import { Tabs } from '@/components/ui/tab';
-import { type AdminProjectCreateRequest } from '@/docs/api';
+import { type AdminTagResponse, type AdminProjectCreateRequest } from '@/docs/api';
 import { getData } from '@/lib/api';
+import { fetcher } from '@/lib/fetcher';
 import { getFileUrl } from '@/lib/file/read';
 import { uploadFile } from '@/lib/file/upload';
 
 export default function ProjectCreate() {
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<AdminProjectCreateRequest>({
+  const methods = useForm<AdminProjectCreateRequest>({
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -38,6 +34,15 @@ export default function ProjectCreate() {
       isShow: false,
     },
   });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = methods;
+
+  const { data: stacksData } = useSWR<{ data: AdminTagResponse[] }>(`/api/stacks`, fetcher);
 
   /*
     success : 사용할 수 있는 slug입니다.
@@ -191,19 +196,20 @@ export default function ProjectCreate() {
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </FormSection>
-        <FormSection>
-          <StackSelector
-            watch={watch}
-            register={register}
-            setValue={setValue}
-            errors={errors}
-            name="stacks"
-            label="기술 스택"
-            placeholder="기술 스택을 선택하세요"
-            maxStacks={8}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          />
-        </FormSection>
+        {stacksData?.data && (
+          <FormProvider {...methods}>
+            <FormSection>
+              <StackSelector
+                stacks={stacksData?.data}
+                name="stacks"
+                label="기술 스택"
+                placeholder="기술 스택을 선택하세요"
+                maxStacks={8}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              />
+            </FormSection>
+          </FormProvider>
+        )}
         <FormSection>
           <FormInput
             id="linkDemo"
