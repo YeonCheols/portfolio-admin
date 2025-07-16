@@ -1,6 +1,7 @@
 'use client';
 
 import { StackIcon } from '@yeoncheols/portfolio-core-ui';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { useIconManager } from '@/hooks/use-icon-manager';
@@ -62,24 +63,33 @@ export function StackIconManager({ className = '' }: IconManagerProps) {
           <h4 className="font-medium mb-2">캐시된 아이콘 ({cachedIcons.length})</h4>
           {showDetails ? (
             <div className="space-y-2 max-h-40 overflow-y-auto">
-              {cachedIcons.map(iconName => (
-                <div key={iconName} className="flex items-center justify-between text-sm">
-                  <span className="font-mono">{iconName}</span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      removeFromCache(iconName);
-                      // 제거 후 스택 데이터 다시 로드
-                      setTimeout(() => {
-                        loadStacksData();
-                      }, 100);
-                    }}
+              <AnimatePresence>
+                {cachedIcons.map(iconName => (
+                  <motion.div
+                    key={iconName}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center justify-between text-sm"
                   >
-                    제거
-                  </Button>
-                </div>
-              ))}
+                    <span className="font-mono">{iconName}</span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        removeFromCache(iconName);
+                        // 제거 후 스택 데이터 다시 로드
+                        setTimeout(() => {
+                          loadStacksData();
+                        }, 100);
+                      }}
+                    >
+                      제거
+                    </Button>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           ) : (
             <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -93,15 +103,24 @@ export function StackIconManager({ className = '' }: IconManagerProps) {
           <h4 className="font-medium mb-2">등록된 스택 ({stacks.length})</h4>
           {showDetails ? (
             <div className="space-y-2 max-h-40 overflow-y-auto">
-              {stacks.map(stack => (
-                <div key={stack.name} className="flex items-center gap-2 text-sm">
-                  <StackIcon name={stack.name} icon={stack.icon} color={stack.color} size={16} />
-                  <span>{stack.name}</span>
-                  <span className="text-xs text-gray-500">({stack.category})</span>
-                  {isIconLoading(stack.icon) && <span className="text-xs text-blue-500">로딩중...</span>}
-                  {hasIconError(stack.icon) && <span className="text-xs text-red-500">에러</span>}
-                </div>
-              ))}
+              <AnimatePresence>
+                {stacks.map(stack => (
+                  <motion.div
+                    key={stack.name}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center gap-2 text-sm"
+                  >
+                    <StackIcon name={stack.name} icon={stack.icon} color={stack.color} size={16} />
+                    <span>{stack.name}</span>
+                    <span className="text-xs text-gray-500">({stack.category})</span>
+                    {isIconLoading(stack.icon) && <span className="text-xs text-blue-500">로딩중...</span>}
+                    {hasIconError(stack.icon) && <span className="text-xs text-red-500">에러</span>}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           ) : (
             <p className="text-sm text-gray-600 dark:text-gray-400">{stacks.length}개의 스택이 등록되어 있습니다.</p>

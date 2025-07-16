@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useMemo, isValidElement, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -184,12 +185,19 @@ function Table({ table, isLoading = false }: TableProps) {
   }
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <motion.div
+      className="relative overflow-x-auto shadow-md sm:rounded-lg"
+      layout
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.98 }}
+      transition={{ duration: 0.3 }}
+    >
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         {header}
         {body}
       </table>
-    </div>
+    </motion.div>
   );
 }
 
