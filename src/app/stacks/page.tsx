@@ -52,7 +52,9 @@ export default function StacksManagement() {
     };
 
     try {
-      const response = await postData(`/api/stacks`, newStack);
+      const response = await postData(`/api/stacks`, newStack, undefined, {
+        disableToast: true,
+      });
 
       if (response.status) {
         await stacksMutate();
