@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Providers } from './providers';
 import type { Metadata } from 'next';
 import '@/style/globals.css';
+import '@yeoncheols/portfolio-core-ui/ui-tailwind.min.css';
 
 const gabarito = Gabarito({ subsets: ['latin'], variable: '--font-gabarito' });
 

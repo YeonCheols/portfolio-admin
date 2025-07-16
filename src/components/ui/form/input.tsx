@@ -1,4 +1,5 @@
 import { type RegisterOptions, type FieldErrors, type UseFormRegister } from 'react-hook-form';
+import { cn } from '@/lib/utils';
 
 interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
@@ -17,10 +18,15 @@ function FormInput(props: FormInputProps) {
       <label htmlFor={id} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
         {name}
       </label>
-      <input id={id} className={className} {...(register ? register(id, { ...validation }) : {})} {...restProps} />
+      <input
+        id={id}
+        className={cn('w-full p-2 border rounded-md', className)}
+        {...(register ? register(id, { ...validation }) : {})}
+        {...restProps}
+      />
       {errors && errors[id] && <p className="mt-2 text-sm text-red-600">{errors[id]?.message as string}</p>}
     </>
   );
 }
 
-export default FormInput;
+export { FormInput };

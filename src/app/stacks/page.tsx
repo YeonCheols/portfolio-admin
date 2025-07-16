@@ -5,23 +5,19 @@ import { isEqual } from 'lodash-es';
 import { useState, useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import { Button } from '@/components/ui/button';
-import { FormSection } from '@/components/ui/form/form-section';
-import FormInput from '@/components/ui/form/input';
-import { IconManager } from '@/components/ui/icon-manager';
-import { Loading } from '@/components/ui/loading';
-import { Table } from '@/components/ui/table';
+import { Button, Modal, Table, Loading, StackIconManager, StackForm } from '@/components/ui';
 import { stackTableHeader } from '@/data/table/stacks';
 import { type AdminTagUpdateRequest, type AdminTagCreateRequest, type AdminTagResponse } from '@/docs/api';
 import { deleteData, postData, putData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/lib/utils';
 import { useTableStore } from '@/lib/zustand/table';
+import { type StackFormProps } from '@/types/stack';
 
 export default function StacksManagement() {
   const { table, setBody } = useTableStore();
 
-  const [formMode, setFormMode] = useState<'add' | 'edit' | 'none'>('none');
+  const [formMode, setFormMode] = useState<StackFormProps['formMode']>('none');
   const [showIconManager, setShowIconManager] = useState(false);
 
   const {
@@ -119,14 +115,8 @@ export default function StacksManagement() {
     setValue('category', stack.category);
   };
 
-  // 수정 모드 취소
-  const cancelEditing = () => {
-    setFormMode('none');
-    reset();
-  };
-
-  // 추가 모드 취소
-  const cancelAdding = () => {
+  // 등록 취소
+  const cacncelMode = () => {
     setFormMode('none');
     reset();
   };
@@ -205,127 +195,32 @@ export default function StacksManagement() {
       {/* 아이콘 관리자 */}
       {showIconManager && (
         <div className="mb-6">
-          <IconManager />
+          <StackIconManager />
         </div>
       )}
 
       {/* 스택 추가 폼 */}
-      {formMode === 'add' && (
-        <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 mb-6">
-          <h2 className="text-lg font-semibold mb-4">새 스택 추가</h2>
-          <form onSubmit={handleSubmit(handleAddStack)} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <FormSection>
-                <FormInput
-                  id="name"
-                  name="스택명"
-                  register={register}
-                  errors={errors}
-                  validation={{
-                    required: '스택명을 입력해주세요',
-                  }}
-                  placeholder="예: React.js"
-                />
-              </FormSection>
-              <FormSection>
-                <FormInput
-                  id="icon"
-                  name="아이콘명"
-                  register={register}
-                  errors={errors}
-                  validation={{
-                    required: '아이콘명을 입력해주세요',
-                  }}
-                  placeholder="예: SiReact"
-                />
-              </FormSection>
-              <FormSection>
-                <FormInput id="color" name="색상" register={register} errors={errors} placeholder="예: text-sky-500" />
-              </FormSection>
-              <FormSection>
-                <select
-                  id="category"
-                  {...register('category', { required: '카테고리를 선택해주세요' })}
-                  className="w-full p-2 border rounded-md"
-                >
-                  <option value="">카테고리 선택</option>
-                  <option value="frontend">Frontend</option>
-                  <option value="backend">Backend</option>
-                  <option value="database">Database</option>
-                  <option value="devops">DevOps</option>
-                  <option value="tool">Tool</option>
-                  <option value="other">Other</option>
-                </select>
-                {errors.category && <span className="text-red-500 text-sm">{errors.category.message}</span>}
-              </FormSection>
-            </div>
-            <div className="flex gap-2">
-              <Button type="submit">추가</Button>
-              <Button type="button" variant="outline" onClick={cancelAdding}>
-                취소
-              </Button>
-            </div>
-          </form>
-        </div>
-      )}
-
+      <Modal isOpen={formMode === 'add'} headerTitle="새 스택 추가" footer={<></>} onClose={cacncelMode}>
+        <StackForm
+          formMode={formMode}
+          register={register}
+          errors={errors}
+          handleSubmit={handleSubmit}
+          onSubmit={handleAddStack}
+          onClose={cacncelMode}
+        />
+      </Modal>
       {/* 스택 수정 폼 */}
-      {formMode === 'edit' && (
-        <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 mb-6">
-          <h2 className="text-lg font-semibold mb-4">스택 수정</h2>
-          <form onSubmit={handleSubmit(handleEditStack)} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <FormSection>
-                <FormInput
-                  id="name"
-                  name="스택명"
-                  register={register}
-                  errors={errors}
-                  validation={{
-                    required: '스택명을 입력해주세요',
-                  }}
-                  placeholder="스택명"
-                />
-              </FormSection>
-              <FormSection>
-                <FormInput
-                  id="icon"
-                  name="아이콘명"
-                  register={register}
-                  errors={errors}
-                  validation={{
-                    required: '아이콘명을 입력해주세요',
-                  }}
-                  placeholder="아이콘명"
-                />
-              </FormSection>
-              <FormSection>
-                <FormInput id="color" name="색상" register={register} errors={errors} placeholder="색상 클래스" />
-              </FormSection>
-              <FormSection>
-                <select
-                  {...register('category', { required: '카테고리를 선택해주세요' })}
-                  className="w-full p-2 border rounded-md"
-                >
-                  <option value="frontend">Frontend</option>
-                  <option value="backend">Backend</option>
-                  <option value="database">Database</option>
-                  <option value="devops">DevOps</option>
-                  <option value="tool">Tool</option>
-                  <option value="other">Other</option>
-                </select>
-                {errors.category && <span className="text-red-500 text-sm">{errors.category.message}</span>}
-              </FormSection>
-            </div>
-            <div className="flex gap-2">
-              <Button type="submit">수정</Button>
-              <Button type="button" variant="outline" onClick={cancelEditing}>
-                취소
-              </Button>
-            </div>
-          </form>
-        </div>
-      )}
+      <Modal isOpen={formMode === 'edit'} headerTitle="스택 수정" footer={<></>} onClose={cacncelMode}>
+        <StackForm
+          formMode={formMode}
+          register={register}
+          errors={errors}
+          handleSubmit={handleSubmit}
+          onSubmit={handleEditStack}
+          onClose={cacncelMode}
+        />
+      </Modal>
 
       {/* 스택 테이블 */}
       {stacksData && <Table table={{ header: stackTableHeader, body: stacksTableData }} />}
