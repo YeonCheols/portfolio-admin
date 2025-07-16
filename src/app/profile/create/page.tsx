@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { FormSection } from '@/components/ui/form/form-section';
+import { FormSection } from '@/components/ui/form/section';
 import FormInput from '@/components/ui/form/input';
 import { Tabs } from '@/components/ui/tab';
 import { type AdminProfileCreateRequest } from '@/docs/api';

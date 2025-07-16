@@ -9,7 +9,7 @@ interface IconManagerProps {
   className?: string;
 }
 
-export function IconManager({ className = '' }: IconManagerProps) {
+export function StackIconManager({ className = '' }: IconManagerProps) {
   const { getCachedIcons, clearCache, removeFromCache, loadStackData, isIconLoading, hasIconError } = useIconManager();
 
   const [stacks, setStacks] = useState<Array<{ name: string; icon: string; color: string; category: string }>>([]);

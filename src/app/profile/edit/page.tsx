@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
-import { FormSection } from '@/components/ui/form/form-section';
+import { FormSection } from '@/components/ui/form/section';
 import FormInput from '@/components/ui/form/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs } from '@/components/ui/tab';
