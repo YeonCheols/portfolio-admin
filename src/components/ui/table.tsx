@@ -211,7 +211,7 @@ function Table({ table, isLoading = false }: TableProps & { onPageChange?: (page
         {body}
       </table>
       <div className="flex justify-center my-4">
-        {table.pagination && (
+        {table.pagination && table.pagination.allTotal > 0 && (
           <ReactPaginate
             previousLabel={'<'}
             nextLabel={'>'}

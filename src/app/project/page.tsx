@@ -31,7 +31,11 @@ export default function Project() {
     `/api/project?page=${table.pagination?.page || 1}&size=${table.pagination?.size || 5}`,
     fetcher,
   );
-  const { data: stacksData } = useSWR<{ data: AdminTagResponse[] }>(`/api/stacks`, fetcher);
+  const { data: stacksData } = useSWR<{ data: AdminTagResponse[] }>(`/api/stacks`, fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshInterval: 0,
+  });
 
   const allCount = useRef<number>(0);
 
