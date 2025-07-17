@@ -7,10 +7,9 @@ import { useMemo, isValidElement, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ReactPaginate from 'react-paginate';
 import { useTableStore } from '@/lib/zustand/table';
-import { Loading } from './loading';
 import type { Table, TableData, TableHeader, TableOptions, TableProps } from '@/types/table';
 
-function Table({ table, pagination, isLoading = false }: TableProps & { onPageChange?: (page: number) => void }) {
+function Table({ table, isLoading = false }: TableProps & { onPageChange?: (page: number) => void }) {
   const { table: tableStore, checkbox, setTable, selectCheckbox, allSelectCheckbox } = useTableStore();
 
   const header = useMemo(() => {
@@ -146,14 +145,25 @@ function Table({ table, pagination, isLoading = false }: TableProps & { onPageCh
           {provided => (
             <AnimatePresence mode="wait">
               <motion.tbody
+                key={table.pagination?.page}
                 id="root-tbody"
                 ref={provided.innerRef}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6, ease: 'easeInOut' }}
               >
-                {table.body &&
+                {isLoading && (!table.body || table.body.length === 0) ? (
+                  <tr>
+                    <td colSpan={tableStore.header?.length || 1} className="text-center py-8">
+                      <div className="flex flex-col items-center justify-center gap-2">
+                        <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <span>로딩 중...</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  table.body &&
                   table.body.map((item, index) => (
                     <Draggable
                       key={`row-${index}`}
@@ -173,7 +183,8 @@ function Table({ table, pagination, isLoading = false }: TableProps & { onPageCh
                         </tr>
                       )}
                     </Draggable>
-                  ))}
+                  ))
+                )}
                 {provided.placeholder}
               </motion.tbody>
             </AnimatePresence>
@@ -181,49 +192,49 @@ function Table({ table, pagination, isLoading = false }: TableProps & { onPageCh
         </Droppable>
       </DragDropContext>
     );
-  }, [table, checkbox]);
+  }, [table, checkbox, isLoading, tableStore.header]);
 
   useEffect(() => {
     setTable(table);
   }, []);
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <motion.div
       className="relative overflow-x-auto shadow-md sm:rounded-lg"
-      layout
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.98 }}
-      transition={{ duration: 0.3 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6, ease: 'easeInOut' }}
     >
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         {header}
         {body}
       </table>
-      {pagination && (
-        <div className="flex justify-center my-4">
+      <div className="flex justify-center my-4">
+        {table.pagination && (
           <ReactPaginate
             previousLabel={'<'}
             nextLabel={'>'}
             breakLabel={'...'}
-            pageCount={Math.ceil(pagination.allTotal / pagination.size)}
-            marginPagesDisplayed={pagination.page}
-            pageRangeDisplayed={pagination.size}
-            onPageChange={({ selected }) => pagination.onPageChange?.(selected + 1)}
+            pageCount={Math.ceil(table.pagination.allTotal / table.pagination.size)}
+            marginPagesDisplayed={table.pagination.page}
+            pageRangeDisplayed={table.pagination.size}
+            onPageChange={({ selected }) => {
+              if (table.pagination) {
+                setTable({ ...table, pagination: { ...table.pagination, page: selected + 1 } });
+                table.pagination.onPageChange?.(selected + 1);
+              }
+            }}
             containerClassName={'flex gap-2 pagination'}
             pageClassName={'px-2 py-1 border rounded'}
             activeClassName={'bg-blue-500 text-white'}
             previousClassName={'px-2 py-1 border rounded'}
             nextClassName={'px-2 py-1 border rounded'}
             breakClassName={'px-2 py-1'}
-            forcePage={pagination.page - 1}
+            forcePage={table.pagination.page - 1}
           />
-        </div>
-      )}
+        )}
+      </div>
     </motion.div>
   );
 }

@@ -35,12 +35,6 @@ export type TableHeader = {
   type?: 'checkbox';
 };
 
-export interface Table<T> {
-  header: TableHeader[];
-  body: T[];
-  draggableOption?: DraggableOptions;
-}
-
 export interface Pagination {
   total: number;
   allTotal: number;
@@ -48,8 +42,13 @@ export interface Pagination {
   size: number;
   onPageChange?: (page: number) => void;
 }
+export interface Table<T> {
+  header: TableHeader[];
+  body: T[];
+  draggableOption?: DraggableOptions;
+  pagination?: Pagination | null;
+}
 export interface TableProps {
   table: Table<TableData>;
-  pagination?: Pagination;
   isLoading?: boolean;
 }

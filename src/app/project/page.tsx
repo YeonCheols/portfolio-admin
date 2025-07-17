@@ -3,12 +3,11 @@ import { StackIcon } from '@yeoncheols/portfolio-core-ui';
 import dayjs from 'dayjs';
 import { isArray, isEqual } from 'lodash-es';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
-import { Loading } from '@/components/ui/loading';
 import { Table } from '@/components/ui/table';
 import { projectTableHeader } from '@/data/table/project';
 import {
@@ -26,18 +25,15 @@ import { type ProjectTableData } from '@/types/project';
 export default function Project() {
   const router = useRouter();
 
-  const [pagination, setPagination] = useState({
-    page: 1,
-    size: 5,
-    keyword: '',
-  });
-
   const { table, checkbox, setBody } = useTableStore();
+
   const { data, isLoading, mutate } = useSWR<{ data: ProjectSearchResponse }>(
-    `/api/project?page=${pagination.page}&size=${pagination.size}&keyword=${pagination.keyword}`,
+    `/api/project?page=${table.pagination?.page || 1}&size=${table.pagination?.size || 5}`,
     fetcher,
   );
   const { data: stacksData } = useSWR<{ data: AdminTagResponse[] }>(`/api/stacks`, fetcher);
+
+  const allCount = useRef<number>(0);
 
   // 스택 이름으로 메타데이터 찾기
   const getStackMetadata = (stackName: string) => {
@@ -270,9 +266,11 @@ export default function Project() {
     }
   }, [projectTableData]);
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    if (data?.data) {
+      allCount.current = data?.data.allTotal;
+    }
+  }, [data?.data]);
 
   return (
     <>
@@ -287,60 +285,47 @@ export default function Project() {
         이미지 다운로드
       </Button>
 
-      {projectTableData.length > 0 && (
-        <Table
-          {...(data?.data && {
-            pagination: {
-              allTotal: data?.data.allTotal,
-              total: data?.data.total,
-              page: data?.data.page,
-              size: data?.data.size,
-              onPageChange: (page: number) => {
-                setPagination({ ...pagination, page });
-              },
+      <Table
+        isLoading={isLoading}
+        table={{
+          header: projectTableHeader,
+          body: projectTableData,
+          pagination: {
+            allTotal: allCount.current,
+            total: data?.data.total ?? 0,
+            page: table.pagination?.page ?? 1,
+            size: table.pagination?.size ?? 5,
+          },
+          draggableOption: {
+            draggable: true,
+            onDrop: async result => {
+              const { source, destination } = result;
+
+              // target data 없으면 반환
+              if (!data?.data || !destination) {
+                return;
+              }
+
+              // NOTE: 순서를 변경한 table data를 store 에 업데이트 함
+              const newData = swapArrayElements<AdminProjectResponse>(
+                data?.data.data || [],
+                source.index,
+                destination?.index,
+              );
+              setBody(
+                mapProjectTableData(newData, router, handleSortData, handleChangeStatus, handleDelete, data.data.total),
+              );
+
+              handleSortData({
+                nextSlug: data.data.data[source.index].slug,
+                nextOrderNo: data.data.data[destination.index].order,
+                prevSlug: data.data.data[destination.index].slug,
+                prevOrderNo: data.data.data[source.index].order,
+              });
             },
-          })}
-          table={{
-            header: projectTableHeader,
-            body: projectTableData,
-            draggableOption: {
-              draggable: true,
-              onDrop: async result => {
-                const { source, destination } = result;
-
-                // target data 없으면 반환
-                if (!data?.data || !destination) {
-                  return;
-                }
-
-                // NOTE: 순서를 변경한 table data를 store 에 업데이트 함
-                const newData = swapArrayElements<AdminProjectResponse>(
-                  data?.data.data || [],
-                  source.index,
-                  destination?.index,
-                );
-                setBody(
-                  mapProjectTableData(
-                    newData,
-                    router,
-                    handleSortData,
-                    handleChangeStatus,
-                    handleDelete,
-                    data.data.total,
-                  ),
-                );
-
-                handleSortData({
-                  nextSlug: data.data.data[source.index].slug,
-                  nextOrderNo: data.data.data[destination.index].order,
-                  prevSlug: data.data.data[destination.index].slug,
-                  prevOrderNo: data.data.data[source.index].order,
-                });
-              },
-            },
-          }}
-        />
-      )}
+          },
+        }}
+      />
     </>
   );
 }
