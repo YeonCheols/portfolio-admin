@@ -31,28 +31,14 @@ export default function Project() {
   };
 
   const handleChangeStatus = async (request: ProjectTableData) => {
-    toast('프로젝트 상태 변경 진행 중...');
     const { slug, isShow } = request;
     const response = await patchData('/api/project/show', { slug, isShow: !isShow });
     await mutate();
-
-    if (response.status === 200) {
-      toast.success('프로젝트 상태 변경 완료');
-    } else {
-      toast.error(`프로젝트 상태 변경 실패 : ${response.error}`);
-    }
   };
 
   const handleDelete = async (slug: ProjectTableData['slug']) => {
-    toast('프로젝트 삭제 진행 중...');
     const response = await deleteData(`/api/project/delete?slug=${slug}`);
     await mutate();
-
-    if (response.status === 200) {
-      toast.success('프로젝트 삭제 완료');
-    } else {
-      toast.error(`프로젝트 삭제 실패 : ${response.error}`);
-    }
   };
 
   const handleDownImg = async () => {
@@ -88,16 +74,8 @@ export default function Project() {
   };
 
   const handleSortData = async (item: AdminProjectOrderUpdateRequest) => {
-    toast('프로젝트 정렬 변경 중...');
-
     const response = await patchData(`/api/project/order`, item);
     await mutate();
-
-    if (response.status === 200) {
-      toast.success('프로젝트 정렬 변경 완료');
-    } else {
-      toast.error(`프로젝트 정렬 변경 실패 : ${response.error}`);
-    }
   };
 
   const mapProjectTableData = (

@@ -31,22 +31,14 @@ export default function ProjectEditContent() {
     setContent(markdown);
   };
   const handleContentSave = async () => {
-    toast('프로젝트 수정 진행 중...');
-    try {
-      const response = await patchData(`/api/project/edit`, {
-        content,
-        slug: params.slug,
-      });
-
-      if (response.status !== 200) {
-        throw new Error('프로젝트 수정에 실패했습니다.');
-      }
-
-      toast.success('프로젝트가 수정 되었습니다.');
-      router.push('/project');
-    } catch {
-      toast.error('프로젝트 수정중 오류가 발생했습니다.');
+    const response = await patchData(`/api/project/edit`, {
+      content,
+      slug: params.slug,
+    });
+    if (response.status !== 200) {
+      throw new Error('프로젝트 수정에 실패했습니다.');
     }
+    router.push('/project');
   };
 
   useEffect(() => {

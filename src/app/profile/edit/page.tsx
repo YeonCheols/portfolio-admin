@@ -76,21 +76,9 @@ export default function ProfileEdit() {
   };
 
   const onSubmit = async (data: AdminProfileUpdateRequest) => {
-    toast('프로필 수정 진행 중...');
-
-    try {
-      const response = await putData(`/api/profile/edit`, data);
-
-      if (response.status === 200) {
-        toast.success('프로필이 성공적으로 생성되었습니다.');
-        router.push('/profile');
-      } else if (response.error.status === 400) {
-        toast.error('프로필은 1개만 활성화 하실 수 있습니다.');
-      } else {
-        toast.error('프로필 생성 중 오류가 발생했습니다.');
-      }
-    } catch {
-      toast.error('프로필 생성 중 오류가 발생했습니다.');
+    const response = await putData(`/api/profile/edit`, data);
+    if (response.status === 200) {
+      router.push('/profile');
     }
   };
 
