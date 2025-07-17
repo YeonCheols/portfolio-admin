@@ -41,7 +41,15 @@ export interface Table<T> {
   draggableOption?: DraggableOptions;
 }
 
+export interface Pagination {
+  total: number;
+  allTotal: number;
+  page: number;
+  size: number;
+  onPageChange?: (page: number) => void;
+}
 export interface TableProps {
   table: Table<TableData>;
+  pagination?: Pagination;
   isLoading?: boolean;
 }

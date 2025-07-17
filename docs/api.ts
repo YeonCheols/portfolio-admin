@@ -39,6 +39,19 @@ export interface ProjectResponse {
   updatedAt: string;
 }
 
+export interface ProjectSearchResponse {
+  /** 프로젝트 목록 */
+  data: ProjectResponse[];
+  /** 프로젝트 총 개수 */
+  total: number;
+  /** 전체 프로젝트 개수 */
+  allTotal: number;
+  /** 현재 페이지 */
+  page: number;
+  /** 페이지 당 프로젝트 수 */
+  size: number;
+}
+
 export interface ProfileResponse {
   /**
    * 프로필 ID
@@ -269,6 +282,19 @@ export interface AdminProjectResponse {
    * @format date-time
    */
   updatedAt: string;
+}
+
+export interface AdminProjectSearchResponse {
+  /** 프로젝트 목록 */
+  data: string[];
+  /** 프로젝트 총 개수 */
+  total: number;
+  /** 전체 프로젝트 개수 */
+  allTotal: number;
+  /** 현재 페이지 */
+  page: number;
+  /** 페이지 당 프로젝트 수 */
+  size: number;
 }
 
 export interface AdminProjectOrderUpdateRequest {
