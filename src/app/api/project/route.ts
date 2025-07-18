@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { getData } from '@/lib/api';
 import { handleErrorResponse, handleSuccessResponse } from '@/lib/next';
 

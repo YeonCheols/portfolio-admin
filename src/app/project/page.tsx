@@ -9,6 +9,7 @@ import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Table } from '@/components/ui/table';
+import { INITIAL_PAGINATION } from '@/data/paging';
 import { projectTableHeader } from '@/data/table/project';
 import {
   type AdminTagResponse,
@@ -21,7 +22,6 @@ import { fetcher } from '@/lib/fetcher';
 import { swapArrayElements } from '@/lib/utils';
 import { useTableStore } from '@/lib/zustand/table';
 import { type ProjectTableData } from '@/types/project';
-import { INITIAL_PAGINATION } from '@/data/paging';
 
 export default function Project() {
   const router = useRouter();
@@ -39,8 +39,6 @@ export default function Project() {
     revalidateOnReconnect: false,
     refreshInterval: 0,
   });
-
-  console.log(stacksData);
 
   const allCount = useRef<number>(0);
 
