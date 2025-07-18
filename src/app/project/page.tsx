@@ -21,6 +21,7 @@ import { fetcher } from '@/lib/fetcher';
 import { swapArrayElements } from '@/lib/utils';
 import { useTableStore } from '@/lib/zustand/table';
 import { type ProjectTableData } from '@/types/project';
+import { INITIAL_PAGINATION } from '@/data/paging';
 
 export default function Project() {
   const router = useRouter();
@@ -28,7 +29,9 @@ export default function Project() {
   const { table, checkbox, setBody } = useTableStore();
 
   const { data, isLoading, mutate } = useSWR<{ data: ProjectSearchResponse }>(
-    `/api/project?page=${table.pagination?.page || 1}&size=${table.pagination?.size || 5}`,
+    `/api/project?page=${table.pagination?.page || INITIAL_PAGINATION['PAGE']}&size=${
+      table.pagination?.size || INITIAL_PAGINATION['SIZE']
+    }`,
     fetcher,
   );
   const { data: stacksData } = useSWR<{ data: AdminTagResponse[] }>(`/api/stacks`, fetcher, {
@@ -36,6 +39,8 @@ export default function Project() {
     revalidateOnReconnect: false,
     refreshInterval: 0,
   });
+
+  console.log(stacksData);
 
   const allCount = useRef<number>(0);
 
@@ -295,10 +300,10 @@ export default function Project() {
           header: projectTableHeader,
           body: projectTableData,
           pagination: {
-            allTotal: allCount.current,
-            total: data?.data.total ?? 0,
-            page: table.pagination?.page ?? 1,
-            size: table.pagination?.size ?? 5,
+            allTotal: allCount.current ?? INITIAL_PAGINATION['ALL_TOTAL'],
+            total: data?.data.total ?? INITIAL_PAGINATION['TOTAL'],
+            page: table.pagination?.page ?? INITIAL_PAGINATION['PAGE'],
+            size: table.pagination?.size ?? INITIAL_PAGINATION['SIZE'],
           },
           draggableOption: {
             draggable: true,

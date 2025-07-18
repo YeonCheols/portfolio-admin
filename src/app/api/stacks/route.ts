@@ -9,33 +9,32 @@ export async function GET(request: Request) {
   const keyword = searchParams.get('keyword');
 
   // 스택 검색 조회
-  if (searchParams) {
+  if (page && size) {
     try {
       const response = await getData<AdminTagSearchResponse>(
         `/tag/search?page=${page}&size=${size}${keyword ? `&keyword=${keyword}` : ''}`,
       );
 
       if (!response.status) {
-        handleErrorResponse(response);
+        return handleErrorResponse(response);
       }
       return handleSuccessResponse(response);
     } catch (error) {
-      handleErrorResponse({
+      return handleErrorResponse({
         error: error,
       });
     }
-    return;
   }
 
   // 스택 전체 조회
   try {
     const response = await getData<AdminTagResponse[]>('/tag');
     if (!response.status) {
-      handleErrorResponse(response);
+      return handleErrorResponse(response);
     }
-    handleSuccessResponse(response);
+    return handleSuccessResponse(response);
   } catch (error) {
-    handleErrorResponse({
+    return handleErrorResponse({
       error: error,
     });
   }

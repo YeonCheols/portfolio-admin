@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getData } from '@/lib/api';
+import { handleErrorResponse, handleSuccessResponse } from '@/lib/next';
 
 export async function GET(request: Request) {
   try {
@@ -19,12 +20,13 @@ export async function GET(request: Request) {
     // 외부 API 호출
     const response = await getData(`/project/search`, requestParams);
 
-    if (response.status) {
-      return NextResponse.json({ status: true, data: response.data });
-    } else {
-      return NextResponse.json({ status: false, error: response.error, data: [] });
+    if (!response.status) {
+      return handleErrorResponse(response);
     }
+    return handleSuccessResponse(response);
   } catch (error) {
-    return NextResponse.json({ status: false, error, data: [] });
+    return handleErrorResponse({
+      error: error,
+    });
   }
 }
