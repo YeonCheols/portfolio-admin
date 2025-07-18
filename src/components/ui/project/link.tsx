@@ -4,8 +4,8 @@ import { FiExternalLink as LinkIcon } from 'react-icons/fi';
 import { type ProjectResponse } from '@/docs/api';
 import { type ProjectLinkProps } from '@/types/link';
 
-const ProjectLink = ({ title, linkGithub, linkDemo }: Pick<ProjectResponse, 'title' | 'linkGithub' | 'linkDemo'>) => {
-  const LinkComponent = ({ url, text, icon }: ProjectLinkProps) => {
+function ProjectLink({ title, linkGithub, linkDemo }: Pick<ProjectResponse, 'title' | 'linkGithub' | 'linkDemo'>) {
+  function LinkComponent({ url, text, icon }: ProjectLinkProps) {
     const eventName = `Click ${text} - Project ${title}`;
 
     return (
@@ -18,7 +18,7 @@ const ProjectLink = ({ title, linkGithub, linkDemo }: Pick<ProjectResponse, 'tit
         </div>
       </Link>
     );
-  };
+  }
 
   return (
     <div className="flex gap-4">
@@ -27,6 +27,6 @@ const ProjectLink = ({ title, linkGithub, linkDemo }: Pick<ProjectResponse, 'tit
       {linkDemo && <LinkComponent url={linkDemo} text="Live Demo" icon={<LinkIcon size={22} />} />}
     </div>
   );
-};
+}
 
 export default ProjectLink;

@@ -37,6 +37,13 @@
         "args": "after-used",
         "argsIgnorePattern": "^_"
       }
+    ],
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": "function-declaration",
+        "unnamedComponents": "function-expression"
+      }
     ]
   }
 }

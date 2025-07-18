@@ -1,7 +1,7 @@
 import { usePathname, useSearchParams } from 'next/navigation';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import { useEffect, useRef, type FC } from 'react';
+import { useEffect, useRef } from 'react';
 
 NProgress.configure({
   minimum: 0.3,
@@ -10,7 +10,7 @@ NProgress.configure({
   showSpinner: false,
 });
 
-const ProgressBar: FC = () => {
+function ProgressBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isNavigating = useRef(false);
@@ -37,6 +37,6 @@ const ProgressBar: FC = () => {
   }, [pathname, searchParams]);
 
   return null;
-};
+}
 
 export default ProgressBar;

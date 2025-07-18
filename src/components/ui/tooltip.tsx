@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { type TooltipProps } from '@/types/tooltip';
 
-const Tooltip = ({ title, children }: TooltipProps) => {
+function Tooltip({ title, children }: TooltipProps) {
   const [isTooltipVisible, setTooltipVisible] = useState(false);
 
   const handleMouseEnter = () => {
@@ -35,6 +35,6 @@ const Tooltip = ({ title, children }: TooltipProps) => {
       )}
     </div>
   );
-};
+}
 
 export default Tooltip;
