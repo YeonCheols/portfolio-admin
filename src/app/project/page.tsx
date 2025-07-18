@@ -15,7 +15,7 @@ import {
   type AdminTagResponse,
   type AdminProjectOrderUpdateRequest,
   type AdminProjectResponse,
-  type ProjectSearchResponse,
+  type AdminProjectSearchResponse,
 } from '@/docs/api';
 import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
@@ -28,7 +28,7 @@ export default function Project() {
 
   const { table, checkbox, setBody } = useTableStore();
 
-  const { data, isLoading, mutate } = useSWR<{ data: ProjectSearchResponse }>(
+  const { data, isLoading, mutate } = useSWR<{ data: AdminProjectSearchResponse }>(
     `/api/project?page=${table.pagination?.page || INITIAL_PAGINATION['PAGE']}&size=${
       table.pagination?.size || INITIAL_PAGINATION['SIZE']
     }`,

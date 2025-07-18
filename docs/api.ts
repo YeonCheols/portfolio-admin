@@ -311,7 +311,7 @@ export interface AdminProjectResponse {
 
 export interface AdminProjectSearchResponse {
   /** 프로젝트 목록 */
-  data: string[];
+  data: AdminProjectResponse[];
   /** 프로젝트 총 개수 */
   total: number;
   /** 전체 프로젝트 개수 */

@@ -46,10 +46,9 @@ export async function POST(request: Request) {
 
     // 필수 필드 검증
     if (!body.name || !body.icon || !body.category) {
-      handleErrorResponse({
+      return handleErrorResponse({
         error: 'Missing required fields: name, icon, category',
       });
-      return;
     }
     // 새 스택 추가
     const newStack: AdminTagCreateRequest = {
@@ -62,12 +61,11 @@ export async function POST(request: Request) {
     const response = await postData('/tag', newStack);
 
     if (!response.status) {
-      handleErrorResponse(response);
-      return;
+      return handleErrorResponse(response);
     }
-    handleSuccessResponse(response);
+    return handleSuccessResponse(response);
   } catch {
-    handleErrorResponse({
+    return handleErrorResponse({
       error: 'Failed to create stack',
     });
   }
