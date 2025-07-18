@@ -3,7 +3,7 @@ import { StackIcon } from '@yeoncheols/portfolio-core-ui';
 import dayjs from 'dayjs';
 import { isArray, isEqual } from 'lodash-es';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import useSWR from 'swr';

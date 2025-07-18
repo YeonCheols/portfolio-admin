@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { type ComponentType } from 'react';
-import { loadIcon, clearIconCache, removeIconFromCache, getCachedIcons } from '@/lib/icon-loader';
+import { loadIcon, clearIconCache, removeIconFromCache, getCachedIcons } from '@/lib/iconLoader';
 
 // 스택 메타데이터 타입
 interface StackMetadata {

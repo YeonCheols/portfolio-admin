@@ -1,30 +1,42 @@
-import { NextResponse } from 'next/server';
-import { type AdminTagCreateRequest, type AdminTagResponse } from '@/docs/api';
+import { type AdminTagSearchResponse, type AdminTagCreateRequest, type AdminTagResponse } from '@/docs/api';
 import { getData, postData } from '@/lib/api';
+import { handleErrorResponse, handleSuccessResponse } from '@/lib/next';
 
-export async function GET() {
-  try {
-    const response = await getData<AdminTagResponse[]>(`/tag`);
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const page = searchParams.get('page');
+  const size = searchParams.get('size');
+  const keyword = searchParams.get('keyword');
 
-    // api 호출 실패 시
-    if (!response.status) {
-      return NextResponse.json({
-        status: false,
-        error: response.error,
-        data: [],
+  // 스택 검색 조회
+  if (searchParams) {
+    try {
+      const response = await getData<AdminTagSearchResponse>(
+        `/tag/search?page=${page}&size=${size}${keyword ? `&keyword=${keyword}` : ''}`,
+      );
+
+      if (!response.status) {
+        handleErrorResponse(response);
+      }
+      return handleSuccessResponse(response);
+    } catch (error) {
+      handleErrorResponse({
+        error: error,
       });
     }
+    return;
+  }
 
-    return NextResponse.json({
-      status: true,
-      data: response.data,
-      total: response.data.length,
-    });
-  } catch {
-    return NextResponse.json({
-      status: false,
-      error: 'Failed to fetch stacks metadata',
-      data: [],
+  // 스택 전체 조회
+  try {
+    const response = await getData<AdminTagResponse[]>('/tag');
+    if (!response.status) {
+      handleErrorResponse(response);
+    }
+    handleSuccessResponse(response);
+  } catch (error) {
+    handleErrorResponse({
+      error: error,
     });
   }
 }
@@ -35,12 +47,11 @@ export async function POST(request: Request) {
 
     // 필수 필드 검증
     if (!body.name || !body.icon || !body.category) {
-      return NextResponse.json({
-        status: false,
+      handleErrorResponse({
         error: 'Missing required fields: name, icon, category',
       });
+      return;
     }
-
     // 새 스택 추가
     const newStack: AdminTagCreateRequest = {
       name: body.name,
@@ -49,22 +60,15 @@ export async function POST(request: Request) {
       category: body.category,
     };
 
-    const response = await postData(`/tag`, newStack);
+    const response = await postData('/tag', newStack);
 
     if (!response.status) {
-      return NextResponse.json({
-        status: false,
-        error: response.error,
-      });
+      handleErrorResponse(response);
+      return;
     }
-
-    return NextResponse.json({
-      status: true,
-      data: response.data,
-    });
+    handleSuccessResponse(response);
   } catch {
-    return NextResponse.json({
-      status: false,
+    handleErrorResponse({
       error: 'Failed to create stack',
     });
   }

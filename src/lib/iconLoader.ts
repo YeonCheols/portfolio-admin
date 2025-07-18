@@ -121,17 +121,17 @@ const iconLibraries = {
 const iconCache = new Map<string, ComponentType<any>>();
 
 // 아이콘 이름을 파싱하는 함수
-function parseIconName(iconName: string): { library: string; name: string } | null {
+const parseIconName = (iconName: string): { library: string; name: string } | null => {
   // 아이콘 이름 패턴: [Library][Name] (예: SiReact, BsRobot, FaSass)
   const match = iconName.match(/^([A-Z][a-z])(.+)$/);
   if (!match) return null;
 
   const [, library, name] = match;
   return { library, name };
-}
+};
 
 // 동적으로 아이콘을 로드하는 함수
-export async function loadIcon(iconName: string): Promise<ComponentType<any> | null> {
+export const loadIcon = async (iconName: string): Promise<ComponentType<any> | null> => {
   // 캐시된 아이콘이 있으면 반환
   if (iconCache.has(iconName)) {
     return iconCache.get(iconName)!;
@@ -168,24 +168,24 @@ export async function loadIcon(iconName: string): Promise<ComponentType<any> | n
     console.error(`Failed to load icon ${iconName}:`, error);
     return null;
   }
-}
+};
 
 // 캐시를 클리어하는 함수
-export function clearIconCache(): void {
+export const clearIconCache = (): void => {
   iconCache.clear();
-}
+};
 
 // 특정 아이콘을 캐시에서 제거하는 함수
-export function removeIconFromCache(iconName: string): void {
+export const removeIconFromCache = (iconName: string): void => {
   iconCache.delete(iconName);
-}
+};
 
 // 캐시된 아이콘 목록을 반환하는 함수
-export function getCachedIcons(): string[] {
+export const getCachedIcons = (): string[] => {
   return Array.from(iconCache.keys());
-}
+};
 
 // 아이콘 라이브러리 목록을 반환하는 함수
-export function getSupportedLibraries(): string[] {
+export const getSupportedLibraries = (): string[] => {
   return Object.keys(iconLibraries);
-}
+};

@@ -1,18 +1,18 @@
 import { type ToastOptions, type ApiResult, type CustomAxiosRequestConfig } from '@/types/api';
 import axiosInstance from './axiosInstance';
 
-function setBaseUrl(client?: boolean) {
+const setBaseUrl = (client: boolean = false) => {
   if (client) {
     axiosInstance.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_URL}`;
   }
-}
+};
 
-export async function getData<T = any>(
+export const getData = async <T = any>(
   url: string,
   params?: Record<string, unknown>,
   client?: boolean,
   options?: ToastOptions,
-): Promise<ApiResult<T>> {
+): Promise<ApiResult<T>> => {
   setBaseUrl(client);
   try {
     const config: CustomAxiosRequestConfig = {
@@ -29,9 +29,9 @@ export async function getData<T = any>(
   } catch (error) {
     return { status: false, error, data: undefined };
   }
-}
+};
 
-export async function postData(url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) {
+export const postData = async (url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) => {
   setBaseUrl(client);
   try {
     const config: CustomAxiosRequestConfig = {
@@ -47,9 +47,9 @@ export async function postData(url: string, data?: Record<string, any>, client?:
   } catch (error) {
     return { status: false, error };
   }
-}
+};
 
-export async function patchData(url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) {
+export const patchData = async (url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) => {
   setBaseUrl(client);
   try {
     const config: CustomAxiosRequestConfig = {
@@ -65,9 +65,9 @@ export async function patchData(url: string, data?: Record<string, any>, client?
   } catch (error) {
     return { status: false, error };
   }
-}
+};
 
-export async function putData(url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) {
+export const putData = async (url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) => {
   setBaseUrl(client);
   try {
     const config: CustomAxiosRequestConfig = {
@@ -83,9 +83,9 @@ export async function putData(url: string, data?: Record<string, any>, client?: 
   } catch (error) {
     return { status: false, error };
   }
-}
+};
 
-export async function deleteData(url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) {
+export const deleteData = async (url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) => {
   setBaseUrl(client);
   try {
     const config: CustomAxiosRequestConfig = {
@@ -102,4 +102,4 @@ export async function deleteData(url: string, data?: Record<string, any>, client
   } catch (error) {
     return { status: false, error };
   }
-}
+};

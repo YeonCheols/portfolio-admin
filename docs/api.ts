@@ -117,6 +117,31 @@ export interface TagResponse {
   updatedAt: string;
 }
 
+export interface TagSearchResponse {
+  /** 태그 목록 */
+  data: TagResponse[];
+  /**
+   * 현재 페이지 태그 수
+   * @example 10
+   */
+  total: number;
+  /**
+   * 전체 태그 수
+   * @example 100
+   */
+  allTotal: number;
+  /**
+   * 현재 페이지
+   * @example 1
+   */
+  page: number;
+  /**
+   * 페이지 크기
+   * @example 10
+   */
+  size: number;
+}
+
 export interface AdminProfileCreateRequest {
   /**
    * 프로필 이름
@@ -434,6 +459,31 @@ export interface AdminTagResponse {
    * @example "2025-06-30T00:00:00.000Z"
    */
   updatedAt: string;
+}
+
+export interface AdminTagSearchResponse {
+  /** 태그 목록 */
+  data: AdminTagResponse[];
+  /**
+   * 현재 페이지 태그 수
+   * @example 10
+   */
+  total: number;
+  /**
+   * 전체 태그 수
+   * @example 100
+   */
+  allTotal: number;
+  /**
+   * 현재 페이지
+   * @example 1
+   */
+  page: number;
+  /**
+   * 페이지 크기
+   * @example 10
+   */
+  size: number;
 }
 
 export interface AdminTagCreateRequest {

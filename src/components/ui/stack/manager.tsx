@@ -4,7 +4,7 @@ import { StackIcon } from '@yeoncheols/portfolio-core-ui';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { useIconManager } from '@/hooks/use-icon-manager';
+import { useIconManager } from '@/hooks/useIconManager';
 
 interface IconManagerProps {
   className?: string;
