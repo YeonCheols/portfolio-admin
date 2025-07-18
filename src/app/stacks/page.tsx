@@ -2,12 +2,18 @@
 
 import { StackTag } from '@yeoncheols/portfolio-core-ui';
 import { isEqual } from 'lodash-es';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import { Button, Modal, Table, Loading, StackIconManager, StackForm } from '@/components/ui';
+import { Button, Modal, Table, StackIconManager, StackForm } from '@/components/ui';
+import { INITIAL_PAGINATION } from '@/data/paging';
 import { stackTableHeader } from '@/data/table/stacks';
-import { type AdminTagUpdateRequest, type AdminTagCreateRequest, type AdminTagResponse } from '@/docs/api';
+import {
+  type AdminTagUpdateRequest,
+  type AdminTagCreateRequest,
+  type AdminTagResponse,
+  type AdminTagSearchResponse,
+} from '@/docs/api';
 import { deleteData, postData, putData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { cn } from '@/lib/utils';
@@ -20,11 +26,23 @@ export default function StacksManagement() {
   const [formMode, setFormMode] = useState<StackFormProps['formMode']>('none');
   const [showIconManager, setShowIconManager] = useState(false);
 
+  const allCount = useRef<number>(0);
+
   const {
     data: stacksData,
     isLoading: isStacksLoading,
     mutate: stacksMutate,
-  } = useSWR<{ data: AdminTagResponse[] }>(`/api/stacks`, fetcher);
+  } = useSWR<{ data: AdminTagSearchResponse }>(
+    `/api/stacks?page=${table.pagination?.page ?? INITIAL_PAGINATION['PAGE']}&size=${
+      table.pagination?.size ?? INITIAL_PAGINATION['SIZE']
+    }`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshInterval: 0,
+    },
+  );
 
   const {
     register,
@@ -52,7 +70,9 @@ export default function StacksManagement() {
     };
 
     try {
-      const response = await postData(`/api/stacks`, newStack);
+      const response = await postData(`/api/stacks`, newStack, undefined, {
+        disableToast: true,
+      });
 
       if (response.status) {
         await stacksMutate();
@@ -123,7 +143,7 @@ export default function StacksManagement() {
 
   const stacksTableData = useMemo(
     () =>
-      stacksData?.data.map(stack => ({
+      stacksData?.data.data.map(stack => ({
         id: {
           checkbox: {
             id: `checkbox-${stack.name}`,
@@ -176,9 +196,11 @@ export default function StacksManagement() {
     }
   }, [stacksTableData]);
 
-  if (isStacksLoading) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    if (stacksData?.data) {
+      allCount.current = stacksData?.data.allTotal;
+    }
+  }, [stacksData?.data]);
 
   return (
     <>
@@ -223,7 +245,19 @@ export default function StacksManagement() {
       </Modal>
 
       {/* 스택 테이블 */}
-      {stacksData && <Table table={{ header: stackTableHeader, body: stacksTableData }} />}
+      <Table
+        isLoading={isStacksLoading}
+        table={{
+          header: stackTableHeader,
+          body: stacksTableData,
+          pagination: {
+            allTotal: allCount.current,
+            total: stacksData?.data.total ?? INITIAL_PAGINATION['TOTAL'],
+            page: table.pagination?.page ?? INITIAL_PAGINATION['PAGE'],
+            size: table.pagination?.size ?? INITIAL_PAGINATION['SIZE'],
+          },
+        }}
+      />
     </>
   );
 }

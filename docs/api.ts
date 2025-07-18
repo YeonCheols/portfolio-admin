@@ -39,6 +39,19 @@ export interface ProjectResponse {
   updatedAt: string;
 }
 
+export interface ProjectSearchResponse {
+  /** 프로젝트 목록 */
+  data: ProjectResponse[];
+  /** 프로젝트 총 개수 */
+  total: number;
+  /** 전체 프로젝트 개수 */
+  allTotal: number;
+  /** 현재 페이지 */
+  page: number;
+  /** 페이지 당 프로젝트 수 */
+  size: number;
+}
+
 export interface ProfileResponse {
   /**
    * 프로필 ID
@@ -102,6 +115,31 @@ export interface TagResponse {
    * @example "2025-06-30T00:00:00.000Z"
    */
   updatedAt: string;
+}
+
+export interface TagSearchResponse {
+  /** 태그 목록 */
+  data: TagResponse[];
+  /**
+   * 현재 페이지 태그 수
+   * @example 10
+   */
+  total: number;
+  /**
+   * 전체 태그 수
+   * @example 100
+   */
+  allTotal: number;
+  /**
+   * 현재 페이지
+   * @example 1
+   */
+  page: number;
+  /**
+   * 페이지 크기
+   * @example 10
+   */
+  size: number;
 }
 
 export interface AdminProfileCreateRequest {
@@ -271,6 +309,19 @@ export interface AdminProjectResponse {
   updatedAt: string;
 }
 
+export interface AdminProjectSearchResponse {
+  /** 프로젝트 목록 */
+  data: AdminProjectResponse[];
+  /** 프로젝트 총 개수 */
+  total: number;
+  /** 전체 프로젝트 개수 */
+  allTotal: number;
+  /** 현재 페이지 */
+  page: number;
+  /** 페이지 당 프로젝트 수 */
+  size: number;
+}
+
 export interface AdminProjectOrderUpdateRequest {
   /**
    * 교환할 첫 번째 프로젝트의 고유 식별자 (slug)
@@ -408,6 +459,31 @@ export interface AdminTagResponse {
    * @example "2025-06-30T00:00:00.000Z"
    */
   updatedAt: string;
+}
+
+export interface AdminTagSearchResponse {
+  /** 태그 목록 */
+  data: AdminTagResponse[];
+  /**
+   * 현재 페이지 태그 수
+   * @example 10
+   */
+  total: number;
+  /**
+   * 전체 태그 수
+   * @example 100
+   */
+  allTotal: number;
+  /**
+   * 현재 페이지
+   * @example 1
+   */
+  page: number;
+  /**
+   * 페이지 크기
+   * @example 10
+   */
+  size: number;
 }
 
 export interface AdminTagCreateRequest {

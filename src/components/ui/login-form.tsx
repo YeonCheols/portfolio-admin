@@ -35,6 +35,7 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
         password: watch('password'),
       },
       true,
+      { disableToast: true },
     );
 
     if (error?.status === 401) {

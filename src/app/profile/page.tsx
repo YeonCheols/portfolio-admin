@@ -25,29 +25,14 @@ export default function Profile() {
   const { data, isLoading, mutate } = useSWR<{ data: AdminProfileResponse[] }>(`/api/profile?page=1&size=5`, fetcher);
 
   const handleChangeStatus = async (request: AdminProfileResponse) => {
-    toast('프로필 상태 변경 진행 중...');
     const { id, isActive } = request;
-    const response = await patchData('/api/profile/show', { id, isActive: !isActive });
+    await patchData('/api/profile/show', { id, isActive: !isActive });
     await mutate();
-
-    if (response.status === 200) {
-      toast.success('프로필 상태 변경 완료');
-    } else if (response.error.status === 400) {
-      toast.error('프로필은 1개만 활성화 하실 수 있습니다.');
-    } else {
-      toast.error(`프로필 상태 변경 실패 : ${response.error}`);
-    }
   };
 
   const handleDelete = async (slug: AdminProfileResponse['id']) => {
-    toast('프로필 삭제 진행 중...');
-    const response = await deleteData(`/api/profile/delete?slug=${slug}`);
+    await deleteData(`/api/profile/delete?slug=${slug}`);
     await mutate();
-    if (response.status === 200) {
-      toast.success('프로필 삭제 완료');
-    } else {
-      toast.error(`프로필 삭제 실패 : ${response.error}`);
-    }
   };
 
   const handleDownImg = async () => {

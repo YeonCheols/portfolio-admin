@@ -3,7 +3,6 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import { TopNav } from '@/components/nav';
 import { Button } from '@/components/ui/button';
@@ -31,22 +30,14 @@ export default function ProjectEditContent() {
     setContent(markdown);
   };
   const handleContentSave = async () => {
-    toast('프로젝트 수정 진행 중...');
-    try {
-      const response = await patchData(`/api/project/edit`, {
-        content,
-        slug: params.slug,
-      });
-
-      if (response.status !== 200) {
-        throw new Error('프로젝트 수정에 실패했습니다.');
-      }
-
-      toast.success('프로젝트가 수정 되었습니다.');
-      router.push('/project');
-    } catch {
-      toast.error('프로젝트 수정중 오류가 발생했습니다.');
+    const response = await patchData(`/api/project/edit`, {
+      content,
+      slug: params.slug,
+    });
+    if (response.status !== 200) {
+      throw new Error('프로젝트 수정에 실패했습니다.');
     }
+    router.push('/project');
   };
 
   useEffect(() => {

@@ -1,62 +1,105 @@
-import { type ApiResult } from '@/types/api';
+import { type ToastOptions, type ApiResult, type CustomAxiosRequestConfig } from '@/types/api';
 import axiosInstance from './axiosInstance';
 
-function setBaseUrl(client?: boolean) {
+const setBaseUrl = (client: boolean = false) => {
   if (client) {
     axiosInstance.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_URL}`;
   }
-}
-export async function getData<T = any>(
+};
+
+export const getData = async <T = any>(
   url: string,
   params?: Record<string, unknown>,
   client?: boolean,
-): Promise<ApiResult<T>> {
+  options?: ToastOptions,
+): Promise<ApiResult<T>> => {
   setBaseUrl(client);
   try {
-    const { data } = await axiosInstance.get<T>(url, { params });
+    const config: CustomAxiosRequestConfig = {
+      params,
+      metadata: {
+        disableToast: options?.disableToast,
+        loadingMsg: options?.loadingMsg,
+        successMsg: options?.successMsg,
+        errorMsg: options?.errorMsg,
+      },
+    };
+    const { data } = await axiosInstance.get<T>(url, config);
     return { status: true, data };
   } catch (error) {
     return { status: false, error, data: undefined };
   }
-}
+};
 
-export async function postData(url: string, data?: Record<string, any>, client?: boolean) {
+export const postData = async (url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) => {
   setBaseUrl(client);
-
   try {
-    const response = await axiosInstance.post(url, data);
+    const config: CustomAxiosRequestConfig = {
+      metadata: {
+        disableToast: options?.disableToast,
+        loadingMsg: options?.loadingMsg,
+        successMsg: options?.successMsg,
+        errorMsg: options?.errorMsg,
+      },
+    };
+    const response = await axiosInstance.post(url, data, config);
     return response.data;
   } catch (error) {
     return { status: false, error };
   }
-}
+};
 
-export async function patchData(url: string, data?: Record<string, any>, client?: boolean) {
+export const patchData = async (url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) => {
   setBaseUrl(client);
   try {
-    const response = await axiosInstance.patch(url, data);
+    const config: CustomAxiosRequestConfig = {
+      metadata: {
+        disableToast: options?.disableToast,
+        loadingMsg: options?.loadingMsg,
+        successMsg: options?.successMsg,
+        errorMsg: options?.errorMsg,
+      },
+    };
+    const response = await axiosInstance.patch(url, data, config);
     return response.data;
   } catch (error) {
     return { status: false, error };
   }
-}
+};
 
-export async function putData(url: string, data?: Record<string, any>, client?: boolean) {
+export const putData = async (url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) => {
   setBaseUrl(client);
   try {
-    const response = await axiosInstance.put(url, data);
+    const config: CustomAxiosRequestConfig = {
+      metadata: {
+        disableToast: options?.disableToast,
+        loadingMsg: options?.loadingMsg,
+        successMsg: options?.successMsg,
+        errorMsg: options?.errorMsg,
+      },
+    };
+    const response = await axiosInstance.put(url, data, config);
     return response.data;
   } catch (error) {
     return { status: false, error };
   }
-}
+};
 
-export async function deleteData(url: string, data?: Record<string, any>, client?: boolean) {
+export const deleteData = async (url: string, data?: Record<string, any>, client?: boolean, options?: ToastOptions) => {
   setBaseUrl(client);
   try {
-    const response = await axiosInstance.delete(url, data);
+    const config: CustomAxiosRequestConfig = {
+      data,
+      metadata: {
+        disableToast: options?.disableToast,
+        loadingMsg: options?.loadingMsg,
+        successMsg: options?.successMsg,
+        errorMsg: options?.errorMsg,
+      },
+    };
+    const response = await axiosInstance.delete(url, config);
     return response.data;
   } catch (error) {
     return { status: false, error };
   }
-}
+};

@@ -12,14 +12,16 @@ interface TableProps {
   children: ReactNode;
 }
 
-const Table = ({ children }: TableProps) => (
-  <div className="table-container">
-    <table className="table w-full">{children}</table>
-  </div>
-);
+function Table({ children }: TableProps) {
+  return (
+    <div className="table-container">
+      <table className="table w-full">{children}</table>
+    </div>
+  );
+}
 
 // TODO: 모듈화가 필요한 컴포넌트
-const MDXComponent = ({ children }: MarkdownRendererProps) => {
+function MDXComponent({ children }: MarkdownRendererProps) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -51,6 +53,6 @@ const MDXComponent = ({ children }: MarkdownRendererProps) => {
       {children}
     </ReactMarkdown>
   );
-};
+}
 
-export default MDXComponent;
+export { MDXComponent };

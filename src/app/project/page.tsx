@@ -3,15 +3,20 @@ import { StackIcon } from '@yeoncheols/portfolio-core-ui';
 import dayjs from 'dayjs';
 import { isArray, isEqual } from 'lodash-es';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
-import { Loading } from '@/components/ui/loading';
 import { Table } from '@/components/ui/table';
+import { INITIAL_PAGINATION } from '@/data/paging';
 import { projectTableHeader } from '@/data/table/project';
-import { type AdminTagResponse, type AdminProjectOrderUpdateRequest, type AdminProjectResponse } from '@/docs/api';
+import {
+  type AdminTagResponse,
+  type AdminProjectOrderUpdateRequest,
+  type AdminProjectResponse,
+  type AdminProjectSearchResponse,
+} from '@/docs/api';
 import { deleteData, patchData } from '@/lib/api';
 import { fetcher } from '@/lib/fetcher';
 import { swapArrayElements } from '@/lib/utils';
@@ -22,8 +27,20 @@ export default function Project() {
   const router = useRouter();
 
   const { table, checkbox, setBody } = useTableStore();
-  const { data, isLoading, mutate } = useSWR<{ data: AdminProjectResponse[] }>(`/api/project?page=1&size=5`, fetcher);
-  const { data: stacksData } = useSWR<{ data: AdminTagResponse[] }>(`/api/stacks`, fetcher);
+
+  const { data, isLoading, mutate } = useSWR<{ data: AdminProjectSearchResponse }>(
+    `/api/project?page=${table.pagination?.page || INITIAL_PAGINATION['PAGE']}&size=${
+      table.pagination?.size || INITIAL_PAGINATION['SIZE']
+    }`,
+    fetcher,
+  );
+  const { data: stacksData } = useSWR<{ data: AdminTagResponse[] }>(`/api/stacks`, fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshInterval: 0,
+  });
+
+  const allCount = useRef<number>(0);
 
   // 스택 이름으로 메타데이터 찾기
   const getStackMetadata = (stackName: string) => {
@@ -31,28 +48,14 @@ export default function Project() {
   };
 
   const handleChangeStatus = async (request: ProjectTableData) => {
-    toast('프로젝트 상태 변경 진행 중...');
     const { slug, isShow } = request;
-    const response = await patchData('/api/project/show', { slug, isShow: !isShow });
+    await patchData('/api/project/show', { slug, isShow: !isShow });
     await mutate();
-
-    if (response.status === 200) {
-      toast.success('프로젝트 상태 변경 완료');
-    } else {
-      toast.error(`프로젝트 상태 변경 실패 : ${response.error}`);
-    }
   };
 
   const handleDelete = async (slug: ProjectTableData['slug']) => {
-    toast('프로젝트 삭제 진행 중...');
-    const response = await deleteData(`/api/project/delete?slug=${slug}`);
+    await deleteData(`/api/project/delete?slug=${slug}`);
     await mutate();
-
-    if (response.status === 200) {
-      toast.success('프로젝트 삭제 완료');
-    } else {
-      toast.error(`프로젝트 삭제 실패 : ${response.error}`);
-    }
   };
 
   const handleDownImg = async () => {
@@ -75,7 +78,7 @@ export default function Project() {
     }
 
     const { image } =
-      data?.data?.filter(item => item.slug === checkbox.find(checkbox => checkbox.checked)?.value)[0] || {};
+      data?.data?.data.filter(item => item.slug === checkbox.find(checkbox => checkbox.checked)?.value)[0] || {};
     if (!image) {
       toast.error('이미지 url을 찾을 수 없습니다.', { position: 'bottom-left' });
       return;
@@ -88,16 +91,8 @@ export default function Project() {
   };
 
   const handleSortData = async (item: AdminProjectOrderUpdateRequest) => {
-    toast('프로젝트 정렬 변경 중...');
-
-    const response = await patchData(`/api/project/order`, item);
+    await patchData(`/api/project/order`, item);
     await mutate();
-
-    if (response.status === 200) {
-      toast.success('프로젝트 정렬 변경 완료');
-    } else {
-      toast.error(`프로젝트 정렬 변경 실패 : ${response.error}`);
-    }
   };
 
   const mapProjectTableData = (
@@ -262,7 +257,14 @@ export default function Project() {
     if (!data?.data) {
       return [];
     }
-    return mapProjectTableData(data.data, router, handleSortData, handleChangeStatus, handleDelete, data.data.length);
+    return mapProjectTableData(
+      data.data.data,
+      router,
+      handleSortData,
+      handleChangeStatus,
+      handleDelete,
+      data.data.total,
+    );
   }, [data, stacksData, router]);
 
   useEffect(() => {
@@ -271,9 +273,11 @@ export default function Project() {
     }
   }, [projectTableData]);
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    if (data?.data) {
+      allCount.current = data?.data.allTotal;
+    }
+  }, [data?.data]);
 
   return (
     <>
@@ -288,49 +292,47 @@ export default function Project() {
         이미지 다운로드
       </Button>
 
-      {projectTableData.length > 0 && (
-        <Table
-          table={{
-            header: projectTableHeader,
-            body: projectTableData,
-            draggableOption: {
-              draggable: true,
-              onDrop: async result => {
-                const { source, destination } = result;
+      <Table
+        isLoading={isLoading}
+        table={{
+          header: projectTableHeader,
+          body: projectTableData,
+          pagination: {
+            allTotal: allCount.current ?? INITIAL_PAGINATION['ALL_TOTAL'],
+            total: data?.data.total ?? INITIAL_PAGINATION['TOTAL'],
+            page: table.pagination?.page ?? INITIAL_PAGINATION['PAGE'],
+            size: table.pagination?.size ?? INITIAL_PAGINATION['SIZE'],
+          },
+          draggableOption: {
+            draggable: true,
+            onDrop: async result => {
+              const { source, destination } = result;
 
-                // target data 없으면 반환
-                if (!data?.data || !destination) {
-                  return;
-                }
+              // target data 없으면 반환
+              if (!data?.data || !destination) {
+                return;
+              }
 
-                // NOTE: 순서를 변경한 table data를 store 에 업데이트 함
-                const newData = swapArrayElements<AdminProjectResponse>(
-                  data?.data || [],
-                  source.index,
-                  destination?.index,
-                );
-                setBody(
-                  mapProjectTableData(
-                    newData,
-                    router,
-                    handleSortData,
-                    handleChangeStatus,
-                    handleDelete,
-                    data.data.length,
-                  ),
-                );
+              // NOTE: 순서를 변경한 table data를 store 에 업데이트 함
+              const newData = swapArrayElements<AdminProjectResponse>(
+                data?.data.data || [],
+                source.index,
+                destination?.index,
+              );
+              setBody(
+                mapProjectTableData(newData, router, handleSortData, handleChangeStatus, handleDelete, data.data.total),
+              );
 
-                handleSortData({
-                  nextSlug: data.data[source.index].slug,
-                  nextOrderNo: data.data[destination.index].order,
-                  prevSlug: data.data[destination.index].slug,
-                  prevOrderNo: data.data[source.index].order,
-                });
-              },
+              handleSortData({
+                nextSlug: data.data.data[source.index].slug,
+                nextOrderNo: data.data.data[destination.index].order,
+                prevSlug: data.data.data[destination.index].slug,
+                prevOrderNo: data.data.data[source.index].order,
+              });
             },
-          }}
-        />
-      )}
+          },
+        }}
+      />
     </>
   );
 }

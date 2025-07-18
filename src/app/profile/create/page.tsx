@@ -63,26 +63,16 @@ export default function ProfileCreate() {
   };
 
   const onSubmit = async (data: AdminProfileCreateRequest) => {
-    toast('프로필 생성 진행 중...');
-
-    try {
-      const response = await fetch('/api/profile/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.status === 200) {
-        toast.success('프로필이 성공적으로 생성되었습니다.');
-        router.push('/profile');
-      } else {
-        toast.error('프로필 생성 중 오류가 발생했습니다.');
-      }
-    } catch {
-      toast.error('프로필 생성 중 오류가 발생했습니다.');
+    const response = await fetch('/api/profile/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (response.status === 200) {
+      router.push('/profile');
     }
   };
 

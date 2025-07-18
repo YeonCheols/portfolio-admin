@@ -98,25 +98,16 @@ export default function ProjectCreate() {
   };
 
   const onSubmit = async (data: AdminProjectCreateRequest) => {
-    toast('프로젝트 생성 진행 중...');
-    try {
-      const response = await fetch('/api/project/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.status === 200) {
-        toast.success('프로젝트가 성공적으로 생성되었습니다.');
-        router.push('/project');
-      } else {
-        toast.error('프로젝트 생성 중 오류가 발생했습니다.');
-      }
-    } catch {
-      toast.error('프로젝트 생성 중 오류가 발생했습니다.');
+    const response = await fetch('/api/project/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (response.status === 200) {
+      router.push('/project');
     }
   };
 

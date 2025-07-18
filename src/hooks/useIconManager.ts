@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { type ComponentType } from 'react';
-import { loadIcon, clearIconCache, removeIconFromCache, getCachedIcons } from '@/lib/icon-loader';
+import { loadIcon, clearIconCache, removeIconFromCache, getCachedIcons } from '@/lib/iconLoader';
 
 // 스택 메타데이터 타입
 interface StackMetadata {
@@ -20,7 +20,7 @@ interface IconState {
 // 훅 반환 타입
 interface UseIconManagerReturn {
   // 아이콘 로딩
-  loadIcon: (iconName: string) => Promise<ComponentType<any> | null>;
+  loadIcon: (iconName: string) => ComponentType<any> | null;
 
   // 아이콘 상태 관리
   getIconState: (iconName: string) => IconState;
@@ -80,22 +80,18 @@ function updateIconState(iconName: string, updates: Partial<IconState>) {
 
 export function useIconManager(): UseIconManagerReturn {
   // 아이콘 로딩 함수
-  const loadIconWithState = useCallback(async (iconName: string): Promise<ComponentType<any> | null> => {
-    // 이미 로딩 중이거나 로드된 경우
+  const loadIconWithState = useCallback((iconName: string): ComponentType<any> | null => {
+    // 이미 로드된 경우
     const currentState = iconStates.get(iconName);
     if (currentState?.component) {
       return currentState.component;
-    }
-
-    if (currentState?.isLoading) {
-      return null; // 로딩 중이면 null 반환
     }
 
     // 로딩 상태 시작
     updateIconState(iconName, { isLoading: true, error: null });
 
     try {
-      const component = await loadIcon(iconName);
+      const component = loadIcon(iconName);
 
       if (component) {
         updateIconState(iconName, { component, isLoading: false, error: null });

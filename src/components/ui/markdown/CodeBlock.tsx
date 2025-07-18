@@ -31,7 +31,7 @@ interface CodeProps {
   [key: string]: any;
 }
 
-const CodeBlock = ({ className = '', children, inline, ...props }: CodeProps) => {
+function CodeBlock({ className = '', children, inline, ...props }: CodeProps) {
   const [isCopied, setIsCopied] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [value, copy] = useCopyToClipboard();
@@ -93,9 +93,11 @@ const CodeBlock = ({ className = '', children, inline, ...props }: CodeProps) =>
       )}
     </>
   );
-};
+}
 
-const LoadingPlaceholder = () => <div className="mb-12 mt-12 h-36 w-full" />;
+function LoadingPlaceholder() {
+  return <div className="mb-12 mt-12 h-36 w-full" />;
+}
 
 export default dynamic(() => Promise.resolve(CodeBlock), {
   ssr: false,
