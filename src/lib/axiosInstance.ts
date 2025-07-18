@@ -1,5 +1,6 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { type CustomAxiosRequestConfig } from '@/types/api';
 import { getAccessToken } from './auth';
 
 const axiosInstance = axios.create({
@@ -28,15 +29,7 @@ axiosInstance.interceptors.request.use(
       if (!config.headers) config.headers = {} as any;
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
-    const meta = (config as any).metadata as
-      | {
-          loadingMsg?: string;
-          successMsg?: string;
-          errorMsg?: string;
-          disableToast?: boolean;
-          loadingToast?: string;
-        }
-      | undefined;
+    const meta = (config as CustomAxiosRequestConfig).metadata;
     const method = config.method?.toLowerCase() || '';
     const msg = methodMessages[method];
     if (typeof window !== 'undefined' && !meta?.disableToast && msg) {
@@ -50,15 +43,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   response => {
-    const meta = (response.config as any).metadata as
-      | {
-          loadingMsg?: string;
-          successMsg?: string;
-          errorMsg?: string;
-          disableToast?: boolean;
-          loadingToast?: string;
-        }
-      | undefined;
+    const meta = (response.config as CustomAxiosRequestConfig).metadata;
     const method = response.config.method?.toLowerCase() || '';
     const msg = methodMessages[method];
     if (typeof window !== 'undefined' && meta?.loadingToast && msg) {

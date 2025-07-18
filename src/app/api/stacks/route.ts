@@ -11,9 +11,12 @@ export async function GET(request: Request) {
   // 스택 검색 조회
   if (page && size) {
     try {
-      const response = await getData<AdminTagSearchResponse>(
-        `/tag/search?page=${page}&size=${size}${keyword ? `&keyword=${keyword}` : ''}`,
-      );
+      const requestParams: Record<string, string | undefined> = {
+        page,
+        size,
+        keyword: keyword || undefined,
+      };
+      const response = await getData<AdminTagSearchResponse>('/tag/search', requestParams);
 
       if (!response.status) {
         return handleErrorResponse(response);
