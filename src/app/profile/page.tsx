@@ -26,12 +26,12 @@ export default function Profile() {
 
   const handleChangeStatus = async (request: AdminProfileResponse) => {
     const { id, isActive } = request;
-    const response = await patchData('/api/profile/show', { id, isActive: !isActive });
+    await patchData('/api/profile/show', { id, isActive: !isActive });
     await mutate();
   };
 
   const handleDelete = async (slug: AdminProfileResponse['id']) => {
-    const response = await deleteData(`/api/profile/delete?slug=${slug}`);
+    await deleteData(`/api/profile/delete?slug=${slug}`);
     await mutate();
   };
 

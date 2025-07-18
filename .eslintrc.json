@@ -30,7 +30,7 @@
       }
     ],
     "@typescript-eslint/no-unused-vars": [
-      "warn",
+      "error",
       {
         "vars": "all",
         "varsIgnorePattern": "^_",

@@ -3,7 +3,6 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import { TopNav } from '@/components/nav';
 import { Button } from '@/components/ui/button';

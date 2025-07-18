@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import type { Checkbox, TableData, Table as TableType } from '@/types/table';
-import type { Pagination } from '@/types/table';
 
 interface TableStore {
   table: TableType<TableData>;
