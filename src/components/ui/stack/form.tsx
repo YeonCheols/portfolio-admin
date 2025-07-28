@@ -1,7 +1,19 @@
+import { StackIcon } from '@yeoncheols/portfolio-core-ui';
+import { useState } from 'react';
 import { FormSection, FormInput, Button } from '@/components/ui';
 import { type StackFormProps } from '@/types/stack';
 
-export function StackForm({ formMode, register, errors, handleSubmit, onSubmit, onClose }: StackFormProps) {
+export function StackForm({
+  formMode,
+  defaultValues,
+  register,
+  errors,
+  handleSubmit,
+  onSubmit,
+  onClose,
+}: StackFormProps) {
+  const [isPreviewIcon, setIsPreviewIcon] = useState(false);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
@@ -62,6 +74,14 @@ export function StackForm({ formMode, register, errors, handleSubmit, onSubmit, 
         <Button type="button" variant="outline" onClick={onClose}>
           닫기
         </Button>
+        <div className="flex items-center ml-auto">
+          <Button type="button" variant="outline" color="blue" onClick={() => setIsPreviewIcon(prev => !prev)}>
+            아이콘 미리보기
+          </Button>
+          {isPreviewIcon && (
+            <StackIcon name={defaultValues.name} icon={defaultValues.icon} color={defaultValues.color} size={20} />
+          )}
+        </div>
       </div>
     </form>
   );

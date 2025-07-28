@@ -49,6 +49,7 @@ export default function StacksManagement() {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<AdminTagCreateRequest>({
     mode: 'onChange',
@@ -224,6 +225,7 @@ export default function StacksManagement() {
       {/* 스택 추가 폼 */}
       <Modal isOpen={formMode === 'add'} headerTitle="새 스택 추가" footer={<></>} onClose={cacncelMode}>
         <StackForm
+          defaultValues={watch()}
           formMode={formMode}
           register={register}
           errors={errors}
@@ -235,6 +237,7 @@ export default function StacksManagement() {
       {/* 스택 수정 폼 */}
       <Modal isOpen={formMode === 'edit'} headerTitle="스택 수정" footer={<></>} onClose={cacncelMode}>
         <StackForm
+          defaultValues={watch()}
           formMode={formMode}
           register={register}
           errors={errors}
