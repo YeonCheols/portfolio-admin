@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
   baseURL: process.env.API_URL,
-  timeout: 10000,
+  timeout: 100000,
   withCredentials: true,
 });
 
