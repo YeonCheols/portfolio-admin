@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LoginForm } from './login-form';
 
 const push = vi.fn();
@@ -72,5 +72,50 @@ describe('LoginForm', () => {
 
     await waitFor(() => expect(postData).toHaveBeenCalledTimes(1));
     expect(push).toHaveBeenCalledWith('/stacks');
+  });
+  describe('Google·GitHub 로그인', () => {
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it('공급자별 시작 주소로 이동하는 링크를 보여준다', () => {
+      vi.stubEnv('NEXT_PUBLIC_API_URL', 'https://api.example.com/admin');
+      render(<LoginForm callbackUrl="/" />);
+
+      expect(screen.getByRole('link', { name: 'Google로 로그인' })).toHaveAttribute(
+        'href',
+        'https://api.example.com/admin/auth/oauth/google/authorize',
+      );
+      expect(screen.getByRole('link', { name: 'GitHub로 로그인' })).toHaveAttribute(
+        'href',
+        'https://api.example.com/admin/auth/oauth/github/authorize',
+      );
+    });
+
+    it('API 주소가 없으면 깨진 링크를 만들지 않는다', () => {
+      vi.stubEnv('NEXT_PUBLIC_API_URL', '');
+      render(<LoginForm callbackUrl="/" />);
+
+      expect(screen.queryByRole('link', { name: /로그인/ })).not.toBeInTheDocument();
+    });
+
+    it('서버가 알려준 거절 코드를 안내 문구로 보여준다', () => {
+      render(<LoginForm callbackUrl="/" error="ACCESS_DENIED" />);
+
+      expect(screen.getByRole('alert')).toHaveTextContent('등록된 관리자 계정이 아닙니다');
+    });
+
+    it('오류 코드가 없으면 안내를 보여주지 않는다', () => {
+      render(<LoginForm callbackUrl="/" />);
+
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+
+    it('이메일과 비밀번호 폼은 두 공급자 로그인이 확인될 때까지 남겨 둔다', () => {
+      render(<LoginForm callbackUrl="/" />);
+
+      expect(screen.getByLabelText('이메일')).toBeInTheDocument();
+      expect(screen.getByLabelText('비밀번호')).toBeInTheDocument();
+    });
   });
 });
