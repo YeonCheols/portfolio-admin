@@ -4,13 +4,13 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { postData } from '@/lib/api';
+import { safeCallbackUrl } from '@/lib/safe-callback-url';
 
 function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   const router = useRouter();
   const {
     register,
     handleSubmit,
-    watch,
     setError,
     formState: { errors },
   } = useForm({
@@ -20,7 +20,7 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
     },
   });
 
-  const onSubmit = async () => {
+  const onSubmit = async ({ email, password }: { email: string; password: string }) => {
     toast.loading(
       <>
         로그인 중입니다.
@@ -28,24 +28,20 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
         잠시만 기다려주세요
       </>,
     );
-    const { error } = await postData(
-      `/user/login`,
-      {
-        email: watch('email'),
-        password: watch('password'),
-      },
-      true,
-      { disableToast: true },
-    );
+    const { error } = await postData(`/user/login`, { email, password }, true);
+    toast.dismiss();
 
     if (error?.status === 401) {
       setError('password', { type: 'manual', message: '이메일 또는 비밀번호가 올바르지 않습니다.' });
-      toast.dismiss();
+      return;
+    }
+    // 네트워크·서버 오류를 성공으로 처리하지 않고 로그인 화면에 머문다
+    if (error) {
+      setError('root', { type: 'manual', message: '로그인에 실패했습니다. 잠시 후 다시 시도해주세요.' });
       return;
     }
 
-    router.push(callbackUrl);
-    toast.dismiss();
+    router.push(safeCallbackUrl(callbackUrl));
     router.refresh();
   };
 
@@ -57,7 +53,7 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               계정 정보를 입력해주세요
             </h1>
-            <form className="space-y-4 md:space-y-6">
+            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <div>
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                   이메일
@@ -96,10 +92,14 @@ function LoginForm({ callbackUrl }: { callbackUrl: string }) {
                 />
                 {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
               </div>
+              {errors.root && (
+                <p role="alert" className="text-sm text-red-600">
+                  {errors.root.message}
+                </p>
+              )}
               <button
-                type="button"
+                type="submit"
                 className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                onClick={handleSubmit(onSubmit)}
               >
                 로그인
               </button>

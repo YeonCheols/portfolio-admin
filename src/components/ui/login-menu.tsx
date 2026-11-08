@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { postData } from '@/lib/api';
 
-export function LoginWithButton() {
+export function LoginWithButton({ isLoggedIn = true }: { isLoggedIn?: boolean }) {
   const router = useRouter();
 
   return (
@@ -23,15 +23,19 @@ export function LoginWithButton() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => router.push('/login')}>Login</DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={async () => {
-            await postData(`/user/logout`, {}, true);
-            router.refresh();
-          }}
-        >
-          Logout
-        </DropdownMenuItem>
+        {isLoggedIn ? (
+          <DropdownMenuItem
+            onClick={async () => {
+              await postData(`/user/logout`, {}, true);
+              router.push('/login');
+              router.refresh();
+            }}
+          >
+            Logout
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem onClick={() => router.push('/login')}>Login</DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
