@@ -78,17 +78,18 @@ describe('LoginForm', () => {
       vi.unstubAllEnvs();
     });
 
-    it('공급자별 시작 주소로 이동하는 링크를 보여준다', () => {
+    it('공급자별 시작 주소로 이동하는 링크에 현재 관리자 앱 주소를 붙여 보여준다', () => {
       vi.stubEnv('NEXT_PUBLIC_API_URL', 'https://api.example.com/admin');
       render(<LoginForm callbackUrl="/" />);
 
+      const app = encodeURIComponent(window.location.origin);
       expect(screen.getByRole('link', { name: 'Google로 로그인' })).toHaveAttribute(
         'href',
-        'https://api.example.com/admin/auth/oauth/google/authorize',
+        `https://api.example.com/admin/auth/oauth/google/authorize?app=${app}`,
       );
       expect(screen.getByRole('link', { name: 'GitHub로 로그인' })).toHaveAttribute(
         'href',
-        'https://api.example.com/admin/auth/oauth/github/authorize',
+        `https://api.example.com/admin/auth/oauth/github/authorize?app=${app}`,
       );
     });
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { postData } from '@/lib/api';
@@ -14,8 +15,14 @@ const providers: { id: OAuthProvider; label: string }[] = [
 ];
 
 function OAuthLoginLinks() {
+  // 로그인이 끝나면 API가 이 앱으로 돌려보내도록 현재 origin을 알린다(서버 렌더링 때는 알 수 없다)
+  const [appOrigin, setAppOrigin] = useState<string>();
+  useEffect(() => {
+    setAppOrigin(window.location.origin);
+  }, []);
+
   const links = providers.flatMap(({ id, label }) => {
-    const href = oauthLoginUrl(id);
+    const href = oauthLoginUrl(id, appOrigin);
     return href ? [{ id, label, href }] : [];
   });
   if (links.length === 0) return null;

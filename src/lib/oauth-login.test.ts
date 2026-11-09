@@ -21,6 +21,14 @@ describe('oauthLoginUrl', () => {
     expect(oauthLoginUrl('google')).toBe('https://api.example.com/admin/auth/oauth/google/authorize');
   });
 
+  it('현재 관리자 앱의 origin을 app 파라미터로 붙인다', () => {
+    vi.stubEnv('NEXT_PUBLIC_API_URL', 'https://api.example.com/admin');
+
+    expect(oauthLoginUrl('github', 'http://localhost:5001')).toBe(
+      'https://api.example.com/admin/auth/oauth/github/authorize?app=http%3A%2F%2Flocalhost%3A5001',
+    );
+  });
+
   it('API 주소가 설정되지 않았으면 null을 돌려준다', () => {
     vi.stubEnv('NEXT_PUBLIC_API_URL', '');
 
