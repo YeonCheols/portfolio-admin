@@ -9,7 +9,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <PropsProvider>
       <JotaiProvider>
-        <ModeThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ModeThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <ChartThemeProvider>{children}</ChartThemeProvider>
         </ModeThemeProvider>
       </JotaiProvider>

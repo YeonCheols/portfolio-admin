@@ -1,5 +1,5 @@
 import { Gabarito } from 'next/font/google';
-import { type ReactElement } from 'react';
+import { type ReactNode } from 'react';
 import AppLayout from '@/components/ui/app/layout';
 import { siteConfig } from '@/config/site';
 import { getAccessToken } from '@/lib/auth';
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: ReactElement;
+  children: ReactNode;
 }>) {
   const accessToken = !!(await getAccessToken());
 

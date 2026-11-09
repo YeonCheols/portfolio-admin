@@ -13,6 +13,8 @@
     "lint:count": "next lint --format=compact 2>&1 | grep -E '\\d+ problems?' | tail -1 || echo '0 problems'",
     "lint:detailed": "node scripts/lint-stats.js",
     "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepare": "husky",
     "fetch-schema": "npx swagger-typescript-api -p https://api.ycseng.com/api-json -o ./docs -n api.ts --no-client",
     "export-token": "source tool/export-token.sh"
@@ -41,14 +43,14 @@
     "jotai": "^2.10.1",
     "lodash-es": "^4.17.21",
     "lucide-react": "^0.436.0",
-    "next": "15.0.1",
+    "next": "15.5.29",
     "next-auth": "^4.24.11",
     "next-themes": "^0.3.0",
     "nprogress": "^0.2.0",
-    "react": "19.0.0-rc-69d4b800-20241021",
+    "react": "19.1.10",
     "react-beautiful-dnd": "^13.1.1",
     "react-day-picker": "8.10.1",
-    "react-dom": "19.0.0-rc-69d4b800-20241021",
+    "react-dom": "19.1.10",
     "react-hook-form": "^7.56.4",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^4.12.0",
@@ -64,33 +66,39 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/bcrypt": "^5.0.2",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20",
     "@types/nprogress": "^0.2.3",
-    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react": "^19.1.0",
     "@types/react-beautiful-dnd": "^13.1.8",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
+    "@types/react-dom": "^19.1.0",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@typescript-eslint/eslint-plugin": "^8.3.0",
     "@typescript-eslint/parser": "^8.3.0",
+    "@vitejs/plugin-react": "^6.2.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
-    "eslint-config-next": "15.0.1",
+    "eslint-config-next": "15.5.29",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
     "husky": "^9.1.7",
+    "jsdom": "^31.0.0",
     "postcss": "^8",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "swagger-typescript-api": "12.0.3",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^5.1.0"
   },
   "pnpm": {
     "overrides": {
-      "@types/react": "npm:types-react@19.0.0-rc.1",
-      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+      "@types/react": "^19.1.0",
+      "@types/react-dom": "^19.1.0"
     }
   }
 }
