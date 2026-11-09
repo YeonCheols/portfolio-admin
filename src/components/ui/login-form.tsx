@@ -1,156 +1,113 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { AlertCircle, Loader2, ShieldCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import { postData } from '@/lib/api';
+import { FaGithub } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
+import { Button } from '@/components/ui/button';
 import { loginErrorMessage } from '@/lib/login-error';
 import { oauthLoginUrl, type OAuthProvider } from '@/lib/oauth-login';
-import { safeCallbackUrl } from '@/lib/safe-callback-url';
 
-const providers: { id: OAuthProvider; label: string }[] = [
-  { id: 'google', label: 'Google로 로그인' },
-  { id: 'github', label: 'GitHub로 로그인' },
+const providers: { id: OAuthProvider; name: string; icon: React.ReactNode }[] = [
+  { id: 'google', name: 'Google', icon: <FcGoogle className="size-5" aria-hidden /> },
+  { id: 'github', name: 'GitHub', icon: <FaGithub className="size-5" aria-hidden /> },
 ];
 
 function OAuthLoginLinks() {
   // 로그인이 끝나면 API가 이 앱으로 돌려보내도록 현재 origin을 알린다(서버 렌더링 때는 알 수 없다)
   const [appOrigin, setAppOrigin] = useState<string>();
+  // 이동을 시작한 공급자. 이동 중에는 같은 버튼을 다시 누르거나 다른 공급자를 고르지 못하게 한다
+  const [pending, setPending] = useState<OAuthProvider>();
+
   useEffect(() => {
     setAppOrigin(window.location.origin);
+    // 뒤로 가기로 돌아오면 브라우저가 이전 화면을 그대로 복원하므로 이동 중 표시를 걷어낸다
+    const reset = (event: PageTransitionEvent) => {
+      if (event.persisted) setPending(undefined);
+    };
+    window.addEventListener('pageshow', reset);
+    return () => window.removeEventListener('pageshow', reset);
   }, []);
 
-  const links = providers.flatMap(({ id, label }) => {
-    const href = oauthLoginUrl(id, appOrigin);
-    return href ? [{ id, label, href }] : [];
+  const links = providers.flatMap(provider => {
+    const href = oauthLoginUrl(provider.id, appOrigin);
+    return href ? [{ ...provider, href }] : [];
   });
-  if (links.length === 0) return null;
+
+  if (links.length === 0) {
+    return (
+      <p role="status" className="rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
+        로그인 주소가 설정되지 않았습니다. 관리자에게 문의해주세요.
+      </p>
+    );
+  }
 
   return (
-    <div className="space-y-2">
-      {links.map(({ id, label, href }) => (
-        <a
-          key={id}
-          href={href}
-          className="block w-full text-center border border-gray-300 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-        >
-          {label}
-        </a>
-      ))}
+    <div className="space-y-3">
+      {links.map(({ id, name, icon, href }) => {
+        const isPending = pending === id;
+        const isBlocked = pending !== undefined && !isPending;
+        return (
+          <Button
+            key={id}
+            asChild
+            variant="outline"
+            size="lg"
+            className={`w-full justify-center gap-3 ${isBlocked ? 'pointer-events-none opacity-50' : ''}`}
+          >
+            <a
+              href={href}
+              aria-disabled={pending !== undefined}
+              aria-busy={isPending}
+              onClick={event => {
+                if (pending) {
+                  event.preventDefault();
+                  return;
+                }
+                setPending(id);
+              }}
+            >
+              {isPending ? <Loader2 className="size-5 animate-spin" aria-hidden /> : icon}
+              <span>{isPending ? `${name}로 이동하는 중…` : `${name}로 로그인`}</span>
+            </a>
+          </Button>
+        );
+      })}
     </div>
   );
 }
 
-function LoginForm({ callbackUrl, error }: { callbackUrl: string; error?: string }) {
+function LoginForm({ error }: { error?: string }) {
   const oauthError = loginErrorMessage(error);
-  const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
-
-  const onSubmit = async ({ email, password }: { email: string; password: string }) => {
-    toast.loading(
-      <>
-        로그인 중입니다.
-        <br />
-        잠시만 기다려주세요
-      </>,
-    );
-    const { error } = await postData(`/user/login`, { email, password }, true);
-    toast.dismiss();
-
-    if (error?.status === 401) {
-      setError('password', { type: 'manual', message: '이메일 또는 비밀번호가 올바르지 않습니다.' });
-      return;
-    }
-    // 네트워크·서버 오류를 성공으로 처리하지 않고 로그인 화면에 머문다
-    if (error) {
-      setError('root', { type: 'manual', message: '로그인에 실패했습니다. 잠시 후 다시 시도해주세요.' });
-      return;
-    }
-
-    router.push(safeCallbackUrl(callbackUrl));
-    router.refresh();
-  };
 
   return (
-    <section>
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              계정 정보를 입력해주세요
-            </h1>
-            {oauthError && (
-              <p role="alert" className="text-sm text-red-600">
-                {oauthError}
-              </p>
-            )}
-            <OAuthLoginLinks />
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onSubmit)}>
-              <div>
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  이메일
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
-                  {...register('email', {
-                    required: '이메일을 입력해주세요',
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: '올바른 이메일 형식이 아닙니다',
-                    },
-                  })}
-                />
-                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
-              </div>
-              <div>
-                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  비밀번호
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  {...register('password', {
-                    required: '비밀번호를 입력해주세요',
-                    pattern: {
-                      value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-                      message: '비밀번호는 8자 이상이며 영문자, 숫자, 특수문자를 포함해야 합니다',
-                    },
-                  })}
-                />
-                {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
-              </div>
-              {errors.root && (
-                <p role="alert" className="text-sm text-red-600">
-                  {errors.root.message}
-                </p>
-              )}
-              <button
-                type="submit"
-                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-              >
-                로그인
-              </button>
-            </form>
+    <main className="flex min-h-screen items-center justify-center bg-muted/40 px-4 py-10">
+      <section className="w-full max-w-sm rounded-xl border bg-card p-6 text-card-foreground shadow-sm sm:p-8">
+        <div className="mb-6 space-y-2 text-center">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <ShieldCheck className="size-6" aria-hidden />
           </div>
+          <h1 className="text-2xl font-bold tracking-tight">관리자 로그인</h1>
+          <p className="text-sm text-muted-foreground">등록된 관리자 계정으로만 접근할 수 있습니다.</p>
         </div>
-      </div>
-    </section>
+
+        {oauthError && (
+          <div
+            role="alert"
+            className="mb-4 flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
+            <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden />
+            <p>{oauthError}</p>
+          </div>
+        )}
+
+        <OAuthLoginLinks />
+
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          로그인할 수 없다면 GitHub·Google 계정의 대표 이메일이 관리자로 등록되어 있는지 확인해주세요.
+        </p>
+      </section>
+    </main>
   );
 }
 
