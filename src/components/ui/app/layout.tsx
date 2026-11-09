@@ -1,13 +1,13 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { type ReactElement } from 'react';
+import { type ReactNode } from 'react';
 import { SideNav } from '../../nav';
 import AppContainer from './container';
 
 const ProgressBar = dynamic(() => import('@/components/ui/progressbar'), { ssr: false });
 
-export default function AppLayout({ children, isLogin }: { children: ReactElement; isLogin: boolean }) {
+export default function AppLayout({ children, isLogin }: { children: ReactNode; isLogin: boolean }) {
   if (!isLogin) {
     return (
       <AppContainer>
